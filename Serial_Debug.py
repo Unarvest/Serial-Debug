@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-10 16:42:34
+@LastEditTime: 2020-05-11 00:36:34
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -23,6 +23,7 @@ import re
 from File_loader import *
 from HexFormat import *
 from graph import *
+
 
 
 class receiveTimer():
@@ -217,7 +218,7 @@ class callBack():
                     Msg += data.lineChange
                 Msg = Msg.replace('\n', '\\n')
                 Msg = Msg.replace('\r', '\\r')
-                toMessageBox("[{}]->".format(res) + Msg)
+                toMessageBox("[{}]-> ".format(res) + Msg)
             else:
                 toMessageBox("None!")
         else:
@@ -266,7 +267,6 @@ class callBack():
         data.file.Save_data('parameter', data.parameter)
 
     def graphColorComboBox_(self, value):
-        colorSelect
         data.curveColor = value
         data.file.Save_data('curveColor', data.curveColor)
         if re.search(colorSelect(), graph.Pencolor) == None:

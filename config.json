@@ -1,0 +1,1 @@
+{"bps": 115200, "parameter": "8N1", "timeout": 1, "Is_cut": 1, "sleep_time": 0.01, "showHex": 0, "sendHex": 0, "setTimeSend": 500, "autoConnect": 0, "showSend": 0, "limit": 1, "limitLen": 200, "lineChange": "\r\n", "path": ".", "autoTarget": "CH340", "fastConnect": null, "curveColor": "\u7eff\u8272", "curveName": "Curve", "backColor": "\u94c5\u767d"}
