@@ -9,9 +9,9 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import serial   
 import serial.tools.list_ports
-import threading
-import time
-import re
+from threading import Thread
+from time import time, sleep
+from re import search
 
 
 '''
@@ -27,9 +27,9 @@ import re
 @param receive_data: 数据接收缓存
 @param sleep_time: 接收缓冲间隔 默认为0.1s
 '''
-class Myserial(threading.Thread):
+class Myserial(Thread):
     def __init__(self, target = 'CH340', bps = 115200, parameter = "8N1", timeout = 1, Is_cut = True, sleep_time = 0.1):
-        threading.Thread.__init__(self)
+        Thread.__init__(self)
         self.target = target
         self.bps = 115200
         self.parameter = parameter
@@ -55,7 +55,7 @@ class Myserial(threading.Thread):
             cut = True
             print ("开启线程接收数据, 来自->" + self.portname)
             while self.Is_open == True:
-                time.sleep(self.sleep_time)     #接收间隔
+                sleep(self.sleep_time)     #接收间隔
                 '''
                 loop += 1
                 if loop > 10:
@@ -114,8 +114,8 @@ class Myserial(threading.Thread):
         else:
             for i in range(0,len(self.port_list)):
                 print(self.port_list[i])     #打印所有串口
-                if re.search(self.target, str(self.port_list[i])) is not None:
-                    Position = re.search(' ', str(self.port_list[i])).span()
+                if search(self.target, str(self.port_list[i])) is not None:
+                    Position = search(' ', str(self.port_list[i])).span()
                     self.portname = str(self.port_list[i])[:Position[0]]
                     #串口名
             if len(self.portname) > 0:
@@ -138,7 +138,7 @@ class Myserial(threading.Thread):
                 
                 msg += lineChange
                 result=self.ser.write(msg.encode())#写数据
-                t = time.time()
+                t = time()
                 return result
                 #返回成功发送的字节数
             else:
@@ -152,7 +152,7 @@ class Myserial(threading.Thread):
         try:
             if self.Is_open == True:
                 result=self.ser.write(msg)#写数据
-                t = time.time()
+                t = time()
                 return result
                 #返回成功发送的字节数
             else:

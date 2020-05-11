@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-05-03 14:09:17
-@LastEditTime: 2020-05-07 01:12:14
+@LastEditTime: 2020-05-11 16:00:00
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Calculation\HexFormat.py
@@ -10,7 +10,6 @@
 
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QMessageBox
-import binascii
 
 
 '''

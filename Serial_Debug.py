@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-11 00:36:34
+@LastEditTime: 2020-05-12 00:58:17
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -9,16 +9,15 @@
 import sys
 import os
 from Serial_core import *
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSplashScreen
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtGui
 from Ui_Serial_MainWindow import Ui_MainWindow
 #add(your program's name)  use :pyuic5 button.ui -o button.py to create.
-import time
 from datetime import datetime
-import threading
-import re
+from re import search
+import icoPack_rc
 
 from File_loader import *
 from HexFormat import *
@@ -99,10 +98,8 @@ class openPortThread(QtCore.QThread):
         if ser.port_list != None:
             window.serialListWidget.clear()
         try:
-            data.opening = 1
             for i in range(len(ser.port_list)):
                 window.serialListWidget.addItem(str(ser.port_list[i]))
-            data.opening = 0
         except Exception:
             pass
         self.quit()
@@ -269,7 +266,7 @@ class callBack():
     def graphColorComboBox_(self, value):
         data.curveColor = value
         data.file.Save_data('curveColor', data.curveColor)
-        if re.search(colorSelect(), graph.Pencolor) == None:
+        if search(colorSelect(), graph.Pencolor) == None:
             window.addGraphColor.setText('添加曲线')
         else:
             window.addGraphColor.setText('删除曲线')
@@ -277,7 +274,7 @@ class callBack():
     def backColorComboBox_(self, value):
         data.backColor = value
         data.file.Save_data('backColor', data.backColor)
-        QMessageBox.information(MainWindow, '提示', '背景颜色将在重新启动后修改')
+        toMessageBox('背景将在重新启动后更改！')
     
     def graphColorName_(self, value):
         data.curveName = value
@@ -414,7 +411,7 @@ class callBack():
     def serialListWidget_(self, value):
         global ser
         port = value.text()
-        Position = re.search(' ', port).span()
+        Position = search(' ', port).span()
         data.portname = port[:Position[0]]
         toMessageBox('选中: ' + data.portname)
         
@@ -445,9 +442,14 @@ class callBack():
     def sendTimeCheckBox_(self, value):
         global autoSend, data
         if value == True:
-            autoSend = autoSendTimer()
-            autoSend.start(data.setTimeSend)
-            toMessageBox('开启定时发送')
+            if ser.Is_open:
+                autoSend = autoSendTimer()
+                autoSend.start(data.setTimeSend)
+                toMessageBox('开启定时发送')
+            else:
+                QMessageBox.warning(MainWindow, '警告', '串口未开启!')
+                toMessageBox('无法开启定时发送')
+                window.sendTimeCheckBox.setChecked(0)
         else:
             autoSend.stop()
             toMessageBox('关闭定时发送')
@@ -460,7 +462,7 @@ class callBack():
     def addGraphColor_(self):
         #红r, 绿g, 蓝b, 青c, 粉m, 黄y, 白w
         color = colorSelect()
-        if re.search(color, graph.Pencolor) == None:
+        if search(color, graph.Pencolor) == None:
             if data.limit == True:
                 res = graph.addPen(color = color, name = data.curveName, limit = data.limitLen)
             else:
@@ -469,7 +471,7 @@ class callBack():
                 QMessageBox.warning(MainWindow, '警告', '颜色已存在')
                 window.addGraphColor.setText('添加曲线')
             elif res == None:
-                QMessageBox.warning(MainWindow, '警告', '名字重复')
+                QMessageBox.warning(MainWindow, '警告', '标签重复')
                 window.addGraphColor.setText('添加曲线')
             else:
                 window.addGraphColor.setText('删除曲线')
@@ -483,8 +485,7 @@ class callBack():
             window.addGraphColor.setText('添加曲线')
     
     def clearDataButton_(self):
-        #graph.clearAll()
-        graph.changeLimit(limit = 100)
+        graph.clearAll()
     
     def limitCheckBox_(self, value):
         data.limit = value
@@ -511,6 +512,17 @@ class callBack():
         window.sendCountLabel.setText('--')
         window.receiveCountLabel.setText('--')
         toMessageBox('')
+        if ok:
+            '''
+            f = open('./f', 'w')
+            f.write(font)
+            f.close()
+            f = open('./f', 'r')
+            font = f.read(font)
+            window.searchSerialButton.setFont(font)
+            f.close()
+            '''
+            print(font.getFamily())
 
 def colorSelect():
     color = ''
@@ -571,7 +583,7 @@ class dataInit():
         self.fastConnect = self.file.Load_data('fastConnect')
         self.autoTarget = self.file.Load_data('autoTarget')
         self.showSend = self.file.Load_data('showSend')
-        self.curveColor = self.file.Load_data('curveColor')
+        self.curveColor = '红色'
         self.curveName = self.file.Load_data('curveName')
         self.backColor = self.file.Load_data('backColor')
         self.limitLen = self.file.Load_data('limitLen')
@@ -671,6 +683,7 @@ def toMessageBox(msg):
 def connectState(state):
     if state == 0:
         window.openSerialButton.setText(_translate("MainWindow", "打开串口"))
+        window.connectStateRadioButton.setChecked(0)
         window.connectStateRadioButton.setCheckable(0)
         data.opening = 0
     elif state == 1:
@@ -691,24 +704,27 @@ class QMainWindowClose(QMainWindow):
 if __name__ == '__main__':
     global data, Back, MainWindow, window, _translate, ser
     global receiveT, graph
-    _translate = QtCore.QCoreApplication.translate
-    Back = callBack()
     app = QApplication(sys.argv)
 
+
+    # 创建启动界面，支持png透明图片
+    splash = QSplashScreen(QtGui.QPixmap(":/Mainico/Start2.png"))
+    splash.show()
+
+    Back = callBack()
+    _translate = QtCore.QCoreApplication.translate
     MainWindow = QMainWindowClose()
-    
     
     window = Ui_MainWindow()
     window.setupUi(MainWindow)
     data = dataInit(window)
-    
-    toMessageBox("启动完成")
     receiveT = receiveTimer()
-    MainWindow.show()
     autoConnect = autoConnectThread()
     autoConnect.openStart()
     graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect())
-    
     receiveT.timer.start(1)
+    toMessageBox("启动完成")
+    MainWindow.show()
+    splash.close()
     autoConnect.exec_()
     sys.exit(app.exec_())

@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-05-07 10:46:24
-@LastEditTime: 2020-05-10 01:33:58
+@LastEditTime: 2020-05-11 21:03:47
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Calculation\graph.py
@@ -10,9 +10,9 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:dell
-import pyqtgraph
-import pyqtgraph.exporters
-import re
+from pyqtgraph import setConfigOption, GraphicsWindow, InfiniteLine, SignalProxy, setConfigOptions#, LabelItem
+from pyqtgraph import exporters
+from re import search
 from datetime import datetime
 
 
@@ -68,35 +68,37 @@ class MyGraphWindow():
             self.Times.clear()
     
     def set_graph_ui(self, BackColor = 'f0f0f4'):
-        pyqtgraph.setConfigOption('background', BackColor)
+        setConfigOption('background', BackColor)
         if (BackColor == 'e3f9fd')|(BackColor == 'f0f0f4')|(BackColor == 'ffffff')|(BackColor == 'e0f0e9'):
-            pyqtgraph.setConfigOption('foreground', 'k')
-        pyqtgraph.setConfigOptions(antialias=self.antialias)  # pyqtgraph全局变量设置函数，antialias=True开启曲线抗锯齿
-        self.graphWin = pyqtgraph.GraphicsWindow()  
+            setConfigOption('foreground', 'k')
+        setConfigOptions(antialias=self.antialias)  # pyqtgraph全局变量设置函数，antialias=True开启曲线抗锯齿
+        self.graphWin = GraphicsWindow()  
         self.window.addWidget(self.graphWin)
-        #self.smallShowLabel = pyqtgraph.LabelItem()
-        #self.smallShowLabel.setPos(0,0)
-        #graphWin.addItem(self.smallShowLabel)
-        self.graph = self.graphWin.addPlot(title="数据可视化测试")  # 添加第一个绘图窗口
-        self.graph.setLabel('left', text='value')           # y轴设置函数
-        self.graph.setLabel('bottom', text='Times')         # x轴设置函数
-        self.graph.showGrid(x = self.grid, y = self.grid)   # 栅格设置函数
+
+        self.graph = self.graphWin.addPlot(title="数据可视化")   # 添加第一个绘图窗口
+
+
+
+        #self.graph.addItem(self.smallShowLabel)
+        self.graph.setLabel('left', text='value')               # y轴设置函数
+        self.graph.setLabel('bottom', text='Times')             # x轴设置函数
+        self.graph.showGrid(x = self.grid, y = self.grid)       # 栅格设置函数
         self.graph.setLogMode(x = self.logMode, y = self.logMode)  
-        self.Legend = self.graph.addLegend()                 # 添加图例
+        self.Legend = self.graph.addLegend()                    # 添加图例
         
-        self.vLine = pyqtgraph.InfiniteLine(angle=90, movable=False)
-        self.hLine = pyqtgraph.InfiniteLine(angle=0, movable=False)
-        #graph.plot(pen='g', name='sin(x)',symbolBrush=(0,255,0), clear=True)
+        self.vLine = InfiniteLine(angle=90, movable=False)
+        self.hLine = InfiniteLine(angle=0, movable=False)
+        
 
         self.graph.addItem(self.vLine, ignoreBounds=True)
         self.graph.addItem(self.hLine, ignoreBounds=True)
-        self.proxy = pyqtgraph.SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+        self.proxy = SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
     
     def outputGraph(self, path = '.'):
         try:
-            ex = pyqtgraph.exporters.ImageExporter(self.graphWin.scene())
-            name = datetime.now().strftime("%Y%m%d-%H%M%S.png")
-            ex.export(fileName= path + '\\' + name)
+            ex = exporters.ImageExporter(self.graphWin.scene())
+            name = datetime.now().strftime(path + '/' + "%Y%m%d-%H%M%S.png")
+            ex.export(fileName= name)
             return name
         except Exception as e:
             print('错误：', e)
@@ -105,7 +107,7 @@ class MyGraphWindow():
     def addPen(self, color, name, data = [], Times = [], limit = 200):
         self.limit = limit
         canadd = 1
-        if re.search(color, self.Pencolor) == None:
+        if search(color, self.Pencolor) == None:
             for i in self.Pencolor:
                 if self.allPen[i].name == name:
                     canadd = 0
@@ -128,7 +130,7 @@ class MyGraphWindow():
             return False
 
     def appendNum(self, color, num, time):
-        if re.search(color, self.Pencolor) == None:
+        if search(color, self.Pencolor) == None:
             print('颜色不存在')
         else:
             self.allPen[color].addNum(num, time)
@@ -162,7 +164,7 @@ class MyGraphWindow():
             self.allPen[i].plot.clear()
 
     def killPen(self, color):
-        pos = re.search(color, self.Pencolor)
+        pos = search(color, self.Pencolor)
         if pos == None:
             print('颜色不存在')
         else:
@@ -177,7 +179,7 @@ class MyGraphWindow():
             self.allPen[color].clearNum()
                 
     def hindPen(self, color):
-        if re.search(color, self.Pencolor) == None:
+        if search(color, self.Pencolor) == None:
             print('颜色不存在')
             return None
         else:
@@ -189,7 +191,7 @@ class MyGraphWindow():
             return True
     
     def showPen(self, color):
-        if re.search(color, self.Pencolor) == None:
+        if search(color, self.Pencolor) == None:
             print('颜色不存在')
         else:
             self.Legend.addItem(self.allPen[color].plot, self.allPen[color].name)
@@ -202,7 +204,7 @@ class MyGraphWindow():
     
     def moveData(self, color):
         if self.newWin != None:
-            pos = re.search(color, self.Pencolor)
+            pos = search(color, self.Pencolor)
             if pos != None:
                 data = self.allPen[color].data
                 Times = self.allPen[color].Times
@@ -223,7 +225,7 @@ class MyGraphWindow():
 
     def moveBack(self, color):
         if self.newWin != None:
-            pos = re.search(color, self.newWin.Pencolor)
+            pos = search(color, self.newWin.Pencolor)
             if pos != None:
                 self.addPen(color = color, name = self.newWin.allPen[color].name)
                 self.allPen[color].countTime = self.newWin.allPen[color].countTime
@@ -254,7 +256,7 @@ class MyGraphWindow():
                 flag = False
                 num = ''
                 name = self.allPen[color].name
-                pos = re.search(name + '=', data) 
+                pos = search(name + '=', data) 
                 if pos != None:
                     pos = pos.span()
                     for i in data[pos[1]:]:
