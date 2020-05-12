@@ -1,14 +1,13 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-12 00:58:17
+@LastEditTime: 2020-05-12 23:57:10
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
 '''
 import sys
 import os
-from Serial_core import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSplashScreen
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
@@ -19,6 +18,7 @@ from datetime import datetime
 from re import search
 import icoPack_rc
 
+from Serial_core import *
 from File_loader import *
 from HexFormat import *
 from graph import *
@@ -32,7 +32,7 @@ class receiveTimer():
     def operate(self):
         global ser, window
         if ser.Is_receive:
-            if data.showSend == 0:
+            if data.showSend == 1:
                 if data.showHex:
                     window.receiveBox.setPlainText(ser.HexShow())
                     window.graphReceiveBox.setPlainText(ser.HexShow())
@@ -46,7 +46,8 @@ class receiveTimer():
                 cursor = window.graphReceiveBox.textCursor()
                 cursor.movePosition(QtGui.QTextCursor.End)
                 window.graphReceiveBox.setTextCursor(cursor)
-            graph.formatData(data = ser.data, time = 1)
+            if data.showCurve == 1:
+                graph.formatData(data = ser.data, time = 1)
             data.receiveCount += ser.receiveCount
             window.receiveCountLabel.setText(str(data.receiveCount))
             ser.receiveCount = 0
@@ -172,6 +173,7 @@ class listPortThread(QtCore.QThread):
         super(listPortThread, self).__init__()
 
     def run(self):
+        toMessageBox('搜索串口中')
         data.searching = 1
         window.searchSerialButton.setText('搜索中')
         port_list = list(serial.tools.list_ports.comports())
@@ -189,7 +191,7 @@ class listPortThread(QtCore.QThread):
         
 class callBack():
     def sendButton_(self):
-        global ser, window, MainWindow, _translate
+        global ser, window, MainWindow
         if ser.Is_open:
             Msg = window.sendBox.toPlainText()
             if data.sendHex:
@@ -223,7 +225,7 @@ class callBack():
             connectState(0)
 
     def graphSendButton_(self):
-        global ser, window, MainWindow, _translate
+        global ser, window, MainWindow
         if ser.Is_open:
             Msg = window.graphSendBox.toPlainText()
             if Text.enterSend:
@@ -231,8 +233,9 @@ class callBack():
                     Msg = Msg[:-1]
                 window.sendBox.setPlainText(Msg)
             res = ser.Send_data(Msg, lineChange=data.lineChange)
-            data.sendCount += res
-            window.sendCountLabel.setText(str(data.sendCount))
+            if res != None:
+                data.sendCount += res
+                window.sendCountLabel.setText(str(data.sendCount))
             if res != None:
                 if data.lineChange == None:
                     pass
@@ -246,7 +249,75 @@ class callBack():
         else:
             QMessageBox.warning(MainWindow, '警告', '串口未开启')
             connectState(0)
-        
+    
+    def sendButton1_1(self):
+        self.sendButtonX(1)
+    
+    def sendButton1_2(self):
+        self.sendButtonX(2)
+
+    def sendButton1_3(self):
+        self.sendButtonX(3)
+
+    def sendButton1_4(self):
+        self.sendButtonX(4)
+
+    def sendButton1_5(self):
+        self.sendButtonX(5)
+
+    def sendButton1_6(self):
+        self.sendButtonX(6)
+
+    def sendButton1_7(self):
+        self.sendButtonX(7)
+
+    def sendButton1_8(self):
+        self.sendButtonX(8)
+
+    def sendButton1_9(self):
+        self.sendButtonX(9)
+
+    def sendButtonX(self, num):
+        global ser, window, MainWindow, _translate
+        if ser.Is_open:
+            if num == 1:
+                Msg = window.sendLine1_1.text()
+            elif num == 2:
+                Msg = window.sendLine1_2.text()
+            elif num == 3:
+                Msg = window.sendLine1_3.text()
+            elif num == 4:
+                Msg = window.sendLine1_4.text()
+            elif num == 5:
+                Msg = window.sendLine1_5.text()
+            elif num == 6:
+                Msg = window.sendLine1_6.text()
+            elif num == 7:
+                Msg = window.sendLine1_7.text()
+            elif num == 8:
+                Msg = window.sendLine1_8.text()
+            elif num == 9:
+                Msg = window.sendLine1_9.text()
+            else:
+                Msg = ''
+            res = ser.Send_data(Msg, lineChange=data.lineChange)
+            if res != None:
+                data.sendCount += res
+                window.sendCountLabel.setText(str(data.sendCount))
+            if res != None:
+                if data.lineChange == None:
+                    pass
+                elif data.sendHex == 0:
+                    Msg += data.lineChange
+                Msg = Msg.replace('\n', '\\n')
+                Msg = Msg.replace('\r', '\\r')
+                toMessageBox("[{}]-> ".format(res) + Msg)
+            else:
+                toMessageBox("None!")
+        else:
+            QMessageBox.warning(MainWindow, '警告', '串口未开启')
+            connectState(0)
+
     def bpscomboBox_(self, value):
         data.bps = int(value)
         data.file.Save_data('bps', data.bps)
@@ -377,7 +448,7 @@ class callBack():
     def fastConnectRadioButton_(self, value):
         if value == True:
             if data.portname == None:
-                QMessageBox.warning(MainWindow, '警告', '当前未选中串口, 无法使用快速启动')
+                QMessageBox.warning(MainWindow, '警告', '当前未选中串口, 无法使用快速连接')
                 window.fastConnectRadioButton.setChecked(0)
             else:
                 data.fastConnect = data.portname
@@ -417,10 +488,9 @@ class callBack():
         
     def showSendCheckBox_(self, value):
         if value == 0:
-            data.showSend = 0
-        else:
             data.showSend = 1
-        data.file.Save_data('showSend', data.showSend)
+        else:
+            data.showSend = 0
 
     def lineChangeComboBox_(self, value):
         if value == 0:
@@ -501,6 +571,20 @@ class callBack():
         if data.limit == True:
             graph.changeLimit(limit = data.limitLen)
     
+    def stopShowButton_(self):
+        if data.showCurve == 1:
+            data.showCurve = 0
+            window.stopShowButton.setText('启用显示')
+            icon1 = QtGui.QIcon()
+            icon1.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200512-164645.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            window.stopShowButton.setIcon(icon1)
+        else:
+            data.showCurve = 1
+            window.stopShowButton.setText('暂停显示')
+            icon0 = QtGui.QIcon()
+            icon0.addPixmap(QtGui.QPixmap(":/MainWin/ico/20200510-235146.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            window.stopShowButton.setIcon(icon0)
+    
     def saveDataButton_(self):
         name = graph.outputGraph(path = data.path)
         if name != False:
@@ -512,17 +596,6 @@ class callBack():
         window.sendCountLabel.setText('--')
         window.receiveCountLabel.setText('--')
         toMessageBox('')
-        if ok:
-            '''
-            f = open('./f', 'w')
-            f.write(font)
-            f.close()
-            f = open('./f', 'r')
-            font = f.read(font)
-            window.searchSerialButton.setFont(font)
-            f.close()
-            '''
-            print(font.getFamily())
 
 def colorSelect():
     color = ''
@@ -556,7 +629,6 @@ def backColorSelect():
     elif data.backColor == '纯黑':
         color = 'k'
     elif data.backColor == '素':
-        print(1)
         color = 'e0f0e9'
     elif data.backColor == '墨色':
         color = '50616d'
@@ -582,12 +654,13 @@ class dataInit():
         self.autoConnect = self.file.Load_data('autoConnect')
         self.fastConnect = self.file.Load_data('fastConnect')
         self.autoTarget = self.file.Load_data('autoTarget')
-        self.showSend = self.file.Load_data('showSend')
-        self.curveColor = '红色'
         self.curveName = self.file.Load_data('curveName')
         self.backColor = self.file.Load_data('backColor')
         self.limitLen = self.file.Load_data('limitLen')
         self.limit = self.file.Load_data('limit')
+        self.curveColor = '红色'
+        self.showCurve = 1
+        self.showSend = 1
         self.target = None
         self.portname = None
         self.opening = 0
@@ -669,7 +742,18 @@ class dataInit():
         window.clearDataButton.clicked.connect(Back.clearDataButton_)
         window.limitCheckBox.clicked.connect(Back.limitCheckBox_)
         window.limitLenSpinBox.valueChanged.connect(Back.limitLenSpinBox_)
+        window.stopShowButton.clicked.connect(Back.stopShowButton_)
         window.saveDataButton.clicked.connect(Back.saveDataButton_)
+        window.sendButton1_1.clicked.connect(Back.sendButton1_1)
+        window.sendButton1_2.clicked.connect(Back.sendButton1_2)
+        window.sendButton1_3.clicked.connect(Back.sendButton1_3)
+        window.sendButton1_4.clicked.connect(Back.sendButton1_4)
+        window.sendButton1_5.clicked.connect(Back.sendButton1_5)
+        window.sendButton1_6.clicked.connect(Back.sendButton1_6)
+        window.sendButton1_7.clicked.connect(Back.sendButton1_7)
+        window.sendButton1_8.clicked.connect(Back.sendButton1_8)
+        window.sendButton1_9.clicked.connect(Back.sendButton1_9)
+
         
         
         
@@ -719,11 +803,11 @@ if __name__ == '__main__':
     window.setupUi(MainWindow)
     data = dataInit(window)
     receiveT = receiveTimer()
+    toMessageBox("启动完成")
     autoConnect = autoConnectThread()
     autoConnect.openStart()
     graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect())
     receiveT.timer.start(1)
-    toMessageBox("启动完成")
     MainWindow.show()
     splash.close()
     autoConnect.exec_()

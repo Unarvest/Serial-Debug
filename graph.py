@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-05-07 10:46:24
-@LastEditTime: 2020-05-11 21:03:47
+@LastEditTime: 2020-05-12 17:30:54
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Calculation\graph.py
@@ -76,8 +76,6 @@ class MyGraphWindow():
         self.window.addWidget(self.graphWin)
 
         self.graph = self.graphWin.addPlot(title="数据可视化")   # 添加第一个绘图窗口
-
-
 
         #self.graph.addItem(self.smallShowLabel)
         self.graph.setLabel('left', text='value')               # y轴设置函数
