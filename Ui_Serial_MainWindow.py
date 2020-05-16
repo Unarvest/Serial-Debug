@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1246, 852)
+        MainWindow.resize(1271, 872)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -43,6 +43,7 @@ class Ui_MainWindow(object):
         font.setFamily("楷体")
         font.setPointSize(14)
         self.tabWidget.setFont(font)
+        self.tabWidget.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.tabWidget.setStyleSheet("")
         self.tabWidget.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.tabWidget.setIconSize(QtCore.QSize(32, 32))
@@ -86,7 +87,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 354, 668))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 354, 688))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
@@ -543,7 +544,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.DTR_CheckBox.setFont(font)
         self.DTR_CheckBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.DTR_CheckBox.setCheckable(False)
+        self.DTR_CheckBox.setCheckable(True)
         self.DTR_CheckBox.setObjectName("DTR_CheckBox")
         self.gridLayout_3.addWidget(self.DTR_CheckBox, 2, 2, 1, 1)
         self.sendHexCheckBox = QtWidgets.QCheckBox(self.scrollAreaWidgetContents)
@@ -587,7 +588,7 @@ class Ui_MainWindow(object):
         font.setFamily("等线")
         font.setPointSize(12)
         self.RTS_CheckBox.setFont(font)
-        self.RTS_CheckBox.setCursor(QtGui.QCursor(QtCore.Qt.ForbiddenCursor))
+        self.RTS_CheckBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.RTS_CheckBox.setCheckable(False)
         self.RTS_CheckBox.setObjectName("RTS_CheckBox")
         self.gridLayout_3.addWidget(self.RTS_CheckBox, 2, 3, 1, 6)
@@ -794,7 +795,7 @@ class Ui_MainWindow(object):
         self.toolBox.setMidLineWidth(0)
         self.toolBox.setObjectName("toolBox")
         self.page_3 = QtWidgets.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 807, 179))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 832, 186))
         self.page_3.setObjectName("page_3")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.page_3)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -837,7 +838,7 @@ class Ui_MainWindow(object):
         icon18.addPixmap(QtGui.QPixmap(":/MainWin/ico/20200510-230224.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolBox.addItem(self.page_3, icon18, "")
         self.page_4 = QtWidgets.QWidget()
-        self.page_4.setGeometry(QtCore.QRect(0, 0, 807, 179))
+        self.page_4.setGeometry(QtCore.QRect(0, 0, 832, 186))
         self.page_4.setObjectName("page_4")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.page_4)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -845,7 +846,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 762, 375))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 787, 375))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
@@ -1654,7 +1655,7 @@ class Ui_MainWindow(object):
         icon43.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-103820.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolBox_2.addItem(self.page_6, icon43, "")
         self.page_5 = QtWidgets.QWidget()
-        self.page_5.setGeometry(QtCore.QRect(0, 0, 1196, 609))
+        self.page_5.setGeometry(QtCore.QRect(0, 0, 1221, 629))
         self.page_5.setObjectName("page_5")
         self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.page_5)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
@@ -1699,6 +1700,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "小智串口调试器"))
+        self.tabWidget.setToolTip(_translate("MainWindow", "数据长度"))
         self.openSerialButton.setToolTip(_translate("MainWindow", "默认连接CH340"))
         self.openSerialButton.setText(_translate("MainWindow", "  打开串口"))
         self.customCheckBox.setToolTip(_translate("MainWindow", "自定义数据包"))
@@ -1825,14 +1827,20 @@ class Ui_MainWindow(object):
         self.stopShowButton.setText(_translate("MainWindow", "暂停显示"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Draw), _translate("MainWindow", "绘图"))
         self.label_6.setText(_translate("MainWindow", "字体"))
+        self.fontComboBox.setToolTip(_translate("MainWindow", "修改全局字体"))
         self.label_11.setText(_translate("MainWindow", "大小"))
+        self.formSpinBox.setToolTip(_translate("MainWindow", "修改全局字体大小"))
         self.msgLencheckBox.setText(_translate("MainWindow", "限制信息缓存长度"))
+        self.msgLenSpinBox.setToolTip(_translate("MainWindow", "数据长度"))
         self.label_7.setText(_translate("MainWindow", "文件保存路径"))
+        self.PathButton.setToolTip(_translate("MainWindow", "路径"))
         self.PathButton.setText(_translate("MainWindow", "..."))
         self.label_10.setText(_translate("MainWindow", "全局设置"))
+        self.openPathButton.setToolTip(_translate("MainWindow", "打开数据存放文件夹"))
         self.openPathButton.setText(_translate("MainWindow", "打开文件夹"))
         self.antialiasCheckBox.setText(_translate("MainWindow", "开启抗锯齿  "))
         self.openFileButton.setText(_translate("MainWindow", "打开数据文件夹"))
+        self.showXYBox.setToolTip(_translate("MainWindow", "底部坐标显示"))
         self.showXYBox.setText(_translate("MainWindow", "显示坐标"))
         self.outputCurveButton.setText(_translate("MainWindow", "导出曲线数据"))
         self.mousePosBox.setText(_translate("MainWindow", "标识鼠标位置"))
@@ -1842,9 +1850,12 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "绘图设置"))
         self.updateButton.setText(_translate("MainWindow", "检测更新"))
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.516.1"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.516.2"))
+        self.deleteCheckBox.setToolTip(_translate("MainWindow", "暂不可用"))
         self.deleteCheckBox.setText(_translate("MainWindow", "删除旧版本"))
+        self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
+        self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>进入网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github]</span></a><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" color:#0000ff;\"/></a><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">[</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "设置"))
         self.textBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
@@ -2035,6 +2046,9 @@ class Ui_MainWindow(object):
 "-添加自动更新\n"
 "-添加自动检测更新\n"
 "-添加全局字体设置\n"
+"--------------------------\n"
+"Alpha 0.516.2\n"
+"-热修复\n"
 "--------------------------\n"
 "自定义数据包暂不可用\n"
 "绘图功能待完善..."))

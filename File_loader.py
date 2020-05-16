@@ -44,7 +44,7 @@ default_data = {
     'backColor': '铅白',
     'findUpdate': 0,
     'font': '等线',
-    'fontSize': 12,
+    'fontSize': 13,
     'limitMsgLen': 0,
     'MsgLen': 5000,
     'antialias': 1,
