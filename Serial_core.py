@@ -28,7 +28,7 @@ from re import search
 @param sleep_time: 接收缓冲间隔 默认为0.1s
 '''
 class Myserial(Thread):
-    def __init__(self, target = 'CH340', bps = 115200, parameter = "8N1", timeout = 1, Is_cut = True, sleep_time = 0.1):
+    def __init__(self, target = 'CH340', bps = 115200, parameter = "8N1", timeout = 1, Is_cut = True, sleep_time = 0.1, DTR=0, RTS=0):
         Thread.__init__(self)
         self.target = target
         self.bps = 115200
@@ -44,6 +44,8 @@ class Myserial(Thread):
         self.Is_receive = 0
         self.receiveCount = 0
         self.data = ''
+        self.DTR = DTR
+        self.RTS = RTS
         #self.receive_data = self.receive_data.encode('utf-8')
 
     '''
@@ -182,7 +184,7 @@ class Myserial(Thread):
                     portname = self.portname
                 self.ser = serial.Serial(portname, self.bps, bytesize=int(self.parameter[0]), 
                                          parity=self.parameter[1], stopbits=float(self.parameter[2]), 
-                                         timeout=self.timeout)
+                                         timeout=self.timeout, rtscts = self.RTS, dsrdtr = self.DTR)
                 self.Is_open = True
                 self.start()
                 return True

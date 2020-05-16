@@ -1,16 +1,16 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-12 23:57:10
+@LastEditTime: 2020-05-16 20:43:13
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
 '''
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSplashScreen
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSplashScreen, QWidget, QFileDialog
 from PyQt5 import QtCore
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtGui
 from Ui_Serial_MainWindow import Ui_MainWindow
 #add(your program's name)  use :pyuic5 button.ui -o button.py to create.
@@ -22,8 +22,9 @@ from Serial_core import *
 from File_loader import *
 from HexFormat import *
 from graph import *
-
-
+from setFont import *
+from download import MyFtp
+import time
 
 class receiveTimer():
     def __init__(self):
@@ -32,12 +33,18 @@ class receiveTimer():
     def operate(self):
         global ser, window
         if ser.Is_receive:
-            if data.showSend == 1:
+            if data.showSend == 0:
                 if data.showHex:
                     window.receiveBox.setPlainText(ser.HexShow())
                     window.graphReceiveBox.setPlainText(ser.HexShow())
                 else:
                     Msg = ser.receive_data
+                    if data.file.Load_data('limitMsgLen'):
+                        msgLen = len(Msg)
+                        limitLen = data.file.Load_data('MsgLen')
+                        if msgLen > limitLen:
+                            ser.receive_data = ser.receive_data[-limitLen:]
+                            Msg = ser.receive_data
                     window.receiveBox.setPlainText(Msg)
                     window.graphReceiveBox.setPlainText(Msg)
                 cursor = window.receiveBox.textCursor()
@@ -71,7 +78,6 @@ class autoSendTimer():
         self.timer.start(time) #设置计时间隔并启动
     def stop(self):
         self.timer.stop()
-
 
 class openPortThread(QtCore.QThread):
     def __init__(self):
@@ -109,6 +115,70 @@ class openPortThread(QtCore.QThread):
         self.start()
         self.exec_()
 
+class downloadThread(QtCore.QThread):
+    prograssBar_S = QtCore.pyqtSignal(int)    #更新进度条信号
+    downloadDone_S = QtCore.pyqtSignal()
+    downloadFalse_S = QtCore.pyqtSignal()
+    def __init__(self):
+        super(downloadThread, self).__init__()
+
+    def run(self):
+        #print('串口调试器' + data.version + '.exe')
+        if self.ftp.downloadFile('串口调试器' + data.version + '.exe', self.prograssBar_S, data) == True:
+            self.downloadDone_S.emit()
+        else:
+            self.Msg_S.emit('新版本下载错误')
+        self.ftp.close()
+        #self.quit()
+    
+    #进度条槽函数
+    def downloadDoneMsg(self):
+        window.updateButton.setText('下载成功')
+        toMessageBox('新版本已下载')
+        if QMessageBox.question(MainWindow, '提示', '下载完成, 是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+            os.startfile('.')
+    
+    def downloadFalse(self):
+        toMessageBox('文件下载失败')
+        window.updateButton.setText('检测更新')
+        QMessageBox.warning(MainWindow, '警告', '文件下载失败!')
+
+    def openStart(self):
+        self.ftp = MyFtp()    #创建ftp连接
+        self.prograssBar_S.connect(window.progressBar.setValue)
+        self.downloadDone_S.connect(self.downloadDoneMsg)
+        self.downloadFalse_S.connect(self.downloadFalse)
+        window.progressBar.setValue(0)
+        window.updateButton.setText('下载中')
+        self.start()                        #开启下载线程
+        self.exec_()
+
+class findUpdate(QtCore.QThread):
+    def __init__(self):
+        super(findUpdate, self).__init__()
+
+    def run(self):
+        try:
+            global data
+            data.version = False
+            toMessageBox('正在查找新版本')
+            ftp = MyFtp()
+            version = ftp.downloadversion(window.versionLabel.text(), data)
+            if version == None:
+                toMessageBox('未发现新版本')
+                window.updateButton.setText('检测更新')
+            else:
+                toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
+                window.updateButton.setText('下载新版本')
+            ftp.close()
+        except Exception as e:
+            print('检测更新错误', e)
+        self.quit()
+
+    def openStart(self):
+        window.updateButton.setText('正在与服务器通讯')
+        self.start()
+
 class autoConnectThread(QtCore.QThread):
     def __init__(self):
         super(autoConnectThread, self).__init__()
@@ -116,7 +186,9 @@ class autoConnectThread(QtCore.QThread):
     def run(self):
         global ser, data, receiveT
         connectState(2)
-        ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut, sleep_time=data.sleep_time)
+        ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+                     sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
+                        
         def auto():
             global ser
             window.messageBox.setText('正在自动连接' + data.autoTarget)
@@ -167,7 +239,6 @@ class autoConnectThread(QtCore.QThread):
     def openStart(self):
         self.start()
         
-
 class listPortThread(QtCore.QThread):
     def __init__(self):
         super(listPortThread, self).__init__()
@@ -361,7 +432,8 @@ class callBack():
             QMessageBox.warning(MainWindow, '警告', '串口打开中...')
         else:
             #将数据载入ser
-            ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut, sleep_time=data.sleep_time)
+            ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+                     sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
             connectState(2)
             t = openPortThread()
             t.exit()
@@ -420,7 +492,8 @@ class callBack():
                 if QMessageBox.warning(MainWindow, '警告', '接收信息为空, 是否继续保存?',QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                     megfile = open(data.path + '\\' + name, 'w')
                     megfile.write(Msg)
-                    QMessageBox.information(MainWindow, '提示', name + '\n保存成功!')
+                    if QMessageBox.question(MainWindow, '提示', data.path + name + '\n保存成功!' + '\n是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                        Back.openPath_()
                     toMessageBox('保存成功')
                     megfile.close()
             else:
@@ -568,8 +641,14 @@ class callBack():
     def limitLenSpinBox_(self, value):
         data.limitLen = value
         data.file.Save_data('limitLen', data.limitLen)
-        if data.limit == True:
-            graph.changeLimit(limit = data.limitLen)
+        data.limit = 0
+        window.limitCheckBox.setChecked(0)
+    
+    def DTR_CheckBox_(self, value):
+        data.file.Save_data('DTR', value)
+
+    def RTS_CheckBox_(self, value):
+        data.file.Save_data('RTS', value)
     
     def stopShowButton_(self):
         if data.showCurve == 1:
@@ -588,14 +667,88 @@ class callBack():
     def saveDataButton_(self):
         name = graph.outputGraph(path = data.path)
         if name != False:
-            QMessageBox.information(MainWindow, '提示', '图片保存为' + name)
+            if QMessageBox.question(MainWindow, '提示', '图片保存为' + name + '\n是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                Back.openPath_()
         else:
             QMessageBox.warning(MainWindow, '警告', '保存失败')
     
+    def fontComboBox_(self, value):
+        data.file.Save_data('font', value)
+        fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
+
+    def formSpinBox_(self, value):
+        data.file.Save_data('fontSize', value)
+        fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
+
+    def msgLencheckBox_(self, value):
+        data.file.Save_data('limitMsgLen', value)
+        print(data.file.Load_data('limitMsgLen'))
+    
+    def msgLenSpinBox_(self, value):
+        data.file.Save_data('MsgLen', value)
+
+    def PathButton_(self):
+        data.path = QFileDialog.getExistingDirectory()
+        data.file.Save_data('path', data.path)
+        window.pathLabel.setText(data.path)
+
+    def openPath_(self):
+        os.startfile(data.path)
+
+
     def cleanMessageButton_(self):
         window.sendCountLabel.setText('--')
         window.receiveCountLabel.setText('--')
         toMessageBox('')
+    
+    def updateButton_(self):
+        if data.version == None:
+            if QMessageBox.question(MainWindow, '警告', '这将会花费一定时间, 是否继续?', QMessageBox.Yes,QMessageBox.No) == QMessageBox.Yes:
+                window.updateButton.setText('正在查找新版本')
+                toMessageBox('正在查找新版本')
+                ftp = MyFtp()
+                version = ftp.downloadversion(window.versionLabel.text(), data)
+                if version == None:
+                    toMessageBox('未发现新版本')
+                    window.updateButton.setText('未发现新版本')
+                else:
+                    toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
+                    window.updateButton.setText('下载新版本')
+                ftp.close()
+        elif data.version == False:
+            QMessageBox.warning(MainWindow, '警告', '正在与服务器通讯')
+        else:
+            download = downloadThread()
+            download.openStart()
+            '''
+            window.updateButton.setText('下载新版本中')
+            window.progressBar.setValue(0)
+            ftp = MyFtp()
+            print('串口调试器' + data.version + '.exe')
+            ftp.downloadFile('串口调试器0.512.1.exe')
+            ftp.close()
+            '''
+
+    def antialiasCheckBox_(self, value):
+        data.file.Save_data('antialias', value)
+        QMessageBox.information(MainWindow, '提示', '重启后生效')
+    
+    def mousePosBox_(self, value):
+        data.file.Save_data('mousePos', value)
+        graph.showPos = value
+
+    def pointShowBox_(self, value):
+        data.file.Save_data('pointShow', value)
+        QMessageBox.information(MainWindow, '提示', '重启后生效')
+
+    def showXYBox_(self, value):
+        data.file.Save_data('showXY', value)
+        QMessageBox.information(MainWindow, '提示', '重启后生效')
+    
+    def gridBox_(self, value):
+        data.file.Save_data('showGrid', value)
+        QMessageBox.information(MainWindow, '提示', '重启后生效')
+
 
 def colorSelect():
     color = ''
@@ -660,13 +813,14 @@ class dataInit():
         self.limit = self.file.Load_data('limit')
         self.curveColor = '红色'
         self.showCurve = 1
-        self.showSend = 1
+        self.showSend = 0
         self.target = None
         self.portname = None
         self.opening = 0
         self.searching = 0
         self.sendCount = 0
         self.receiveCount = 0
+        self.version = None
         
         #将数据载入控件
         window.byteSizeComboBox.setCurrentText(self.parameter[0])
@@ -706,44 +860,44 @@ class dataInit():
         window.sendTimeSpinBox.setValue(self.setTimeSend)
         window.limitLenSpinBox.setValue(self.limitLen)
         window.sendTimeCheckBox.setChecked(0)
+        '''
+        #信号与槽连接
+        '''
+        #主页-串口设置区
         window.bpscomboBox.currentTextChanged.connect(Back.bpscomboBox_)
         window.byteSizeComboBox.currentTextChanged.connect(Back.byteSizeComboBox_)
         window.parityComboBox.currentTextChanged.connect(Back.parityComboBox_)
         window.stopBitsComboBox.currentTextChanged.connect(Back.stopBitsComboBox_)
         window.openSerialButton.clicked.connect(Back.openSerialButton_)
+        #主页-接收区
         window.showHexCheckBox.clicked.connect(Back.showHexCheckBox_)
-        window.sendHexCheckBox.clicked.connect(Back.sendHexCheckBox_)
         window.cutFrameCheckBox.clicked.connect(Back.cutFrameCheckBox_)
         window.cutTimeSpinBox.valueChanged.connect(Back.cutTimeSpinBox_)
         window.saveMsgPushButton.clicked.connect(Back.saveMsgPushButton_)
-        window.cleanMsgPushButton.clicked.connect(Back.cleanMsgPushButton_)
-        window.cleanGraphMsgButton.clicked.connect(Back.cleanMessageButton_)
-        window.sendButton.clicked.connect(Back.sendButton_)
-        window.cleanMessageButton.clicked.connect(Back.cleanMessageButton_)
-        window.autoConnectCheckBox.clicked.connect(Back.autoConnectCheckBox_)
-        window.autoConnectLineEdit.textChanged.connect(Back.autoConnectLineEdit_)
-        window.searchSerialButton.clicked.connect(Back.searchSerialButton_)
-        window.serialListWidget.itemClicked.connect(Back.serialListWidget_)
         window.showSendCheckBox.clicked.connect(Back.showSendCheckBox_)
+        window.cleanMsgPushButton.clicked.connect(Back.cleanMsgPushButton_)
+        #主页-发送区
+        window.sendHexCheckBox.clicked.connect(Back.sendHexCheckBox_)
         window.lineChangeComboBox.currentIndexChanged.connect(Back.lineChangeComboBox_)
-        window.fastConnectRadioButton.clicked.connect(Back.fastConnectRadioButton_)
+        window.DTR_CheckBox.clicked.connect(Back.DTR_CheckBox_)
+        window.RTS_CheckBox.clicked.connect(Back.RTS_CheckBox_)
         window.enterSendCheckBox.clicked.connect(Back.enterSendCheckBox_)
         window.sendTimeSpinBox.valueChanged.connect(Back.sendTimeSpinBox_)
         window.sendTimeCheckBox.clicked.connect(Back.sendTimeCheckBox_)
+        #主页-高级设置区
+        window.autoConnectCheckBox.clicked.connect(Back.autoConnectCheckBox_)
+        window.autoConnectLineEdit.textChanged.connect(Back.autoConnectLineEdit_)
+        window.fastConnectRadioButton.clicked.connect(Back.fastConnectRadioButton_)
+        window.customCheckBox.clicked.connect(Back.customCheckBox_)
+        #主页-搜索串口以及侧边信息显示
+        window.searchSerialButton.clicked.connect(Back.searchSerialButton_)
+        window.serialListWidget.itemClicked.connect(Back.serialListWidget_)
+        window.cleanMessageButton.clicked.connect(Back.cleanMessageButton_)
+        #主页-发送接收区
         global Text
         Text = currentHex(window.sendBox, Back)
+        window.sendButton.clicked.connect(Back.sendButton_)
         window.sendBox.textChanged.connect(Text.default)
-        window.customCheckBox.clicked.connect(Back.customCheckBox_)
-        window.graphSendButton.clicked.connect(Back.graphSendButton_)
-        window.graphColorComboBox.currentTextChanged.connect(Back.graphColorComboBox_)
-        window.backColorComboBox.currentTextChanged.connect(Back.backColorComboBox_)
-        window.graphColorName.textChanged.connect(Back.graphColorName_)
-        window.addGraphColor.clicked.connect(Back.addGraphColor_)
-        window.clearDataButton.clicked.connect(Back.clearDataButton_)
-        window.limitCheckBox.clicked.connect(Back.limitCheckBox_)
-        window.limitLenSpinBox.valueChanged.connect(Back.limitLenSpinBox_)
-        window.stopShowButton.clicked.connect(Back.stopShowButton_)
-        window.saveDataButton.clicked.connect(Back.saveDataButton_)
         window.sendButton1_1.clicked.connect(Back.sendButton1_1)
         window.sendButton1_2.clicked.connect(Back.sendButton1_2)
         window.sendButton1_3.clicked.connect(Back.sendButton1_3)
@@ -753,6 +907,46 @@ class dataInit():
         window.sendButton1_7.clicked.connect(Back.sendButton1_7)
         window.sendButton1_8.clicked.connect(Back.sendButton1_8)
         window.sendButton1_9.clicked.connect(Back.sendButton1_9)
+        #绘图
+        window.cleanGraphMsgButton.clicked.connect(Back.cleanMessageButton_)
+        window.graphSendButton.clicked.connect(Back.graphSendButton_)
+        window.graphColorComboBox.currentTextChanged.connect(Back.graphColorComboBox_)
+        window.backColorComboBox.currentTextChanged.connect(Back.backColorComboBox_)
+        window.graphColorName.textChanged.connect(Back.graphColorName_)
+        window.clearDataButton.clicked.connect(Back.clearDataButton_)
+        window.addGraphColor.clicked.connect(Back.addGraphColor_)
+        window.limitCheckBox.clicked.connect(Back.limitCheckBox_)
+        window.limitLenSpinBox.valueChanged.connect(Back.limitLenSpinBox_)
+        window.stopShowButton.clicked.connect(Back.stopShowButton_)
+        window.saveDataButton.clicked.connect(Back.saveDataButton_)
+        #设置-全局设置
+        window.fontComboBox.setCurrentText(self.file.Load_data('font'))
+        window.fontComboBox.currentTextChanged.connect(Back.fontComboBox_)
+        window.formSpinBox.setValue(self.file.Load_data('fontSize'))
+        window.formSpinBox.valueChanged.connect(Back.formSpinBox_)
+        window.msgLencheckBox.setChecked(self.file.Load_data('limitMsgLen'))
+        window.msgLencheckBox.clicked.connect(Back.msgLencheckBox_)
+        window.msgLenSpinBox.setValue(self.file.Load_data('MsgLen'))
+        window.msgLenSpinBox.valueChanged.connect(Back.msgLenSpinBox_)
+        path = self.path.replace('.', os.getcwd())
+        window.pathLabel.setText(path)
+        window.PathButton.clicked.connect(Back.PathButton_)
+        window.openPathButton.clicked.connect(Back.openPath_)
+        #设置-绘图设置
+        window.antialiasCheckBox.setChecked(self.file.Load_data('antialias'))
+        window.antialiasCheckBox.clicked.connect(Back.antialiasCheckBox_)
+        window.mousePosBox.setChecked(self.file.Load_data('mousePos'))
+        window.mousePosBox.clicked.connect(Back.mousePosBox_)
+        window.pointShowBox.setChecked(self.file.Load_data('pointShow'))
+        window.pointShowBox.clicked.connect(Back.pointShowBox_)
+        window.showXYBox.setChecked(self.file.Load_data('showXY'))
+        window.showXYBox.clicked.connect(Back.showXYBox_)
+        window.gridBox.setChecked(self.file.Load_data('showGrid'))
+        window.gridBox.clicked.connect(Back.gridBox_)
+        window.openFileButton.clicked.connect(Back.openPath_)
+        #设置-自动更新
+        window.updateButton.clicked.connect(Back.updateButton_)
+
 
         
         
@@ -783,7 +977,14 @@ def connectState(state):
 
 class QMainWindowClose(QMainWindow):
     def closeEvent(self, event):
-        os._exit(0)
+        if data.version == False:
+            if QMessageBox.question(MainWindow, '警告', '文件正在下载, 是否关闭?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                event.accept()
+                os._exit(0)
+            else:
+                event.ignore()
+        else:
+            os._exit(0)
 
 if __name__ == '__main__':
     global data, Back, MainWindow, window, _translate, ser
@@ -798,15 +999,26 @@ if __name__ == '__main__':
     Back = callBack()
     _translate = QtCore.QCoreApplication.translate
     MainWindow = QMainWindowClose()
-    
     window = Ui_MainWindow()
     window.setupUi(MainWindow)
     data = dataInit(window)
     receiveT = receiveTimer()
     toMessageBox("启动完成")
+    fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
+    updateTime = data.file.Load_data('update')
+    if updateTime == 1:
+        data.file.Save_data('update', 6)
+        update = findUpdate()
+        update.exit()
+        update.openStart()
+    elif updateTime > 1:
+        data.file.Save_data('update', updateTime-1)
+
     autoConnect = autoConnectThread()
     autoConnect.openStart()
-    graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect())
+    graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
+                        showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), 
+                        showPos=data.file.Load_data('mousePos'), showPoint=data.file.Load_data('pointShow'))
     receiveT.timer.start(1)
     MainWindow.show()
     splash.close()

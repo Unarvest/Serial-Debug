@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-05-07 10:46:24
-@LastEditTime: 2020-05-12 17:30:54
+@LastEditTime: 2020-05-16 16:48:51
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Calculation\graph.py
@@ -17,7 +17,7 @@ from datetime import datetime
 
 
 class MyGraphWindow():
-    def __init__(self, window, BackColor = 'f0f0f4'):
+    def __init__(self, window, BackColor='f0f0f4', antialias=True, showXY=True, showGrid=True, showPos=True, showPoint=True):
         self.window = window
         self.grid = True
         self.logMode = False
@@ -30,7 +30,11 @@ class MyGraphWindow():
         self.Pencolor = ''
         self.outFlag = ';'
         self.newWin = None
-        self.antialias = True
+        self.antialias = antialias
+        self.showXY = showXY
+        self.showGrid = antialias
+        self.showPos = showPos
+        self.showPoint = showPoint
         self.limit = 200
         self.set_graph_ui(BackColor)  # 设置绘图窗口
 
@@ -78,19 +82,21 @@ class MyGraphWindow():
         self.graph = self.graphWin.addPlot(title="数据可视化")   # 添加第一个绘图窗口
 
         #self.graph.addItem(self.smallShowLabel)
-        self.graph.setLabel('left', text='value')               # y轴设置函数
-        self.graph.setLabel('bottom', text='Times')             # x轴设置函数
-        self.graph.showGrid(x = self.grid, y = self.grid)       # 栅格设置函数
+        #self.graph.setLabel('left', text='value')               # y轴设置函数
+        if self.showXY:
+            self.graph.setLabel('bottom', text='[ - , - ]')             # x轴设置函数
+        if self.showGrid:
+            self.graph.showGrid(x = self.grid, y = self.grid)       # 栅格设置函数
         self.graph.setLogMode(x = self.logMode, y = self.logMode)  
         self.Legend = self.graph.addLegend()                    # 添加图例
         
         self.vLine = InfiniteLine(angle=90, movable=False)
         self.hLine = InfiniteLine(angle=0, movable=False)
-        
 
         self.graph.addItem(self.vLine, ignoreBounds=True)
         self.graph.addItem(self.hLine, ignoreBounds=True)
-        self.proxy = SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+        if self.showXY | self.showPos:
+            self.proxy = SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
     
     def outputGraph(self, path = '.'):
         try:
@@ -112,7 +118,10 @@ class MyGraphWindow():
             if canadd:
                 self.allPen[color] = self.pen(name, color, data, Times, limit = self.limit)
                 self.Pencolor += color
-                self.allPen[color].plot = self.graph.plot(pen=color, name=name,symbolBrush=(141,75,187))
+                if self.showPoint:
+                    self.allPen[color].plot = self.graph.plot(pen=color, name=name,symbolBrush=(141,75,187))
+                else:
+                    self.allPen[color].plot = self.graph.plot(pen=color, name=name)
                 for color_ in self.Pencolor:
                     if color_ != color:
                         print(1)
@@ -287,13 +296,10 @@ class MyGraphWindow():
             mousePoint = vb.mapSceneToView(pos)
             pos_x = int(mousePoint.x())
             pos_y = int(mousePoint.y())
-            #if 0 < pos_x < self.Times:
-            #    if self.Min <= pos_y < self.Max: 
-                    #self.smallShowLabel.setHtml("<p style='color:white'>Value：{0}</p><p style='color:white'>Times：{1}".format(pos_y,self.data[pos_x]))
-                    #self.smallShowLabel.setPos(mousePoint.x(),mousePoint.y())
-                    ##print("#")
-            #        pass
-            self.vLine.setPos(mousePoint.x())
-            self.hLine.setPos(mousePoint.y())
+            if self.showXY:
+                self.graph.setLabel('bottom', text='[ {:} , {:} ]'.format(pos_x, pos_y))
+            if self.showPos:
+                self.vLine.setPos(mousePoint.x())
+                self.hLine.setPos(mousePoint.y())
 
 

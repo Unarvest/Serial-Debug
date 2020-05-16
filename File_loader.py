@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-20 23:02:46
-@LastEditTime: 2020-05-10 00:49:08
+@LastEditTime: 2020-05-16 20:03:16
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\File_loader.py
@@ -36,12 +36,26 @@ default_data = {
     'limit': 1,
     'limitLen': 200,
     'lineChange': '\r\n',
-    'path': '.',
+    'path': '.\\data',
     'autoTarget': 'CH340',
     'fastConnect': None,
     'curveColor': '红色',
     'curveName': 'Curve',
-    'backColor': '铅白'
+    'backColor': '铅白',
+    'findUpdate': 0,
+    'font': '等线',
+    'fontSize': 12,
+    'limitMsgLen': 0,
+    'MsgLen': 5000,
+    'antialias': 1,
+    'mousePos': 1,
+    'pointShow': 1,
+    'showXY': 1,
+    'showGrid': 1,
+    'update': 1,
+    'deleteVersion': 0,
+    'DTR': 0,
+    'RTS': 0
 }
 
 class Config():
@@ -58,6 +72,7 @@ class Config():
                 config = open(".\config.json", 'w')
                 json.dump(data, config)
                 config.close()
+                self.data[name] = value
         except Exception as e:
             print('错误', e)
 
@@ -84,6 +99,7 @@ class Config():
         try:
             return self.data[name]
         except KeyError:
+            print('key error: ', name)
             return default_data[name]
             try:
                 self.Save_data(name, default_data[name])
