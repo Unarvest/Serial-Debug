@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-16 21:51:01
+@LastEditTime: 2020-05-17 23:31:53
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -22,7 +22,7 @@ from Serial_core import *
 from File_loader import *
 from HexFormat import *
 from graph import *
-from setFont import *
+from setData import *
 from download import MyFtp
 import time
 
@@ -117,6 +117,7 @@ class openPortThread(QtCore.QThread):
 
 class downloadThread(QtCore.QThread):
     prograssBar_S = QtCore.pyqtSignal(int)    #更新进度条信号
+    speed_S = QtCore.pyqtSignal(str)
     downloadDone_S = QtCore.pyqtSignal()
     downloadFalse_S = QtCore.pyqtSignal()
     def __init__(self):
@@ -124,11 +125,16 @@ class downloadThread(QtCore.QThread):
 
     def run(self):
         #print('串口调试器' + data.version + '.exe')
-        if self.ftp.downloadFile('串口调试器' + data.version + '.exe', self.prograssBar_S, data) == True:
-            self.downloadDone_S.emit()
-        else:
-            self.Msg_S.emit('新版本下载错误')
-        self.ftp.close()
+        self.ftp = MyFtp()    #创建ftp连接
+        data.file.Save_data('newVersion', None)
+        try:
+            if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
+                self.downloadDone_S.emit()
+            else:
+                self.downloadFalse_S.emit()
+            self.ftp.close()
+        except Exception:
+            self.downloadFalse_S.emit()
         #self.quit()
     
     #进度条槽函数
@@ -144,16 +150,19 @@ class downloadThread(QtCore.QThread):
         QMessageBox.warning(MainWindow, '警告', '文件下载失败!')
 
     def openStart(self):
-        self.ftp = MyFtp()    #创建ftp连接
         self.prograssBar_S.connect(window.progressBar.setValue)
+        self.speed_S.connect(window.updateButton.setText)
         self.downloadDone_S.connect(self.downloadDoneMsg)
         self.downloadFalse_S.connect(self.downloadFalse)
         window.progressBar.setValue(0)
         window.updateButton.setText('下载中')
+        toMessageBox('正在后台下载新版本')
         self.start()                        #开启下载线程
         self.exec_()
 
 class findUpdate(QtCore.QThread):
+    download_S = QtCore.pyqtSignal()
+
     def __init__(self):
         super(findUpdate, self).__init__()
 
@@ -170,6 +179,8 @@ class findUpdate(QtCore.QThread):
             else:
                 toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
                 window.updateButton.setText('下载新版本')
+                data.file.Save_data('newVersion', version)
+                self.download_S.emit()
             ftp.close()
         except Exception as e:
             print('检测更新错误', e)
@@ -177,7 +188,13 @@ class findUpdate(QtCore.QThread):
 
     def openStart(self):
         window.updateButton.setText('正在与服务器通讯')
+        self.download_S.connect(self.askdownload)
         self.start()
+    
+    def askdownload(self):
+        if QMessageBox.question(MainWindow, '发现新版本', '是否现在下载?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+            download = downloadThread()
+            download.openStart()
 
 class autoConnectThread(QtCore.QThread):
     def __init__(self):
@@ -186,7 +203,7 @@ class autoConnectThread(QtCore.QThread):
     def run(self):
         global ser, data, receiveT
         connectState(2)
-        ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+        ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,decode=data.file.Load_data('decode'),
                      sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
                         
         def auto():
@@ -282,13 +299,14 @@ class callBack():
             data.sendCount += res
             window.sendCountLabel.setText(str(data.sendCount))
             if res != None:
-                if data.lineChange == None:
-                    pass
-                elif data.sendHex == 0:
-                    Msg += data.lineChange
-                Msg = Msg.replace('\n', '\\n')
-                Msg = Msg.replace('\r', '\\r')
-                toMessageBox("[{}]-> ".format(res) + Msg)
+                if res != False:
+                    if data.lineChange == None:
+                        pass
+                    elif data.sendHex == 0:
+                        Msg += data.lineChange
+                    Msg = Msg.replace('\n', '\\n')
+                    Msg = Msg.replace('\r', '\\r')
+                    toMessageBox("[{}]-> ".format(res) + Msg)
             else:
                 toMessageBox("None!")
         else:
@@ -308,13 +326,14 @@ class callBack():
                 data.sendCount += res
                 window.sendCountLabel.setText(str(data.sendCount))
             if res != None:
-                if data.lineChange == None:
-                    pass
-                elif data.sendHex == 0:
-                    Msg += data.lineChange
-                Msg = Msg.replace('\n', '\\n')
-                Msg = Msg.replace('\r', '\\r')
-                toMessageBox("[{}]->".format(res) + Msg)
+                if res != False:
+                    if data.lineChange == None:
+                        pass
+                    elif data.sendHex == 0:
+                        Msg += data.lineChange
+                    Msg = Msg.replace('\n', '\\n')
+                    Msg = Msg.replace('\r', '\\r')
+                    toMessageBox("[{}]->".format(res) + Msg)
             else:
                 toMessageBox("None!")
         else:
@@ -376,13 +395,14 @@ class callBack():
                 data.sendCount += res
                 window.sendCountLabel.setText(str(data.sendCount))
             if res != None:
-                if data.lineChange == None:
-                    pass
-                elif data.sendHex == 0:
-                    Msg += data.lineChange
-                Msg = Msg.replace('\n', '\\n')
-                Msg = Msg.replace('\r', '\\r')
-                toMessageBox("[{}]-> ".format(res) + Msg)
+                if res != False:
+                    if data.lineChange == None:
+                        pass
+                    elif data.sendHex == 0:
+                        Msg += data.lineChange
+                    Msg = Msg.replace('\n', '\\n')
+                    Msg = Msg.replace('\r', '\\r')
+                    toMessageBox("[{}]-> ".format(res) + Msg)
             else:
                 toMessageBox("None!")
         else:
@@ -432,7 +452,7 @@ class callBack():
             QMessageBox.warning(MainWindow, '警告', '串口打开中...')
         else:
             #将数据载入ser
-            ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+            ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,decode=data.file.Load_data('decode'),
                      sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
             connectState(2)
             t = openPortThread()
@@ -679,6 +699,11 @@ class callBack():
     def formSpinBox_(self, value):
         data.file.Save_data('fontSize', value)
         fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
+    
+    def decodeComboBox_(self, value):
+        global ser
+        data.file.Save_data('decode', value)
+        ser.decode = value
 
     def msgLencheckBox_(self, value):
         data.file.Save_data('limitMsgLen', value)
@@ -714,6 +739,7 @@ class callBack():
                 else:
                     toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
                     window.updateButton.setText('下载新版本')
+                    data.file.Save_data('newVersion', version)
                 ftp.close()
         elif data.version == False:
             QMessageBox.warning(MainWindow, '警告', '正在与服务器通讯')
@@ -790,8 +816,10 @@ def backColorSelect():
     return color
 
 
-class dataInit():
-    def __init__(self, window):
+class dataInit(QtCore.QObject):
+    msg_S = QtCore.pyqtSignal(str)
+    def __init__(self, window, Back):
+        super(dataInit, self).__init__()
         #载入数据
         self.file = Config()
         self.bps = self.file.Load_data('bps')
@@ -924,6 +952,8 @@ class dataInit():
         window.fontComboBox.currentTextChanged.connect(Back.fontComboBox_)
         window.formSpinBox.setValue(self.file.Load_data('fontSize'))
         window.formSpinBox.valueChanged.connect(Back.formSpinBox_)
+        window.decodeComboBox.setCurrentText(self.file.Load_data('decode'))
+        window.decodeComboBox.currentTextChanged.connect(Back.decodeComboBox_)
         window.msgLencheckBox.setChecked(self.file.Load_data('limitMsgLen'))
         window.msgLencheckBox.clicked.connect(Back.msgLencheckBox_)
         window.msgLenSpinBox.setValue(self.file.Load_data('MsgLen'))
@@ -943,7 +973,6 @@ class dataInit():
         window.showXYBox.clicked.connect(Back.showXYBox_)
         window.gridBox.setChecked(self.file.Load_data('showGrid'))
         window.gridBox.clicked.connect(Back.gridBox_)
-        window.openFileButton.clicked.connect(Back.openPath_)
         #设置-自动更新
         window.updateButton.clicked.connect(Back.updateButton_)
 
@@ -991,29 +1020,32 @@ if __name__ == '__main__':
     global receiveT, graph
     app = QApplication(sys.argv)
 
-
     # 创建启动界面，支持png透明图片
     splash = QSplashScreen(QtGui.QPixmap(":/Mainico/Start2.png"))
     splash.show()
-
     Back = callBack()
     _translate = QtCore.QCoreApplication.translate
     MainWindow = QMainWindowClose()
     window = Ui_MainWindow()
     window.setupUi(MainWindow)
-    data = dataInit(window)
+    data = dataInit(window, Back)
+    data.msg_S.connect(toMessageBox)
     receiveT = receiveTimer()
+    
     toMessageBox("启动完成")
     fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
-    updateTime = data.file.Load_data('update')
-    if updateTime == 1:
-        data.file.Save_data('update', 6)
-        update = findUpdate()
-        update.exit()
-        update.openStart()
-    elif updateTime > 1:
-        data.file.Save_data('update', updateTime-1)
-
+    if data.file.Load_data('newVersion') == None:
+        updateTime = data.file.Load_data('update')
+        if updateTime == 1:
+            data.file.Save_data('update', 6)
+            update = findUpdate()
+            update.exit()
+            update.openStart()
+        elif updateTime > 1:
+            data.file.Save_data('update', updateTime-1)
+    else:
+        data.version = data.file.Load_data('newVersion')
+        window.updateButton.setText('下载新版本')
     autoConnect = autoConnectThread()
     autoConnect.openStart()
     graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 

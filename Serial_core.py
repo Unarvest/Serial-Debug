@@ -1,7 +1,7 @@
 '''
 @Author: Yuzhi Tu
 @Date: 2020-04-15 14:57:23
-@LastEditTime: 2020-05-09 12:31:38
+@LastEditTime: 2020-05-17 16:48:19
 @LastEditors: Please set LastEditors
 @Description: 与串口相关函数
 @FilePath: \Serial_debugger\Serial_core.py
@@ -28,8 +28,9 @@ from re import search
 @param sleep_time: 接收缓冲间隔 默认为0.1s
 '''
 class Myserial(Thread):
-    def __init__(self, target = 'CH340', bps = 115200, parameter = "8N1", timeout = 1, Is_cut = True, sleep_time = 0.1, DTR=0, RTS=0):
+    def __init__(self, msg, target='CH340', bps=115200, parameter="8N1", timeout=1, Is_cut=True, sleep_time=0.1,decode='UTF-8', DTR=0, RTS=0):
         Thread.__init__(self)
+        self.msg = msg
         self.target = target
         self.bps = 115200
         self.parameter = parameter
@@ -44,6 +45,7 @@ class Myserial(Thread):
         self.Is_receive = 0
         self.receiveCount = 0
         self.data = ''
+        self.decode = decode
         self.DTR = DTR
         self.RTS = RTS
         #self.receive_data = self.receive_data.encode('utf-8')
@@ -70,11 +72,11 @@ class Myserial(Thread):
                     cut = True      #设为未断帧
                     self.receiveCount += size
                     try:
-                        self.data = self.ser.read(size).decode("UTF-8")
+                        self.data = self.ser.read(size).decode(self.decode, 'replace')
                         print(self.data)
                         self.receive_data +=self.data       #将数据保存至接收缓存
                     except Exception as e:
-                        print("编码错误, 原因: ",e)
+                        self.msg.emit("编码错误" + str(e))
                     self.Is_receive = 1
                     
                 elif self.Is_cut & cut:
@@ -137,7 +139,6 @@ class Myserial(Thread):
     def Send_data(self, msg = "", lineChange = '\r\n'):
         try:
             if self.Is_open == True:
-                
                 msg += lineChange
                 result=self.ser.write(msg.encode())#写数据
                 t = time()
@@ -147,8 +148,8 @@ class Myserial(Thread):
                 print("串口未开启")
                 return None
         except Exception as e:
-            print("---异常---：",e)
-            return None
+            self.msg.emit("---异常---:" + str(e))
+            return False
 
     def Send_hex(self, msg = ""):
         try:

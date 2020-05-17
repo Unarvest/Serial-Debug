@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-05-07 10:46:24
-@LastEditTime: 2020-05-16 16:48:51
+@LastEditTime: 2020-05-17 23:34:47
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Calculation\graph.py
@@ -209,47 +209,11 @@ class MyGraphWindow():
         if self.newWin == None:
             self.newWin = MyGraphWindow(window)
     
-    def moveData(self, color):
-        if self.newWin != None:
-            pos = search(color, self.Pencolor)
-            if pos != None:
-                data = self.allPen[color].data
-                Times = self.allPen[color].Times
-                self.newWin.addPen(color = color, name = self.allPen[color].name, data = data, Times = Times)
-                self.newWin.allPen[color].countTime = self.allPen[color].countTime
-                print(self.newWin.allPen[color].data)
-                self.newWin.allPen[color].plot.setData(x = Times, y = data, pen = color)
-                self.hindPen(color)
-                pos = pos.span()
-                self.Pencolor = self.Pencolor[:pos[0]] + self.Pencolor[pos[1]:]
-                return True
-            else:
-                print('颜色无效')
-                return False
-        else:
-            print('无窗口')
-            return None
+    def inputData(self, color):
+        pass
 
-    def moveBack(self, color):
-        if self.newWin != None:
-            pos = search(color, self.newWin.Pencolor)
-            if pos != None:
-                self.addPen(color = color, name = self.newWin.allPen[color].name)
-                self.allPen[color].countTime = self.newWin.allPen[color].countTime
-                data = self.newWin.allPen[color].data
-                Times = self.newWin.allPen[color].Times
-                print(self.newWin.allPen[color].data)
-                self.allPen[color].plot.setData(x = Times, y = data, pen = color)
-                self.newWin.hindPen(color)
-                pos = pos.span()
-                self.newWin.Pencolor = self.newWin.Pencolor[:pos[0]] + self.newWin.Pencolor[pos[1]:]
-                return True
-            else:
-                print('颜色无效')
-                return False
-        else:
-            print('无窗口')
-            return None
+    def outputData(self, color):
+        pass
 
     def formatData(self, data = '', time = 1):
         self.Times += time

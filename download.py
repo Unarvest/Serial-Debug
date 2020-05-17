@@ -1,6 +1,7 @@
 from ftplib import FTP  # 引入ftp模块
 from re import search
 import os
+from time import time
 
 class MyFtp():
     ftp = FTP()
@@ -62,7 +63,7 @@ class MyFtp():
             data.version = None
             return None
         
-    def downloadFile(self, filename, signal, data, localpath = './', remotepath = '/pub'):
+    def downloadFile(self, filename, signal, speed, data, localpath = './', remotepath = '/pub'):
         data.version = False
         self.login('','')
         buffer_size = 10240  # 默认是8192
@@ -80,8 +81,7 @@ class MyFtp():
             conn = ftp.transfercmd('RETR {0}'.format(ftp_file_path), lsize)
 
             f = open(filename, "wb")
-            i = 0
-            print(i)
+            start = time()-0.0000001
             while True:
                 data2 = conn.recv(buffer_size)
                 if not data2:
@@ -89,6 +89,7 @@ class MyFtp():
                 f.write(data2)
                 cmpsize += len(data2)
                 signal.emit(int(cmpsize/remote_file_size*100)) 
+                speed.emit('下载中 {:.2f}kb/s'.format(cmpsize/1000/(time()-start)))
                 print(cmpsize, remote_file_size)
             data.version = None
             return True
