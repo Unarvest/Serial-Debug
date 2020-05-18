@@ -57,7 +57,8 @@ default_data = {
     'deleteVersion': 0,
     'DTR': 0,
     'RTS': 0,
-    'decode': 'UTF-8'
+    'decode': 'UTF-8',
+    'showLegend': 1
 }
 
 class Config():

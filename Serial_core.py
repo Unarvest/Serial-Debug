@@ -73,7 +73,7 @@ class Myserial(Thread):
                     self.receiveCount += size
                     try:
                         self.data = self.ser.read(size).decode(self.decode, 'replace')
-                        print(self.data)
+                        #print(self.data)
                         self.receive_data +=self.data       #将数据保存至接收缓存
                     except Exception as e:
                         self.msg.emit("编码错误" + str(e))

@@ -17,7 +17,7 @@ from datetime import datetime
 
 
 class MyGraphWindow():
-    def __init__(self, window, BackColor='f0f0f4', antialias=True, showXY=True, showGrid=True, showPos=True, showPoint=True):
+    def __init__(self, window, BackColor='f0f0f4', antialias=True, showXY=True, showGrid=True, showPos=True, showPoint=True, showLegend=True):
         self.window = window
         self.grid = True
         self.logMode = False
@@ -36,6 +36,7 @@ class MyGraphWindow():
         self.showPos = showPos
         self.showPoint = showPoint
         self.limit = 200
+        self.showLegend = showLegend
         self.set_graph_ui(BackColor)  # 设置绘图窗口
 
     class pen():
@@ -88,7 +89,8 @@ class MyGraphWindow():
         if self.showGrid:
             self.graph.showGrid(x = self.grid, y = self.grid)       # 栅格设置函数
         self.graph.setLogMode(x = self.logMode, y = self.logMode)  
-        self.Legend = self.graph.addLegend()                    # 添加图例
+        if self.showLegend:
+            self.Legend = self.graph.addLegend()                    # 添加图例
         
         self.vLine = InfiniteLine(angle=90, movable=False)
         self.hLine = InfiniteLine(angle=0, movable=False)
@@ -97,6 +99,7 @@ class MyGraphWindow():
         self.graph.addItem(self.hLine, ignoreBounds=True)
         if self.showXY | self.showPos:
             self.proxy = SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+        
     
     def outputGraph(self, path = '.'):
         try:

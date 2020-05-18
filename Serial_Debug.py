@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-17 23:31:53
+@LastEditTime: 2020-05-18 23:02:17
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -184,6 +184,9 @@ class findUpdate(QtCore.QThread):
             ftp.close()
         except Exception as e:
             print('检测更新错误', e)
+            window.updateButton.setText('检测更新')
+            toMessageBox('检测更新错误')
+            data.version = None
         self.quit()
 
     def openStart(self):
@@ -203,8 +206,9 @@ class autoConnectThread(QtCore.QThread):
     def run(self):
         global ser, data, receiveT
         connectState(2)
-        ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,decode=data.file.Load_data('decode'),
-                     sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
+        ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+                        decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
+                         RTS=data.file.Load_data('RTS'))
                         
         def auto():
             global ser
@@ -452,8 +456,9 @@ class callBack():
             QMessageBox.warning(MainWindow, '警告', '串口打开中...')
         else:
             #将数据载入ser
-            ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,decode=data.file.Load_data('decode'),
-                     sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'), RTS=data.file.Load_data('RTS'))
+            ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+                        decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
+                         RTS=data.file.Load_data('RTS'))
             connectState(2)
             t = openPortThread()
             t.exit()
@@ -712,6 +717,7 @@ class callBack():
     def msgLenSpinBox_(self, value):
         data.file.Save_data('MsgLen', value)
 
+
     def PathButton_(self):
         data.path = QFileDialog.getExistingDirectory()
         data.file.Save_data('path', data.path)
@@ -759,9 +765,15 @@ class callBack():
         data.file.Save_data('antialias', value)
         QMessageBox.information(MainWindow, '提示', '重启后生效')
     
+    def showLegend_(self, value):
+        data.file.Save_data('showLegend', value)
+        QMessageBox.information(MainWindow, '提示', '重启后生效')
+
     def mousePosBox_(self, value):
         data.file.Save_data('mousePos', value)
         graph.showPos = value
+        graph.vLine.setPos(0)
+        graph.hLine.setPos(0)
 
     def pointShowBox_(self, value):
         data.file.Save_data('pointShow', value)
@@ -973,15 +985,11 @@ class dataInit(QtCore.QObject):
         window.showXYBox.clicked.connect(Back.showXYBox_)
         window.gridBox.setChecked(self.file.Load_data('showGrid'))
         window.gridBox.clicked.connect(Back.gridBox_)
+        window.showLegend.setChecked(self.file.Load_data('showLegend'))
+        window.showLegend.clicked.connect(Back.showLegend_)
         #设置-自动更新
         window.updateButton.clicked.connect(Back.updateButton_)
 
-
-        
-        
-        
-        
-        
 def toMessageBox(msg):
     window.messageBox.setText(msg)
     window.graphMsgBox.setText(msg)
@@ -1004,11 +1012,14 @@ def connectState(state):
         window.connectStateRadioButton.setChecked(1)
         data.opening = 1
 
+
+
 class QMainWindowClose(QMainWindow):
     def closeEvent(self, event):
         if data.version == False:
             if QMessageBox.question(MainWindow, '警告', '文件正在下载, 是否关闭?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                 event.accept()
+                data.file.Save_data('update', 1)
                 os._exit(0)
             else:
                 event.ignore()
@@ -1028,6 +1039,9 @@ if __name__ == '__main__':
     MainWindow = QMainWindowClose()
     window = Ui_MainWindow()
     window.setupUi(MainWindow)
+
+    splitterSet(window)
+    
     data = dataInit(window, Back)
     data.msg_S.connect(toMessageBox)
     receiveT = receiveTimer()
@@ -1037,7 +1051,7 @@ if __name__ == '__main__':
     if data.file.Load_data('newVersion') == None:
         updateTime = data.file.Load_data('update')
         if updateTime == 1:
-            data.file.Save_data('update', 6)
+            data.file.Save_data('update', 4)
             update = findUpdate()
             update.exit()
             update.openStart()
@@ -1048,8 +1062,8 @@ if __name__ == '__main__':
         window.updateButton.setText('下载新版本')
     autoConnect = autoConnectThread()
     autoConnect.openStart()
-    graph = MyGraphWindow(window.graph_Layout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
-                        showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), 
+    graph = MyGraphWindow(window.graphLayout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
+                        showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), showLegend=data.file.Load_data('showLegend'),
                         showPos=data.file.Load_data('mousePos'), showPoint=data.file.Load_data('pointShow'))
     receiveT.timer.start(1)
     MainWindow.show()

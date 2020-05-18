@@ -1,4 +1,6 @@
 from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QSplitter
+from PyQt5 import QtCore
 
 def fontSet(window, font = '等线', fontsize = 13):
     #主页-串口设置区
@@ -114,15 +116,32 @@ def fontSet(window, font = '等线', fontsize = 13):
     window.showXYBox.setFont(ft)
     window.gridBox.setFont(ft)
     window.gridBox.setFont(ft)
+    window.showLegend.setFont(ft)
     #设置-自动更新
     window.label_8.setFont(ft)
     window.versionLabel.setFont(ft)
     window.updateButton.setFont(ft)
     window.updateCheckBox.setFont(ft)
-    window.deleteCheckBox.setFont(ft)
     #提示
     window.toolBox_2.setFont(ft)
     window.textBrowser.setFont(ft)
     window.textBrowser_2.setFont(ft)
-    window.label_5.setFont(ft)
     window.plainTextEdit.setFont(ft)
+
+def splitterSet(window):
+    splitterRight = QSplitter(QtCore.Qt.Vertical)
+    splitterRight.addWidget(window.sendFrame)
+    splitterRight.addWidget(window.toolBox)
+    splitterRight.setSizes([500,100])
+    window.verticalLayout_16.addWidget(splitterRight)
+
+    mainSplitterH = QSplitter(QtCore.Qt.Horizontal)
+    mainSplitterH.addWidget(window.mainLeftFrame)
+    mainSplitterH.addWidget(window.mainRightFrame)
+    mainSplitterH.setSizes([100,200])
+    window.horizontalLayout_2.addWidget(mainSplitterH)
+
+    graphSplitterV = QSplitter(QtCore.Qt.Vertical)
+    graphSplitterV.addWidget(window.graphFrame)
+    graphSplitterV.addWidget(window.graphSetFrame)
+    window.verticalLayout_20.addWidget(graphSplitterV)
