@@ -36,7 +36,7 @@ default_data = {
     'limit': 1,
     'limitLen': 200,
     'lineChange': '\r\n',
-    'path': '.\\data',
+    'path': os.getcwd() + '\\data',
     'autoTarget': 'CH340',
     'fastConnect': None,
     'curveColor': '红色',

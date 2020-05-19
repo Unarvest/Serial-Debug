@@ -5,7 +5,7 @@ from time import time
 
 class MyFtp():
     ftp = FTP()
-    def __init__(self, host = 'unarvest.top',port=21):
+    def __init__(self, host = '',port=21):
         super(MyFtp, self).__init__()
         self.state = None
         try:
@@ -30,23 +30,23 @@ class MyFtp():
 
         self.ftp.cwd(remotepath)   # 要登录的ftp目录
         self.ftp.nlst()  # 获取目录下的文件
-        file_handle = open(filename,"wb")   # 以写模式在本地打开文件
+        file_handle = open('./download/' + filename,"wb")   # 以写模式在本地打开文件
         self.ftp.retrbinary('RETR %s' % os.path.basename(filename),file_handle.write,blocksize=1024)  # 下载ftp文件
         file_handle.close()
-        version = open('version', 'r')
+        version = open('./download/version', 'r')
         versionOnline = version.read()[:-1]
         print(versionOnline)
         version.close()
         try:
             if lastVersion[0] == versionOnline[0]:
-                if int(lastVersion[2:-2]) == int(versionOnline[2:-2]):
-                    if lastVersion[-1] >= versionOnline[-1]:
+                if int(lastVersion[2:-2]) == int(versionOnline[2:-6]):
+                    if lastVersion[-1] >= versionOnline[-5]:
                         data.version = None
                         return None
                     else:
                         data.version = versionOnline
                         return versionOnline
-                elif int(lastVersion[2:-2]) > int(versionOnline[2:-2]):
+                elif int(lastVersion[2:-2]) > int(versionOnline[2:-6]):
                     data.version = None
                     return None
                 else:
@@ -63,7 +63,7 @@ class MyFtp():
             data.version = None
             return None
         
-    def downloadFile(self, filename, signal, speed, data, localpath = './', remotepath = '/pub'):
+    def downloadFile(self, filename, signal, speed, data, remotepath = '/pub'):
         data.version = False
         self.login('','')
         buffer_size = 10240  # 默认是8192
@@ -75,13 +75,13 @@ class MyFtp():
             remote_file_size = ftp.size(remotepath+'/'+filename)  # 文件总大小
             print('remote filesize [{}]'.format(remote_file_size))
             ftp.voidcmd('TYPE I')
-            file_handle = open(filename,"wb").write   # 以写模式在本地打开文件
+            file_handle = open('./download/' + filename,"wb").write   # 以写模式在本地打开文件
             cmpsize = 0  # 下载文件初始大小
             lsize = 0
             conn = ftp.transfercmd('RETR {0}'.format(ftp_file_path), lsize)
 
             f = open(filename, "wb")
-            start = time()-0.0000001
+            start = time()-0.001
             while True:
                 data2 = conn.recv(buffer_size)
                 if not data2:

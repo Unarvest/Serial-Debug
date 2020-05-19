@@ -1,30 +1,20 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-19 17:06:01
+@LastEditTime: 2020-05-20 00:42:20
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
 '''
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QSplashScreen, QWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMainWindow
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtGui
-from Ui_Serial_MainWindow import Ui_MainWindow
-#add(your program's name)  use :pyuic5 button.ui -o button.py to create.
-from datetime import datetime
-from re import search
-import icoPack_rc
 
-from Serial_core import *
-from File_loader import *
-from HexFormat import *
-from graph import *
-from setData import *
-from download import MyFtp
-import time
+#add(your program's name)  use :pyuic5 button.ui -o button.py to create.
+
 
 class receiveTimer():
     def __init__(self):
@@ -127,9 +117,13 @@ class downloadThread(QtCore.QThread):
         #print('串口调试器' + data.version + '.exe')
         self.ftp = MyFtp()    #创建ftp连接
         data.file.Save_data('newVersion', None)
-        print(data.version)
         try:
-            if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
+            os.mkdir('download')
+            open('./download/解压后覆盖安装', 'w').close()
+        except FileExistsError:
+            pass
+        try:
+            if self.ftp.downloadFile(filename='串口调试器'+data.version, signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
                 self.downloadDone_S.emit()
             else:
                 self.downloadFalse_S.emit()
@@ -144,7 +138,10 @@ class downloadThread(QtCore.QThread):
         window.updateButton.setText('下载成功')
         toMessageBox('新版本已下载')
         if QMessageBox.question(MainWindow, '提示', '下载完成, 是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-            os.startfile('.')
+            try:
+                os.startfile(os.getcwd() + '/download')
+            except Exception:
+                QMessageBox.warning(MainWindow, '提示', '无法打开指定文件夹')
     
     def downloadFalse(self):
         toMessageBox('文件下载失败')
@@ -172,6 +169,11 @@ class findUpdate(QtCore.QThread):
     def run(self):
         global data
         try:
+            try:
+                os.mkdir('download')
+                open('./download/解压后覆盖安装', 'w').close()
+            except FileExistsError:
+                pass
             ftp = MyFtp()
             version = ftp.downloadversion(window.versionLabel.text(), data)
             if version == None:
@@ -202,7 +204,6 @@ class findUpdate(QtCore.QThread):
             data.version = None
         else:
             data.version = version
-            print(':', data.version)
             toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
             window.updateButton.setText('下载新版本')
             data.file.Save_data('newVersion', version)
@@ -554,7 +555,7 @@ class callBack():
                 if QMessageBox.warning(MainWindow, '警告', '接收信息为空, 是否继续保存?',QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                     megfile = open(data.path + '\\' + name, 'w')
                     megfile.write(Msg)
-                    if QMessageBox.question(MainWindow, '提示', data.path + name + '\n保存成功!' + '\n是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                    if QMessageBox.question(MainWindow, '提示', name + '\n保存成功!' + '\n是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                         Back.openPath_()
                     toMessageBox('保存成功')
                     megfile.close()
@@ -780,14 +781,6 @@ class callBack():
         else:
             download = downloadThread()
             download.openStart()
-            '''
-            window.updateButton.setText('下载新版本中')
-            window.progressBar.setValue(0)
-            ftp = MyFtp()
-            print('串口调试器' + data.version + '.exe')
-            ftp.downloadFile('串口调试器0.512.1.exe')
-            ftp.close()
-            '''
 
     def antialiasCheckBox_(self, value):
         data.file.Save_data('antialias', value)
@@ -937,6 +930,7 @@ class dataInit(QtCore.QObject):
         window.parityComboBox.currentTextChanged.connect(Back.parityComboBox_)
         window.stopBitsComboBox.currentTextChanged.connect(Back.stopBitsComboBox_)
         window.openSerialButton.clicked.connect(Back.openSerialButton_)
+        window.askShotCutButton.clicked.connect(askshotcut)
         #主页-接收区
         window.showHexCheckBox.clicked.connect(Back.showHexCheckBox_)
         window.cutFrameCheckBox.clicked.connect(Back.cutFrameCheckBox_)
@@ -1040,7 +1034,19 @@ def connectState(state):
         window.connectStateRadioButton.setChecked(1)
         data.opening = 1
 
-
+def askshotcut():
+    import winshell
+    try:
+        target = os.getcwd()+"\串口调试器.exe"
+        title = '串口调试器'
+        s = os.path.basename(target)  
+        fname = os.path.splitext(s)[0]  
+        print(fname)
+        winshell.CreateShortcut(Path = winshell.desktop() + "\\" + fname + '.lnk', Target = target, Icon=(target, 0), Description=title, StartIn = os.getcwd())   
+        QMessageBox.information(MainWindow, '提示', '快捷方式已创建')
+    except Exception as e:
+        print('错误: ', e)
+        QMessageBox.warning(MainWindow, '警告', '快捷方式创建失败')
 
 class QMainWindowClose(QMainWindow):
     def closeEvent(self, event):
@@ -1055,13 +1061,25 @@ class QMainWindowClose(QMainWindow):
             os._exit(0)
 
 if __name__ == '__main__':
-    global data, Back, MainWindow, window, _translate, ser
-    global receiveT, graph
     app = QApplication(sys.argv)
-
     # 创建启动界面，支持png透明图片
+    import icoPack_rc
     splash = QSplashScreen(QtGui.QPixmap(":/Mainico/Start2.png"))
     splash.show()
+    from PyQt5.QtWidgets import QMessageBox, QWidget, QFileDialog
+    from Ui_Serial_MainWindow import Ui_MainWindow
+    from datetime import datetime
+    from re import search
+    from Serial_core import *
+    from File_loader import *
+    from HexFormat import *
+    from graph import *
+    from setData import *
+    from download import MyFtp
+    import time
+    global data, Back, MainWindow, window, _translate, ser
+    global receiveT, graph
+
     Back = callBack()
     _translate = QtCore.QCoreApplication.translate
     MainWindow = QMainWindowClose()

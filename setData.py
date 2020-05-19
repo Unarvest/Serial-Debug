@@ -47,7 +47,7 @@ def fontSet(window, font = '等线', fontsize = 13):
     window.showLabel2.setFont(ft)
     window.sendCountLabel.setFont(ft)
     window.receiveCountLabel.setFont(ft)
-    window.linkLabel.setFont(ft)
+    window.askShotCutButton.setFont(ft)
     #主页-发送接收区
     window.toolBox.setFont(ft)
     window.sendButton.setFont(ft)
