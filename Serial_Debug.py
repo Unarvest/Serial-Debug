@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-19 13:38:03
+@LastEditTime: 2020-05-19 17:06:01
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -127,13 +127,15 @@ class downloadThread(QtCore.QThread):
         #print('串口调试器' + data.version + '.exe')
         self.ftp = MyFtp()    #创建ftp连接
         data.file.Save_data('newVersion', None)
+        print(data.version)
         try:
             if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
                 self.downloadDone_S.emit()
             else:
                 self.downloadFalse_S.emit()
             self.ftp.close()
-        except Exception:
+        except Exception as e:
+            print(e)
             self.downloadFalse_S.emit()
         #self.quit()
     
@@ -148,6 +150,7 @@ class downloadThread(QtCore.QThread):
         toMessageBox('文件下载失败')
         window.updateButton.setText('检测更新')
         QMessageBox.warning(MainWindow, '警告', '文件下载失败!')
+        data.version = None
 
     def openStart(self):
         self.prograssBar_S.connect(window.progressBar.setValue)
@@ -161,26 +164,20 @@ class downloadThread(QtCore.QThread):
         self.exec_()
 
 class findUpdate(QtCore.QThread):
-    download_S = QtCore.pyqtSignal()
+    download_S = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(findUpdate, self).__init__()
 
     def run(self):
+        global data
         try:
-            global data
-            data.version = False
-            toMessageBox('正在查找新版本')
             ftp = MyFtp()
             version = ftp.downloadversion(window.versionLabel.text(), data)
             if version == None:
-                toMessageBox('未发现新版本')
-                window.updateButton.setText('检测更新')
+                self.download_S.emit('None')
             else:
-                toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
-                window.updateButton.setText('下载新版本')
-                data.file.Save_data('newVersion', version)
-                self.download_S.emit()
+                self.download_S.emit(version)
             ftp.close()
         except Exception as e:
             print('检测更新错误', e)
@@ -190,14 +187,28 @@ class findUpdate(QtCore.QThread):
         self.quit()
 
     def openStart(self):
+        global data
+        data.version = False
         window.updateButton.setText('正在与服务器通讯')
         self.download_S.connect(self.askdownload)
+        toMessageBox('正在查找新版本')
         self.start()
     
-    def askdownload(self):
-        if QMessageBox.question(MainWindow, '发现新版本', '是否现在下载?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-            download = downloadThread()
-            download.openStart()
+    def askdownload(self, version):
+        global data
+        if version == 'None':
+            toMessageBox('未发现新版本')
+            window.updateButton.setText('未发现新版本')
+            data.version = None
+        else:
+            data.version = version
+            print(':', data.version)
+            toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
+            window.updateButton.setText('下载新版本')
+            data.file.Save_data('newVersion', version)
+            if QMessageBox.question(MainWindow, '发现新版本', '是否现在下载?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                download = downloadThread()
+                download.openStart()
 
 class autoConnectThread(QtCore.QThread):
     def __init__(self):
@@ -761,18 +772,9 @@ class callBack():
     def updateButton_(self):
         if data.version == None:
             if QMessageBox.question(MainWindow, '警告', '这将会花费一定时间, 是否继续?', QMessageBox.Yes,QMessageBox.No) == QMessageBox.Yes:
-                window.updateButton.setText('正在查找新版本')
-                toMessageBox('正在查找新版本')
-                ftp = MyFtp()
-                version = ftp.downloadversion(window.versionLabel.text(), data)
-                if version == None:
-                    toMessageBox('未发现新版本')
-                    window.updateButton.setText('未发现新版本')
-                else:
-                    toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
-                    window.updateButton.setText('下载新版本')
-                    data.file.Save_data('newVersion', version)
-                ftp.close()
+                update2 = findUpdate()
+                update2.openStart()
+                update2.exec_()
         elif data.version == False:
             QMessageBox.warning(MainWindow, '警告', '正在与服务器通讯')
         else:
@@ -1079,7 +1081,6 @@ if __name__ == '__main__':
         if updateTime == 1:
             data.file.Save_data('update', 4)
             update = findUpdate()
-            update.exit()
             update.openStart()
         elif updateTime > 1:
             data.file.Save_data('update', updateTime-1)

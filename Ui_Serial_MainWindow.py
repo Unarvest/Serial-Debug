@@ -1899,7 +1899,7 @@ class Ui_MainWindow(object):
         self.searchSerialButton.setToolTip(_translate("MainWindow", "列出可用串口"))
         self.searchSerialButton.setText(_translate("MainWindow", "搜索串口"))
         self.linkLabel.setToolTip(_translate("MainWindow", "测试版本"))
-        self.linkLabel.setText(_translate("MainWindow", "<html><head/><body><p><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#000000;\">Alpha 0.519.1</span></a></p></body></html>"))
+        self.linkLabel.setText(_translate("MainWindow", "<html><head/><body><p><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#000000;\">Alpha 0.519.2</span></a></p></body></html>"))
         self.showLabel1.setText(_translate("MainWindow", "发送"))
         self.sendCountLabel.setText(_translate("MainWindow", "--"))
         self.showLabel2.setText(_translate("MainWindow", "接收"))
@@ -1984,7 +1984,7 @@ class Ui_MainWindow(object):
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
         self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.519.1"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.519.2"))
         self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github][</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.updateButton.setToolTip(_translate("MainWindow", "检测更新"))
@@ -2213,11 +2213,15 @@ class Ui_MainWindow(object):
 "-优化提示信息\n"
 "-优化主页框架\n"
 "--------------------------\n"
-"Alpha 0.518.1\n"
+"Alpha 0.519.1\n"
 "-修复发送HEX模式下, 非法十六进制字符造成的闪退\n"
 "-修复搜索串口报错\n"
 "-优化发送HEX功能\n"
 "-添加发送框十六进制互转功能\n"
+"--------------------------\n"
+"Alpha 0.519.2\n"
+"-优化检测更新\n"
+"-修复下载错误\n"
 "--------------------------\n"
 "自定义数据包暂不可用"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("MainWindow", "更新"))
