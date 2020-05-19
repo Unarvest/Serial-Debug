@@ -261,10 +261,10 @@ class MyGraphWindow():
         pos = evt[0]  ## using signal proxy turns original arguments into a tuple
         if self.graph.sceneBoundingRect().contains(pos):
             mousePoint = vb.mapSceneToView(pos)
-            pos_x = int(mousePoint.x())
-            pos_y = int(mousePoint.y())
+            pos_x = mousePoint.x()
+            pos_y = mousePoint.y()
             if self.showXY:
-                self.graph.setLabel('bottom', text='[ {:} , {:} ]'.format(pos_x, pos_y))
+                self.graph.setLabel('bottom', text='[ {:.2f} , {:.2f} ]'.format(pos_x, pos_y))
             if self.showPos:
                 self.vLine.setPos(mousePoint.x())
                 self.hLine.setPos(mousePoint.y())

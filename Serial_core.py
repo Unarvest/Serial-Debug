@@ -218,6 +218,8 @@ class Myserial(Thread):
         if LLen == 0:
             line = self.receive_data
             LLen = len(self.receive_data) - 1
+        else:
+            LLen -= 1
         for i in range(LLen + 1):
             hvol = ord(line[i])
             hhex = '%02x'%hvol

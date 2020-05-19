@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import QMessageBox
 @param string{str}: 十六进制字符串
 @return: 格式化后的字符串
 '''
-def formatHex(string = ''):
+def formatHex(string = '', msg = None):
     string = string.replace(' ', '')
     if len(string) % 2:
         string = string + '0'
@@ -35,7 +35,8 @@ class currentHex():
     @param canChange:  避免内部改变递归, 用于内部判断
     @param lastMessageLen:  上一次总字符长度, 用于内部判断
     '''
-    def __init__(self, sendBox, Back):
+    def __init__(self, sendBox, Back, msg):
+        self.msg = msg
         self.sendBox = sendBox
         self.Back = Back
         self.charLen = 0
@@ -68,8 +69,8 @@ class currentHex():
                         message += ' '
                         self.lastMessageLen += 1
                 else:
+                    self.msg('输入错误字符:' + message[-1])
                     message = message[:-1]
-                    print("输入错误字符")
             else :
                 if self.charLen == 0:
                     self.charLen = 2
@@ -83,6 +84,7 @@ class currentHex():
             cursor = self.sendBox.textCursor()
             cursor.movePosition(QtGui.QTextCursor.End)
             self.sendBox.setTextCursor(cursor)
+
     def default(self):
         if self.enterSend:
             message = self.sendBox.toPlainText()

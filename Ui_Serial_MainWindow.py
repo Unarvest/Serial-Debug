@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1290, 874)
+        MainWindow.resize(1290, 866)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(8)
@@ -89,7 +89,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 376, 698))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 376, 690))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -842,7 +842,7 @@ class Ui_MainWindow(object):
         self.toolBox.setMidLineWidth(0)
         self.toolBox.setObjectName("toolBox")
         self.page_3 = QtWidgets.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 851, 216))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 851, 174))
         self.page_3.setObjectName("page_3")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.page_3)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -850,7 +850,7 @@ class Ui_MainWindow(object):
         self.sendLayout.setSpacing(5)
         self.sendLayout.setObjectName("sendLayout")
         self.sendBox = QtWidgets.QPlainTextEdit(self.page_3)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sendBox.sizePolicy().hasHeightForWidth())
@@ -868,12 +868,12 @@ class Ui_MainWindow(object):
         self.sendBox.setObjectName("sendBox")
         self.sendLayout.addWidget(self.sendBox)
         self.sendButton = QtWidgets.QPushButton(self.page_3)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sendButton.sizePolicy().hasHeightForWidth())
         self.sendButton.setSizePolicy(sizePolicy)
-        self.sendButton.setMinimumSize(QtCore.QSize(100, 0))
+        self.sendButton.setMinimumSize(QtCore.QSize(100, 150))
         font = QtGui.QFont()
         font.setFamily("等线")
         font.setPointSize(13)
@@ -1722,9 +1722,11 @@ class Ui_MainWindow(object):
         self.updateButton.setIconSize(QtCore.QSize(32, 32))
         self.updateButton.setObjectName("updateButton")
         self.gridLayout_11.addWidget(self.updateButton, 2, 0, 1, 2)
+        spacerItem11 = QtWidgets.QSpacerItem(270, 17, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_11.addItem(spacerItem11, 2, 6, 1, 1)
         self.verticalLayout_14.addWidget(self.frame_2)
-        spacerItem11 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_14.addItem(spacerItem11)
+        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_14.addItem(spacerItem12)
         icon48 = QtGui.QIcon()
         icon48.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-103826.ico"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.tabWidget.addTab(self.tab_2, icon48, "")
@@ -1783,7 +1785,7 @@ class Ui_MainWindow(object):
         icon51.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-103820.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolBox_2.addItem(self.page_6, icon51, "")
         self.page_5 = QtWidgets.QWidget()
-        self.page_5.setGeometry(QtCore.QRect(0, 0, 1240, 631))
+        self.page_5.setGeometry(QtCore.QRect(0, 0, 1240, 623))
         self.page_5.setObjectName("page_5")
         self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.page_5)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
@@ -1897,7 +1899,7 @@ class Ui_MainWindow(object):
         self.searchSerialButton.setToolTip(_translate("MainWindow", "列出可用串口"))
         self.searchSerialButton.setText(_translate("MainWindow", "搜索串口"))
         self.linkLabel.setToolTip(_translate("MainWindow", "测试版本"))
-        self.linkLabel.setText(_translate("MainWindow", "<html><head/><body><p><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#000000;\">测试版本</span></a></p></body></html>"))
+        self.linkLabel.setText(_translate("MainWindow", "<html><head/><body><p><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#000000;\">Alpha 0.519.1</span></a></p></body></html>"))
         self.showLabel1.setText(_translate("MainWindow", "发送"))
         self.sendCountLabel.setText(_translate("MainWindow", "--"))
         self.showLabel2.setText(_translate("MainWindow", "接收"))
@@ -1982,9 +1984,9 @@ class Ui_MainWindow(object):
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
         self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.518.1"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.519.1"))
         self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
-        self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>进入网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github]</span></a><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" color:#0000ff;\"/></a><a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">[</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
+        self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github][</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.updateButton.setToolTip(_translate("MainWindow", "检测更新"))
         self.updateButton.setText(_translate("MainWindow", "检测更新"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "设置"))
@@ -2211,8 +2213,13 @@ class Ui_MainWindow(object):
 "-优化提示信息\n"
 "-优化主页框架\n"
 "--------------------------\n"
-"自定义数据包暂不可用\n"
-"绘图功能待完善..."))
+"Alpha 0.518.1\n"
+"-修复发送HEX模式下, 非法十六进制字符造成的闪退\n"
+"-修复搜索串口报错\n"
+"-优化发送HEX功能\n"
+"-添加发送框十六进制互转功能\n"
+"--------------------------\n"
+"自定义数据包暂不可用"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("MainWindow", "更新"))
         self.label.setText(_translate("MainWindow", "测试版本 发现bug请联系2286107961@qq.com"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "提示"))

@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-18 23:02:17
+@LastEditTime: 2020-05-19 13:38:03
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -261,25 +261,33 @@ class autoConnectThread(QtCore.QThread):
         self.start()
         
 class listPortThread(QtCore.QThread):
+    search_S = QtCore.pyqtSignal(str)
     def __init__(self):
         super(listPortThread, self).__init__()
 
     def run(self):
-        toMessageBox('搜索串口中')
-        data.searching = 1
-        window.searchSerialButton.setText('搜索中')
+        self.search_S.emit('True')
         port_list = list(serial.tools.list_ports.comports())
         window.serialListWidget.clear()
         for i in range(len(port_list)):
             window.serialListWidget.addItem(str(port_list[i]))
-        data.searching = 0
-        window.searchSerialButton.setText('搜索串口')
-        toMessageBox('找到' + str(len(port_list)) + '个设备')
+        self.search_S.emit(str(len(port_list)))
         self.quit()
 
     def openStart(self):
+        self.search_S.connect(self.search)
         self.start()
         self.exec_()
+    
+    def search(self, value):
+        if value == 'True':
+            toMessageBox('搜索串口中')
+            data.searching = 1
+            window.searchSerialButton.setText('搜索中')
+        else:
+            data.searching = 0
+            window.searchSerialButton.setText('搜索串口')
+            toMessageBox('找到' + value + '个设备')
         
 class callBack():
     def sendButton_(self):
@@ -287,22 +295,28 @@ class callBack():
         if ser.Is_open:
             Msg = window.sendBox.toPlainText()
             if data.sendHex:
-                if data.lineChange == '\r\n':
-                    Msg += '0A 0D'
-                elif data.lineChange == '\r':
-                    Msg += '0A'
-                elif data.lineChange == '\n':
-                    Msg += '0D'
-                res = ser.Send_hex(formatHex(Msg))
+                try:
+                    res = ser.Send_hex(formatHex(Msg, toMessageBox))
+                    if len(Msg.replace(' ', '')) % 2:
+                        Msg += '0 '
+                    if data.lineChange == '\r\n':
+                        Msg += '0A 0D'
+                    elif data.lineChange == '\r':
+                        Msg += '0A'
+                    elif data.lineChange == '\n':
+                        Msg += '0D'
+                except Exception:
+                    res = False
+                    toMessageBox('发送十六进制字符失败, 可能包含非法字符')
             else:
                 if Text.enterSend:
                     if Msg[-1] == '\n':
                         Msg = Msg[:-1]
                     window.sendBox.setPlainText(Msg)
                 res = ser.Send_data(Msg, lineChange=data.lineChange)
-            data.sendCount += res
-            window.sendCountLabel.setText(str(data.sendCount))
             if res != None:
+                data.sendCount += res
+                window.sendCountLabel.setText(str(data.sendCount))
                 if res != False:
                     if data.lineChange == None:
                         pass
@@ -469,14 +483,26 @@ class callBack():
         if value == 0:
             data.sendHex = 0
             enter = Text.enterSend
-            Text = currentHex(window.sendBox, Back)
+            msg = window.sendBox.toPlainText().replace(' ', '')
+            Text = currentHex(window.sendBox, Back, toMessageBox)
             Text.enterSend = enter
             window.sendBox.textChanged.connect(Text.default)
+            if len(msg) != 0:
+                if len(msg) % 2:
+                    msg += 0
+                res = ''
+                for i in range(int(len(msg)/2)):
+                    res += chr(int(msg[i*2:i*2+2], 16))
+                window.sendBox.setPlainText(res)
         else:
             data.sendHex = 1
             enter = Text.enterSend
-            Text = currentHex(window.sendBox, Back)
+            Text = currentHex(window.sendBox, Back, toMessageBox)
             Text.enterSend = enter
+            msg = window.sendBox.toPlainText()
+            if len(msg) != 0:
+                window.sendBox.setPlainText(ser.HexShow(line = msg))
+
             window.sendBox.textChanged.connect(Text.insertBlock)
         data.file.Save_data('showHex', data.showHex)
             
@@ -935,7 +961,7 @@ class dataInit(QtCore.QObject):
         window.cleanMessageButton.clicked.connect(Back.cleanMessageButton_)
         #主页-发送接收区
         global Text
-        Text = currentHex(window.sendBox, Back)
+        Text = currentHex(window.sendBox, Back, toMessageBox)
         window.sendButton.clicked.connect(Back.sendButton_)
         window.sendBox.textChanged.connect(Text.default)
         window.sendButton1_1.clicked.connect(Back.sendButton1_1)
