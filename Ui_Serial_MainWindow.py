@@ -1753,7 +1753,7 @@ class Ui_MainWindow(object):
         self.toolBox_2.setMidLineWidth(0)
         self.toolBox_2.setObjectName("toolBox_2")
         self.page = QtWidgets.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 109, 109))
+        self.page.setGeometry(QtCore.QRect(0, 0, 1240, 623))
         self.page.setObjectName("page")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.page)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
@@ -1769,7 +1769,7 @@ class Ui_MainWindow(object):
         icon50.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-105434.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolBox_2.addItem(self.page, icon50, "")
         self.page_2 = QtWidgets.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 109, 109))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 1240, 623))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_12 = QtWidgets.QVBoxLayout(self.page_2)
         self.verticalLayout_12.setObjectName("verticalLayout_12")
@@ -1781,7 +1781,7 @@ class Ui_MainWindow(object):
         icon51.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-105434.ico"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.toolBox_2.addItem(self.page_2, icon51, "")
         self.page_6 = QtWidgets.QWidget()
-        self.page_6.setGeometry(QtCore.QRect(0, 0, 109, 109))
+        self.page_6.setGeometry(QtCore.QRect(0, 0, 1240, 623))
         self.page_6.setObjectName("page_6")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.page_6)
         self.verticalLayout_13.setObjectName("verticalLayout_13")
@@ -1830,7 +1830,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setCurrentIndex(0)
         self.toolBox.setCurrentIndex(0)
         self.toolBox.layout().setSpacing(0)
-        self.toolBox_2.setCurrentIndex(3)
+        self.toolBox_2.setCurrentIndex(0)
         self.toolBox_2.layout().setSpacing(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1991,7 +1991,7 @@ class Ui_MainWindow(object):
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
         self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.519.3"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.520.1"))
         self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github][</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.updateButton.setToolTip(_translate("MainWindow", "检测更新"))
@@ -2234,6 +2234,9 @@ class Ui_MainWindow(object):
 "Alpha 0.519.3\n"
 "-更改打包为多文件\n"
 "-添加创建快捷方式\n"
+"--------------------------\n"
+"Alpha 0.520.1\n"
+"-优化自动更新\n"
 "--------------------------\n"
 "自定义数据包暂不可用"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("MainWindow", "更新"))

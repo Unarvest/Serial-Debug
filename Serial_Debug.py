@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-20 00:42:20
+@LastEditTime: 2020-05-20 15:04:31
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -119,11 +119,11 @@ class downloadThread(QtCore.QThread):
         data.file.Save_data('newVersion', None)
         try:
             os.mkdir('download')
-            open('./download/解压后覆盖安装', 'w').close()
         except FileExistsError:
             pass
         try:
-            if self.ftp.downloadFile(filename='串口调试器'+data.version, signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
+            if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
+                print(data.version)
                 self.downloadDone_S.emit()
             else:
                 self.downloadFalse_S.emit()
@@ -136,12 +136,13 @@ class downloadThread(QtCore.QThread):
     #进度条槽函数
     def downloadDoneMsg(self):
         window.updateButton.setText('下载成功')
-        toMessageBox('新版本已下载')
+        toMessageBox('新版本保存于download文件夹')
         if QMessageBox.question(MainWindow, '提示', '下载完成, 是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
             try:
                 os.startfile(os.getcwd() + '/download')
             except Exception:
                 QMessageBox.warning(MainWindow, '提示', '无法打开指定文件夹')
+        data.version = None
     
     def downloadFalse(self):
         toMessageBox('文件下载失败')
@@ -251,7 +252,6 @@ class autoConnectThread(QtCore.QThread):
             except Exception:
                 pass
             
-        
         if data.fastConnect != None:
             toMessageBox('快速连接中')
             ser.portname = data.fastConnect
@@ -300,6 +300,7 @@ class listPortThread(QtCore.QThread):
             data.searching = 0
             window.searchSerialButton.setText('搜索串口')
             toMessageBox('找到' + value + '个设备')
+
         
 class callBack():
     def sendButton_(self):

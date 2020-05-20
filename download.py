@@ -5,7 +5,7 @@ from time import time
 
 class MyFtp():
     ftp = FTP()
-    def __init__(self, host = '',port=21):
+    def __init__(self, host = 'unarvest.top',port=21):
         super(MyFtp, self).__init__()
         self.state = None
         try:
@@ -39,14 +39,14 @@ class MyFtp():
         version.close()
         try:
             if lastVersion[0] == versionOnline[0]:
-                if int(lastVersion[2:-2]) == int(versionOnline[2:-6]):
-                    if lastVersion[-1] >= versionOnline[-5]:
+                if int(lastVersion[2:-2]) == int(versionOnline[2:-2]):
+                    if lastVersion[-1] >= versionOnline[-1]:
                         data.version = None
                         return None
                     else:
                         data.version = versionOnline
                         return versionOnline
-                elif int(lastVersion[2:-2]) > int(versionOnline[2:-6]):
+                elif int(lastVersion[2:-2]) > int(versionOnline[2:-2]):
                     data.version = None
                     return None
                 else:
@@ -75,12 +75,12 @@ class MyFtp():
             remote_file_size = ftp.size(remotepath+'/'+filename)  # 文件总大小
             print('remote filesize [{}]'.format(remote_file_size))
             ftp.voidcmd('TYPE I')
-            file_handle = open('./download/' + filename,"wb").write   # 以写模式在本地打开文件
+            #file_handle = open('./download/' + filename,"wb").write   # 以写模式在本地打开文件
             cmpsize = 0  # 下载文件初始大小
             lsize = 0
             conn = ftp.transfercmd('RETR {0}'.format(ftp_file_path), lsize)
 
-            f = open(filename, "wb")
+            f = open('./download/' + filename, "wb")
             start = time()-0.001
             while True:
                 data2 = conn.recv(buffer_size)
