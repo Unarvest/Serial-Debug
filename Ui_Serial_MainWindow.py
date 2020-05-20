@@ -1991,7 +1991,7 @@ class Ui_MainWindow(object):
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
         self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.520.1"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.520.2"))
         self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github][</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.updateButton.setToolTip(_translate("MainWindow", "检测更新"))
@@ -2237,6 +2237,12 @@ class Ui_MainWindow(object):
 "--------------------------\n"
 "Alpha 0.520.1\n"
 "-优化自动更新\n"
+"--------------------------\n"
+"Alpha 0.520.2\n"
+"-修复定时发送与回车发送冲突\n"
+"-修复路径选择为空bug\n"
+"-修复定时发送开启时断开串口报错\n"
+"-修复显示信息错误\n"
 "--------------------------\n"
 "自定义数据包暂不可用"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("MainWindow", "更新"))

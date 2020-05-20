@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-20 15:04:31
+@LastEditTime: 2020-05-20 16:16:44
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -23,7 +23,7 @@ class receiveTimer():
     def operate(self):
         global ser, window
         if ser.Is_receive:
-            if data.showSend == 0:
+            if data.showSend == 1:
                 if data.showHex:
                     window.receiveBox.setPlainText(ser.HexShow())
                     window.graphReceiveBox.setPlainText(ser.HexShow())
@@ -474,10 +474,13 @@ class callBack():
         data.file.Save_data('curveName', data.curveName)
 
     def openSerialButton_(self):
-        global ser, MainWindow, window, _translate
+        global ser, MainWindow, window, _translate, autoSend
         if ser.Is_open:
             ser.Close_port()
+            window.sendTimeCheckBox.setChecked(0)
+            Back.sendTimeCheckBox_(False)
             toMessageBox('串口已关闭')
+
             connectState(0)
         elif data.opening:
             QMessageBox.warning(MainWindow, '警告', '串口打开中...')
@@ -502,7 +505,7 @@ class callBack():
             window.sendBox.textChanged.connect(Text.default)
             if len(msg) != 0:
                 if len(msg) % 2:
-                    msg += 0
+                    msg += '0'
                 res = ''
                 for i in range(int(len(msg)/2)):
                     res += chr(int(msg[i*2:i*2+2], 16))
@@ -625,9 +628,9 @@ class callBack():
         
     def showSendCheckBox_(self, value):
         if value == 0:
-            data.showSend = 1
-        else:
             data.showSend = 0
+        else:
+            data.showSend = 1
 
     def lineChangeComboBox_(self, value):
         if value == 0:
@@ -653,12 +656,19 @@ class callBack():
                 autoSend = autoSendTimer()
                 autoSend.start(data.setTimeSend)
                 toMessageBox('开启定时发送')
+                window.enterSendCheckBox.setChecked(0)
+                window.enterSendCheckBox.setCheckable(0)
+                Text.enterSend = 0
             else:
                 QMessageBox.warning(MainWindow, '警告', '串口未开启!')
                 toMessageBox('无法开启定时发送')
                 window.sendTimeCheckBox.setChecked(0)
         else:
-            autoSend.stop()
+            try:
+                autoSend.stop()
+            except NameError:
+                pass
+            window.enterSendCheckBox.setCheckable(1)
             toMessageBox('关闭定时发送')
     
     def customCheckBox_(self, value):
@@ -758,9 +768,11 @@ class callBack():
 
 
     def PathButton_(self):
-        data.path = QFileDialog.getExistingDirectory()
-        data.file.Save_data('path', data.path)
-        window.pathLabel.setText(data.path)
+        path = QFileDialog.getExistingDirectory()
+        if path != '':
+            data.path = path
+            data.file.Save_data('path', data.path)
+            window.pathLabel.setText(data.path)
 
     def openPath_(self):
         os.startfile(data.path)
@@ -875,7 +887,7 @@ class dataInit(QtCore.QObject):
         self.limit = self.file.Load_data('limit')
         self.curveColor = '红色'
         self.showCurve = 1
-        self.showSend = 0
+        self.showSend = 1
         self.target = None
         self.portname = None
         self.opening = 0
