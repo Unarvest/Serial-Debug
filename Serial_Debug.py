@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-20 16:16:44
+@LastEditTime: 2020-05-20 23:22:47
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -720,9 +720,21 @@ class callBack():
     
     def DTR_CheckBox_(self, value):
         data.file.Save_data('DTR', value)
+        if value == True:
+            value = 1
+        else:
+            value = 0
+        if ser.Is_open:
+            ser.ser.setDTR(value)
 
     def RTS_CheckBox_(self, value):
-        data.file.Save_data('RTS', value)
+        global ser
+        if value == True:
+            value = 1
+        else:
+            value = 0
+        if ser.Is_open:
+            ser.ser.setRTS(value)
     
     def stopShowButton_(self):
         if data.showCurve == 1:

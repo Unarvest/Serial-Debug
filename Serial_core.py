@@ -1,7 +1,7 @@
 '''
 @Author: Yuzhi Tu
 @Date: 2020-04-15 14:57:23
-@LastEditTime: 2020-05-17 16:48:19
+@LastEditTime: 2020-05-20 22:48:35
 @LastEditors: Please set LastEditors
 @Description: 与串口相关函数
 @FilePath: \Serial_debugger\Serial_core.py
@@ -60,12 +60,6 @@ class Myserial(Thread):
             print ("开启线程接收数据, 来自->" + self.portname)
             while self.Is_open == True:
                 sleep(self.sleep_time)     #接收间隔
-                '''
-                loop += 1
-                if loop > 10:
-                    print("\rwaiting...", end = '')
-                    loop = 0
-                '''
                 #等待提示
                 size = self.ser.inWaiting()     #获取数据长度
                 if size:
@@ -183,9 +177,11 @@ class Myserial(Thread):
             try:
                 if portname == None:
                     portname = self.portname
-                self.ser = serial.Serial(portname, self.bps, bytesize=int(self.parameter[0]), 
+                self.ser = serial.Serial(portname, self.bps, bytesize=int(self.parameter[0]),exclusive = True, 
                                          parity=self.parameter[1], stopbits=float(self.parameter[2]), 
-                                         timeout=self.timeout, rtscts = self.RTS, dsrdtr = self.DTR)
+                                         timeout=10)
+                self.ser.setRTS(self.RTS)
+                self.ser.setDTR(self.DTR)
                 self.Is_open = True
                 self.start()
                 return True
@@ -238,7 +234,6 @@ class Myserial(Thread):
         else:
             print('长度错误')
             return None
-
 
 
 

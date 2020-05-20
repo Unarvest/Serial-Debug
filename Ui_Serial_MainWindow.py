@@ -561,7 +561,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.RTS_CheckBox.setFont(font)
         self.RTS_CheckBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.RTS_CheckBox.setCheckable(False)
+        self.RTS_CheckBox.setCheckable(True)
         self.RTS_CheckBox.setObjectName("RTS_CheckBox")
         self.horizontalLayout_4.addWidget(self.RTS_CheckBox)
         self.horizontalLayout_10.addLayout(self.horizontalLayout_4)
@@ -1769,7 +1769,7 @@ class Ui_MainWindow(object):
         icon50.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-105434.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolBox_2.addItem(self.page, icon50, "")
         self.page_2 = QtWidgets.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 1240, 623))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 109, 109))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_12 = QtWidgets.QVBoxLayout(self.page_2)
         self.verticalLayout_12.setObjectName("verticalLayout_12")
@@ -1781,7 +1781,7 @@ class Ui_MainWindow(object):
         icon51.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200511-105434.ico"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.toolBox_2.addItem(self.page_2, icon51, "")
         self.page_6 = QtWidgets.QWidget()
-        self.page_6.setGeometry(QtCore.QRect(0, 0, 1240, 623))
+        self.page_6.setGeometry(QtCore.QRect(0, 0, 109, 109))
         self.page_6.setObjectName("page_6")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.page_6)
         self.verticalLayout_13.setObjectName("verticalLayout_13")
@@ -1991,7 +1991,7 @@ class Ui_MainWindow(object):
         self.updateLabel.setText(_translate("MainWindow", "版本更新"))
         self.updateCheckBox.setToolTip(_translate("MainWindow", "自动检测更新"))
         self.updateCheckBox.setText(_translate("MainWindow", "自动检测"))
-        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.520.2"))
+        self.versionLabel.setText(_translate("MainWindow", "目前版本为 Alpha-0.520.3"))
         self.label_8.setToolTip(_translate("MainWindow", "点击打开网页"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p>网页下载 [<a href=\"https://github.com/Unarvest/Serial-Debug\"><span style=\" text-decoration: underline; color:#0000ff;\">Github][</span></a><a href=\"ftp://unarvest.top/pub/\"><span style=\" text-decoration: underline; color:#0000ff;\">备用]</span></a></p></body></html>"))
         self.updateButton.setToolTip(_translate("MainWindow", "检测更新"))
@@ -2003,7 +2003,7 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'等线\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'等线\'; font-size:12pt; font-weight:600;\">Q : 软件显示异常</span></p>\n"
 "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'等线\'; font-size:12pt;\">A : 目前软件界面编辑都是基于1920x1080分辨率，缩放比为125%， 字体异常请及时反馈</span></p>\n"
-"<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'等线\'; font-size:12pt; font-weight:600;\"><br /></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'等线\';\"><br /></p>\n"
 "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'等线\'; font-size:12pt; font-weight:600;\">Q : 我的数据保存在哪里</span></p>\n"
 "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'等线\'; font-size:12pt;\">A : 目前所有数据默认保存在根目录下，也可以自行修改Config.json文件下的&quot;path&quot;来更改保存路径。</span></p>\n"
 "<p align=\"justify\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'等线\'; font-size:12pt;\"><br /></p>\n"
@@ -2243,6 +2243,9 @@ class Ui_MainWindow(object):
 "-修复路径选择为空bug\n"
 "-修复定时发送开启时断开串口报错\n"
 "-修复显示信息错误\n"
+"--------------------------\n"
+"Alpha 0.520.3\n"
+"-修复RTS DTR异常\n"
 "--------------------------\n"
 "自定义数据包暂不可用"))
         self.toolBox_2.setItemText(self.toolBox_2.indexOf(self.page_5), _translate("MainWindow", "更新"))
