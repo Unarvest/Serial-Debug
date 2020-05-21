@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-20 23:22:47
+@LastEditTime: 2020-05-21 21:28:02
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -43,6 +43,7 @@ class receiveTimer():
                 cursor = window.graphReceiveBox.textCursor()
                 cursor.movePosition(QtGui.QTextCursor.End)
                 window.graphReceiveBox.setTextCursor(cursor)
+                
             if data.showCurve == 1:
                 graph.formatData(data = ser.data, time = 1)
             data.receiveCount += ser.receiveCount
@@ -52,6 +53,8 @@ class receiveTimer():
             if ser.Is_open == False:
                 try:
                     ser.Close_port()
+                    if ser.Is_open:                 
+                        data.file.Save_data('Cache', ser.receive_data)
                 except Exception:
                     pass
                 toMessageBox('串口断开')
@@ -172,7 +175,6 @@ class findUpdate(QtCore.QThread):
         try:
             try:
                 os.mkdir('download')
-                open('./download/解压后覆盖安装', 'w').close()
             except FileExistsError:
                 pass
             ftp = MyFtp()
@@ -222,7 +224,8 @@ class autoConnectThread(QtCore.QThread):
         ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
                         decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
                          RTS=data.file.Load_data('RTS'))
-                        
+        ser.receive_data = data.file.Load_data('Cache')
+        ser.Is_receive = 1
         def auto():
             global ser
             window.messageBox.setText('正在自动连接' + data.autoTarget)
@@ -472,11 +475,21 @@ class callBack():
     def graphColorName_(self, value):
         data.curveName = value
         data.file.Save_data('curveName', data.curveName)
+        flag = 0
+        for color in graph.Pencolor:
+            if graph.allPen[color].name == value:
+                flag = 1
+                break
+        if flag:
+            window.addGraphColor.setText('删除曲线')
+        else:
+            window.addGraphColor.setText('添加曲线')
 
     def openSerialButton_(self):
         global ser, MainWindow, window, _translate, autoSend
         if ser.Is_open:
-            ser.Close_port()
+            ser.Close_port()         
+            data.file.Save_data('Cache', ser.receive_data)
             window.sendTimeCheckBox.setChecked(0)
             Back.sendTimeCheckBox_(False)
             toMessageBox('串口已关闭')
@@ -490,6 +503,7 @@ class callBack():
                         decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
                          RTS=data.file.Load_data('RTS'))
             connectState(2)
+            ser.receive_data = data.file.Load_data('Cache')
             t = openPortThread()
             t.exit()
             t.openStart()
@@ -678,28 +692,37 @@ class callBack():
 
     def addGraphColor_(self):
         #红r, 绿g, 蓝b, 青c, 粉m, 黄y, 白w
-        color = colorSelect()
-        if search(color, graph.Pencolor) == None:
-            if data.limit == True:
-                res = graph.addPen(color = color, name = data.curveName, limit = data.limitLen)
+        if data.curveName != '':
+            color = colorSelect()
+            flag = None
+            for i in graph.Pencolor:
+                if graph.allPen[i].name == data.curveName:
+                    flag = i
+            if (search(color, graph.Pencolor) == None) & (flag == None):
+                if data.limit == True:
+                    res = graph.addPen(color = color, name = data.curveName, limit = data.limitLen)
+                else:
+                    res = graph.addPen(color = color, name = data.curveName, limit = None)
+                if res == False:
+                    QMessageBox.warning(MainWindow, '警告', '颜色已存在')
+                    window.addGraphColor.setText('添加曲线')
+                elif res == None:
+                    QMessageBox.warning(MainWindow, '警告', '标签重复')
+                    window.addGraphColor.setText('添加曲线')
+                else:
+                    Index = window.graphColorComboBox.currentIndex() + 1
+                    if Index == 8:
+                        Index = 0
+                    window.graphColorComboBox.setCurrentIndex(Index)        
+                    window.addGraphColor.setText('删除曲线')
+                
             else:
-                res = graph.addPen(color = color, name = data.curveName, limit = None)
-            if res == False:
-                QMessageBox.warning(MainWindow, '警告', '颜色已存在')
+                if flag != None:
+                    color = flag
+                graph.killPen(color)
                 window.addGraphColor.setText('添加曲线')
-            elif res == None:
-                QMessageBox.warning(MainWindow, '警告', '标签重复')
-                window.addGraphColor.setText('添加曲线')
-            else:
-                window.addGraphColor.setText('删除曲线')
-                Index = window.graphColorComboBox.currentIndex() + 1
-                if Index == 8:
-                    Index = 0
-                window.graphColorComboBox.setCurrentIndex(Index)            
-            
         else:
-            graph.killPen(color)
-            window.addGraphColor.setText('添加曲线')
+            QMessageBox.warning(MainWindow, '警告', '曲线名字不能为空')
     
     def clearDataButton_(self):
         graph.clearAll()
@@ -956,6 +979,7 @@ class dataInit(QtCore.QObject):
         window.stopBitsComboBox.currentTextChanged.connect(Back.stopBitsComboBox_)
         window.openSerialButton.clicked.connect(Back.openSerialButton_)
         window.askShotCutButton.clicked.connect(askshotcut)
+        window.connectStateRadioButton.clicked.connect(Back.openSerialButton_)
         #主页-接收区
         window.showHexCheckBox.clicked.connect(Back.showHexCheckBox_)
         window.cutFrameCheckBox.clicked.connect(Back.cutFrameCheckBox_)
@@ -1006,6 +1030,7 @@ class dataInit(QtCore.QObject):
         window.limitLenSpinBox.valueChanged.connect(Back.limitLenSpinBox_)
         window.stopShowButton.clicked.connect(Back.stopShowButton_)
         window.saveDataButton.clicked.connect(Back.saveDataButton_)
+        window.connectStateRadioButton_2.clicked.connect(Back.openSerialButton_)
         #设置-全局设置
         window.fontComboBox.setCurrentText(self.file.Load_data('font'))
         window.fontComboBox.currentTextChanged.connect(Back.fontComboBox_)
@@ -1047,16 +1072,22 @@ def connectState(state):
         window.openSerialButton.setText(_translate("MainWindow", "打开串口"))
         window.connectStateRadioButton.setChecked(0)
         window.connectStateRadioButton.setCheckable(0)
+        window.connectStateRadioButton_2.setCheckable(0)
+        window.connectStateRadioButton_2.setChecked(0)
         data.opening = 0
     elif state == 1:
         window.openSerialButton.setText(_translate("MainWindow", "关闭串口"))
         window.connectStateRadioButton.setCheckable(1)
         window.connectStateRadioButton.setChecked(1)
+        window.connectStateRadioButton_2.setCheckable(1)
+        window.connectStateRadioButton_2.setChecked(1)
         data.opening = 1
     else:
         window.openSerialButton.setText(_translate("MainWindow", "正在连接"))
         window.connectStateRadioButton.setCheckable(1)
         window.connectStateRadioButton.setChecked(1)
+        window.connectStateRadioButton_2.setCheckable(1)
+        window.connectStateRadioButton_2.setChecked(1)
         data.opening = 1
 
 def askshotcut():
@@ -1079,10 +1110,14 @@ class QMainWindowClose(QMainWindow):
             if QMessageBox.question(MainWindow, '警告', '文件正在下载, 是否关闭?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                 event.accept()
                 data.file.Save_data('update', 1)
+                if ser.Is_open:                 
+                    data.file.Save_data('Cache', ser.receive_data)
                 os._exit(0)
             else:
                 event.ignore()
         else:
+            if ser.Is_open:
+                data.file.Save_data('Cache', ser.receive_data)
             os._exit(0)
 
 if __name__ == '__main__':
@@ -1112,12 +1147,15 @@ if __name__ == '__main__':
     window.setupUi(MainWindow)
 
     splitterSet(window)
-    
     data = dataInit(window, Back)
     data.msg_S.connect(toMessageBox)
     receiveT = receiveTimer()
-    
+    Cache = data.file.Load_data('Cache')
     toMessageBox("启动完成")
+    if Cache != '':
+        toMessageBox('载入历史文件')
+        window.receiveBox.setPlainText(Cache)
+    
     fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
     if data.file.Load_data('newVersion') == None:
         updateTime = data.file.Load_data('update')

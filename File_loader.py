@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-20 23:02:46
-@LastEditTime: 2020-05-20 15:45:11
+@LastEditTime: 2020-05-21 14:26:25
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\File_loader.py
@@ -58,7 +58,8 @@ default_data = {
     'DTR': 0,
     'RTS': 0,
     'decode': 'UTF-8',
-    'showLegend': 1
+    'showLegend': 1,
+    'Cache': ''
 }
 
 class Config():
