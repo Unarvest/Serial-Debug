@@ -1,7 +1,7 @@
 '''
 @Author: Yuzhi Tu
 @Date: 2020-04-15 14:57:23
-@LastEditTime: 2020-05-20 22:48:35
+@LastEditTime: 2020-05-22 20:14:49
 @LastEditors: Please set LastEditors
 @Description: 与串口相关函数
 @FilePath: \Serial_debugger\Serial_core.py
@@ -83,9 +83,13 @@ class Myserial(Thread):
                 print("串口未打开")
                 self.Is_open = False
         except Exception as e:
-            print("串口断开, 原因：",e)
-            self.Is_receive = 1
+            e = str(e)
+            if search('OSError', e) != None:
+                self.msg.emit("串口断开")
+            else:
+                self.msg.emit("串口断开, 原因:" + str(e))
             self.Is_open = False
+            self.Is_receive = 1
             
     '''
     @description: 列出串口列表
@@ -142,7 +146,10 @@ class Myserial(Thread):
                 print("串口未开启")
                 return None
         except Exception as e:
-            self.msg.emit("---异常---:" + str(e))
+            if str(e) == "Write timeout":
+                self.msg.emit("发送异常：发送数据超时")
+            else:
+                self.msg.emit("发送异常:" + str(e))
             return False
 
     def Send_hex(self, msg = ""):
@@ -179,14 +186,24 @@ class Myserial(Thread):
                     portname = self.portname
                 self.ser = serial.Serial(portname, self.bps, bytesize=int(self.parameter[0]),exclusive = True, 
                                          parity=self.parameter[1], stopbits=float(self.parameter[2]), 
-                                         timeout=10)
+                                         timeout=10, write_timeout = 3)
                 self.ser.setRTS(self.RTS)
                 self.ser.setDTR(self.DTR)
                 self.Is_open = True
                 self.start()
                 return True
-            except serial.serialutil.SerialException:
-                print(portname+'拒绝访问, 可能是串口被占用')
+            except serial.serialutil.SerialException as e:
+                e = str(e)
+                if search('PermissionError', e) != None:
+                    print(portname+'拒绝访问, 可能是串口被占用:', e)
+                    self.msg.emit(portname+'拒绝访问, 可能是串口被占用')
+                else:
+                    print('连接' + portname+'失败, 原因:', e)
+                    err = search(':', e)
+                    if err != None:
+                        err = err.span()
+                        e = e[err[1]:]
+                    self.msg.emit('连接' + portname+'失败, 原因:' + e)
                 return False
         else:
             print("串口处于开启状态")
@@ -201,6 +218,7 @@ class Myserial(Thread):
             return True
         except Exception as e:
             print("串口关闭失败, 原因: ", e)
+            self.msg.emit("串口关闭失败, 原因:" + str(e))
             return False
 
     '''

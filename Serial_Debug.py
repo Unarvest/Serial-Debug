@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2020-04-15 14:56:15
-@LastEditTime: 2020-05-21 21:28:02
+@LastEditTime: 2020-05-22 23:51:30
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: \Serial_debugger\Serial_debugger.py
@@ -9,9 +9,8 @@
 import sys
 import os
 from PyQt5.QtWidgets import QApplication, QSplashScreen, QMainWindow
-from PyQt5 import QtCore
-from PyQt5.QtGui import QIcon, QFont
 from PyQt5 import QtGui
+from PyQt5 import QtCore
 
 #add(your program's name)  use :pyuic5 button.ui -o button.py to create.
 
@@ -52,13 +51,13 @@ class receiveTimer():
             ser.Is_receive = 0
             if ser.Is_open == False:
                 try:
-                    ser.Close_port()
                     if ser.Is_open:                 
+                        ser.Close_port()
                         data.file.Save_data('Cache', ser.receive_data)
                 except Exception:
                     pass
-                toMessageBox('串口断开')
-                connectState(0)
+                if data.opening == 0:
+                    connectState(0)
 
 class autoSendTimer():
     def __init__(self):
@@ -73,6 +72,9 @@ class autoSendTimer():
         self.timer.stop()
 
 class openPortThread(QtCore.QThread):
+    state_S = QtCore.pyqtSignal(int)
+    msg_S = QtCore.pyqtSignal(str)
+    list_S = QtCore.pyqtSignal(str)
     def __init__(self):
         super(openPortThread, self).__init__()
 
@@ -83,36 +85,44 @@ class openPortThread(QtCore.QThread):
         else:
             if ser.Find_target() == None:
                 No_find = 1
-                toMessageBox('未找到设备')
+                self.msg_S.emit('未找到设备')
         if No_find:
-            toMessageBox('未找到设备')
-            connectState(0)
+            self.msg_S.emit('未找到设备')
+            self.state_S.emit(0)
         elif ser.Open_port() == False:
-            toMessageBox('拒绝访问, 可能是串口被占用')
-            connectState(0)
+            #self.msg_S.emit('拒绝访问, 可能是串口被占用')
+            self.state_S.emit(0)
         else:
-            window.messageBox.setText('连接成功')
-            window.graphMsgBox.setText('连接成功')
+            self.msg_S.emit('连接成功')
             data.portname = ser.portname
-            connectState(1)
+            self.state_S.emit(1)
         if ser.port_list != None:
-            window.serialListWidget.clear()
+            self.list_S.emit('clear!')
         try:
             for i in range(len(ser.port_list)):
-                window.serialListWidget.addItem(str(ser.port_list[i]))
+                self.list_S.emit(str(ser.port_list[i]))
         except Exception:
             pass
         self.quit()
 
     def openStart(self):
+        self.state_S.connect(connectState)
+        self.msg_S.connect(toMessageBox)
+        self.list_S.connect(self.listCallBack)
         self.start()
         self.exec_()
+        
+    def listCallBack(self, list_B):
+        if list_B == 'clear!':
+            window.serialListWidget.clear()
+        else:
+            window.serialListWidget.addItem(list_B)
 
 class downloadThread(QtCore.QThread):
     prograssBar_S = QtCore.pyqtSignal(int)    #更新进度条信号
     speed_S = QtCore.pyqtSignal(str)
     downloadDone_S = QtCore.pyqtSignal()
-    downloadFalse_S = QtCore.pyqtSignal()
+    downloadFalse_S = QtCore.pyqtSignal(str)
     def __init__(self):
         super(downloadThread, self).__init__()
 
@@ -126,14 +136,18 @@ class downloadThread(QtCore.QThread):
             pass
         try:
             if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
-                print(data.version)
+                try:
+                    self.ftp.close()
+                except Exception:
+                    pass
                 self.downloadDone_S.emit()
             else:
                 self.downloadFalse_S.emit()
-            self.ftp.close()
+                self.ftp.close()
+            
         except Exception as e:
             print(e)
-            self.downloadFalse_S.emit()
+            self.downloadFalse_S.emit(str(e))
         #self.quit()
     
     #进度条槽函数
@@ -147,10 +161,10 @@ class downloadThread(QtCore.QThread):
                 QMessageBox.warning(MainWindow, '提示', '无法打开指定文件夹')
         data.version = None
     
-    def downloadFalse(self):
-        toMessageBox('文件下载失败')
+    def downloadFalse(self, string):
+        toMessageBox('文件下载失败, 原因:'+string)
         window.updateButton.setText('检测更新')
-        QMessageBox.warning(MainWindow, '警告', '文件下载失败!')
+        QMessageBox.warning(MainWindow, '警告', '文件下载失败!\n'+string)
         data.version = None
 
     def openStart(self):
@@ -166,6 +180,7 @@ class downloadThread(QtCore.QThread):
 
 class findUpdate(QtCore.QThread):
     download_S = QtCore.pyqtSignal(str)
+    msg_S = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(findUpdate, self).__init__()
@@ -187,7 +202,7 @@ class findUpdate(QtCore.QThread):
         except Exception as e:
             print('检测更新错误', e)
             window.updateButton.setText('检测更新')
-            toMessageBox('检测更新错误')
+            self.msg_S.emit('检测更新错误')
             data.version = None
         self.quit()
 
@@ -196,6 +211,7 @@ class findUpdate(QtCore.QThread):
         data.version = False
         window.updateButton.setText('正在与服务器通讯')
         self.download_S.connect(self.askdownload)
+        self.msg_S.connect(toMessageBox)
         toMessageBox('正在查找新版本')
         self.start()
     
@@ -215,12 +231,15 @@ class findUpdate(QtCore.QThread):
                 download.openStart()
 
 class autoConnectThread(QtCore.QThread):
+    state_S = QtCore.pyqtSignal(int)
+    msg_S = QtCore.pyqtSignal(str)
+    list_S = QtCore.pyqtSignal(str)
     def __init__(self):
         super(autoConnectThread, self).__init__()
 
     def run(self):
         global ser, data, receiveT
-        connectState(2)
+        self.state_S.emit(2)
         ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
                         decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
                          RTS=data.file.Load_data('RTS'))
@@ -228,52 +247,61 @@ class autoConnectThread(QtCore.QThread):
         ser.Is_receive = 1
         def auto():
             global ser
-            window.messageBox.setText('正在自动连接' + data.autoTarget)
-            window.graphMsgBox.setText('正在自动连接' + data.autoTarget)
+            self.msg_S.emit('正在自动连接' + data.autoTarget)
+
             self.quit()
             #ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut, sleep_time=data.sleep_time)
             if ser.Find_target(target=data.autoTarget) == None:
-                window.messageBox.setText('未找到' + data.autoTarget)
-                window.graphMsgBox.setText('未找到' + data.autoTarget)
-                connectState(0)
+                self.msg_S.emit('未找到' + data.autoTarget)
+                self.state_S.emit(0)
             else:
                 if ser.Open_port() == False:
-                    connectState(0)
-                    window.messageBox.setText('连接失败, 串口可能被占用')
-                    window.graphMsgBox.setText('连接失败, 串口可能被占用')
+                    self.state_S.emit(0)
+                    self.msg_S.emit('连接失败, 串口可能被占用')
                 else:
-                    window.messageBox.setText('连接成功')
-                    window.graphMsgBox.setText('连接成功')
-                    connectState(1)
+                    self.msg_S.emit('连接成功')
+                    self.state_S.emit(1)
             if ser.port_list != None:
-                window.serialListWidget.clear()
+                self.list_S.emit('clear!')
             try:
                 data.opening = 1
                 for i in range(len(ser.port_list)):
-                    window.serialListWidget.addItem(str(ser.port_list[i]))
+                    self.list_S.emit(str(ser.port_list[i]))
                 data.opening = 0
             except Exception:
                 pass
             
         if data.fastConnect != None:
-            toMessageBox('快速连接中')
+            self.msg_S.emit('快速连接中')
             ser.portname = data.fastConnect
             if ser.Open_port(portname=data.fastConnect) == False:
-                toMessageBox('快速连接失败')
+                self.msg_S.emit('快速连接失败')
                 data.fastConnect = None
                 data.file.Save_data('fastConnect', None)
                 window.fastConnectRadioButton.setChecked(0)
                 if data.autoConnect:
                     auto()
             else:
-                toMessageBox('快速连接成功, 已连接到' + data.fastConnect)
-                connectState(1)
+                self.msg_S.emit('快速连接成功, 已连接到' + data.fastConnect)
+                self.state_S.emit(1)
         elif data.autoConnect:
             auto()
         else:
-            connectState(0)
+            self.state_S.emit(0)
+
     def openStart(self):
+        self.state_S.connect(connectState)
+        self.msg_S.connect(toMessageBox)
+        self.list_S.connect(self.listCallBack)
         self.start()
+        
+
+    def listCallBack(self, list_B):
+        if list_B == 'clear!':
+            window.serialListWidget.clear()
+        else:
+            window.serialListWidget.addItem(list_B)
+
         
 class listPortThread(QtCore.QThread):
     search_S = QtCore.pyqtSignal(str)
@@ -303,8 +331,7 @@ class listPortThread(QtCore.QThread):
             data.searching = 0
             window.searchSerialButton.setText('搜索串口')
             toMessageBox('找到' + value + '个设备')
-
-        
+      
 class callBack():
     def sendButton_(self):
         global ser, window, MainWindow
@@ -402,7 +429,7 @@ class callBack():
         self.sendButtonX(9)
 
     def sendButtonX(self, num):
-        global ser, window, MainWindow, _translate
+        global ser, window, MainWindow
         if ser.Is_open:
             if num == 1:
                 Msg = window.sendLine1_1.text()
@@ -486,7 +513,7 @@ class callBack():
             window.addGraphColor.setText('添加曲线')
 
     def openSerialButton_(self):
-        global ser, MainWindow, window, _translate, autoSend
+        global ser, MainWindow, window, autoSend
         if ser.Is_open:
             ser.Close_port()         
             data.file.Save_data('Cache', ser.receive_data)
@@ -504,9 +531,9 @@ class callBack():
                          RTS=data.file.Load_data('RTS'))
             connectState(2)
             ser.receive_data = data.file.Load_data('Cache')
-            t = openPortThread()
-            t.exit()
-            t.openStart()
+            opt = openPortThread()
+            opt.exit()
+            opt.openStart()
             
     def sendHexCheckBox_(self, value):
         global Text, Back
@@ -580,7 +607,8 @@ class callBack():
             else:
                 megfile = open(data.path + '\\' + name, 'w')
                 megfile.write(Msg)
-                QMessageBox.information(MainWindow, '提示', name + '\n保存成功!')
+                if QMessageBox.question(MainWindow, '提示', name + '保存成功!\n是否打开文件夹?',QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                    Back.openPath_()
                 toMessageBox('保存成功')
                 megfile.close()
             
@@ -590,6 +618,7 @@ class callBack():
     def cleanMsgPushButton_(self):
         window.receiveBox.setPlainText('')
         window.graphReceiveBox.setPlainText('')
+        data.file.Save_data('Cache', '')
         ser.receive_data = ''
     
     def autoConnectCheckBox_(self, value):
@@ -629,7 +658,7 @@ class callBack():
         if data.searching:
             QMessageBox.warning(MainWindow, '警告', '串口搜索中')
         else:
-            global t
+            #global t
             t = listPortThread()
             t.openStart()
             
@@ -638,7 +667,7 @@ class callBack():
         port = value.text()
         Position = search(' ', port).span()
         data.portname = port[:Position[0]]
-        toMessageBox('选中: ' + data.portname)
+        toMessageBox('选中: ' + port)
         
     def showSendCheckBox_(self, value):
         if value == 0:
@@ -817,6 +846,8 @@ class callBack():
         window.sendCountLabel.setText('--')
         window.receiveCountLabel.setText('--')
         toMessageBox('')
+        data.receiveCount = 0
+        data.sendCount = 0
     
     def updateButton_(self):
         if data.version == None:
@@ -832,11 +863,11 @@ class callBack():
 
     def antialiasCheckBox_(self, value):
         data.file.Save_data('antialias', value)
-        QMessageBox.information(MainWindow, '提示', '重启后生效')
+        #QMessageBox.information(MainWindow, '提示', '重启后生效')
     
     def showLegend_(self, value):
         data.file.Save_data('showLegend', value)
-        QMessageBox.information(MainWindow, '提示', '重启后生效')
+        #QMessageBox.information(MainWindow, '提示', '重启后生效')
 
     def mousePosBox_(self, value):
         data.file.Save_data('mousePos', value)
@@ -846,16 +877,15 @@ class callBack():
 
     def pointShowBox_(self, value):
         data.file.Save_data('pointShow', value)
-        QMessageBox.information(MainWindow, '提示', '重启后生效')
+        #QMessageBox.information(MainWindow, '提示', '重启后生效')
 
     def showXYBox_(self, value):
         data.file.Save_data('showXY', value)
-        QMessageBox.information(MainWindow, '提示', '重启后生效')
+        #QMessageBox.information(MainWindow, '提示', '重启后生效')
     
     def gridBox_(self, value):
         data.file.Save_data('showGrid', value)
-        QMessageBox.information(MainWindow, '提示', '重启后生效')
-
+        #QMessageBox.information(MainWindow, '提示', '重启后生效')
 
 def colorSelect():
     color = ''
@@ -895,7 +925,6 @@ def backColorSelect():
     else:
         color = 'k'
     return color
-
 
 class dataInit(QtCore.QObject):
     msg_S = QtCore.pyqtSignal(str)
@@ -1069,26 +1098,27 @@ def toMessageBox(msg):
 #可连接 0 已连接1 正在连接2
 def connectState(state):
     if state == 0:
-        window.openSerialButton.setText(_translate("MainWindow", "打开串口"))
+        window.openSerialButton.setText("打开串口")
         window.connectStateRadioButton.setChecked(0)
         window.connectStateRadioButton.setCheckable(0)
         window.connectStateRadioButton_2.setCheckable(0)
         window.connectStateRadioButton_2.setChecked(0)
         data.opening = 0
     elif state == 1:
-        window.openSerialButton.setText(_translate("MainWindow", "关闭串口"))
+        window.openSerialButton.setText("关闭串口")
         window.connectStateRadioButton.setCheckable(1)
         window.connectStateRadioButton.setChecked(1)
         window.connectStateRadioButton_2.setCheckable(1)
         window.connectStateRadioButton_2.setChecked(1)
         data.opening = 1
     else:
-        window.openSerialButton.setText(_translate("MainWindow", "正在连接"))
+        window.openSerialButton.setText("正在连接")
         window.connectStateRadioButton.setCheckable(1)
         window.connectStateRadioButton.setChecked(1)
         window.connectStateRadioButton_2.setCheckable(1)
         window.connectStateRadioButton_2.setChecked(1)
         data.opening = 1
+        
 
 def askshotcut():
     import winshell
@@ -1127,6 +1157,7 @@ if __name__ == '__main__':
     splash = QSplashScreen(QtGui.QPixmap(":/Mainico/Start2.png"))
     splash.show()
     from PyQt5.QtWidgets import QMessageBox, QWidget, QFileDialog
+    from PyQt5.QtGui import QIcon, QFont
     from Ui_Serial_MainWindow import Ui_MainWindow
     from datetime import datetime
     from re import search
@@ -1137,18 +1168,18 @@ if __name__ == '__main__':
     from setData import *
     from download import MyFtp
     import time
-    global data, Back, MainWindow, window, _translate, ser
+    global data, Back, MainWindow, window, ser
     global receiveT, graph
 
     Back = callBack()
-    _translate = QtCore.QCoreApplication.translate
     MainWindow = QMainWindowClose()
     window = Ui_MainWindow()
     window.setupUi(MainWindow)
-
     splitterSet(window)
+
     data = dataInit(window, Back)
     data.msg_S.connect(toMessageBox)
+    fontSet(window, font = data.file.Load_data('font'), fontsize = data.file.Load_data('fontSize'))
     receiveT = receiveTimer()
     Cache = data.file.Load_data('Cache')
     toMessageBox("启动完成")
@@ -1156,7 +1187,6 @@ if __name__ == '__main__':
         toMessageBox('载入历史文件')
         window.receiveBox.setPlainText(Cache)
     
-    fontSet(window, font = data.file.Load_data('font'),fontsize = data.file.Load_data('fontSize'))
     if data.file.Load_data('newVersion') == None:
         updateTime = data.file.Load_data('update')
         if updateTime == 1:
@@ -1168,11 +1198,15 @@ if __name__ == '__main__':
     else:
         data.version = data.file.Load_data('newVersion')
         window.updateButton.setText('下载新版本')
+        toMessageBox('可下载新版本')
+
     autoConnect = autoConnectThread()
     autoConnect.openStart()
+    
     graph = MyGraphWindow(window.graphLayout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
                         showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), showLegend=data.file.Load_data('showLegend'),
                         showPos=data.file.Load_data('mousePos'), showPoint=data.file.Load_data('pointShow'))
+                        
     receiveT.timer.start(1)
     MainWindow.show()
     splash.close()

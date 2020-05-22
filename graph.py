@@ -10,7 +10,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author:dell
-from pyqtgraph import setConfigOption, GraphicsWindow, InfiniteLine, SignalProxy, setConfigOptions#, LabelItem
+from pyqtgraph import setConfigOption, GraphicsLayoutWidget, InfiniteLine, SignalProxy, setConfigOptions#, LabelItem
 from pyqtgraph import exporters
 from re import search
 from datetime import datetime
@@ -77,9 +77,8 @@ class MyGraphWindow():
         if (BackColor == 'e3f9fd')|(BackColor == 'f0f0f4')|(BackColor == 'ffffff')|(BackColor == 'e0f0e9'):
             setConfigOption('foreground', 'k')
         setConfigOptions(antialias=self.antialias)  # pyqtgraph全局变量设置函数，antialias=True开启曲线抗锯齿
-        self.graphWin = GraphicsWindow()  
+        self.graphWin = GraphicsLayoutWidget() 
         self.window.addWidget(self.graphWin)
-
         self.graph = self.graphWin.addPlot(title="数据可视化")   # 添加第一个绘图窗口
 
         #self.graph.addItem(self.smallShowLabel)
