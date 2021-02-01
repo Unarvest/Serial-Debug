@@ -67,7 +67,12 @@ class autoSendTimer():
         self.timer.timeout.connect(self.operate) #计时结束调用operate()方法
         self.timer.start(10) #设置计时间隔并启动
     def operate(self):
-        self.Back.sendButton_()
+        global ser
+        if ser.Is_open:
+            self.Back.sendButton_()
+        else:
+            self.Back.sendTimeCheckBox_(False)
+            
     def start(self, time):
         self.timer.start(time) #设置计时间隔并启动
     def stop(self):
@@ -1252,7 +1257,6 @@ if __name__ == '__main__':
         toMessageBox('载入历史文件')
         window.receiveBox.setPlainText(Cache)
         toMessageBox('历史文件已载入')
-    '''
     if data.file.Load_data('newVersion') == None:
         updateTime = data.file.Load_data('update')
         if updateTime == 1:
@@ -1265,7 +1269,6 @@ if __name__ == '__main__':
         data.version = data.file.Load_data('newVersion')
         window.updateButton.setText('下载新版本')
         toMessageBox('可下载新版本')
-    '''
     
     graph = MyGraphWindow(window.graphLayout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
                         showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), showLegend=data.file.Load_data('showLegend'),

@@ -59,7 +59,7 @@ class Myserial(Thread):
             cut = True
             print ("开启线程接收数据, 来自->" + self.portname)
             while self.Is_open == True:
-                sleep(self.sleep_time)     #接收间隔
+                # sleep(self.sleep_time)     #接收间隔
                 #等待提示
                 size = self.ser.inWaiting()     #获取数据长度
                 if size:
@@ -139,7 +139,7 @@ class Myserial(Thread):
         try:
             if self.Is_open == True:
                 msg += lineChange
-                result=self.ser.write(msg.encode())#写数据
+                result=self.ser.write(msg.encode(self.decode))#写数据
                 t = time()
                 return result
                 #返回成功发送的字节数
@@ -177,9 +177,9 @@ class Myserial(Thread):
     def Open_port(self, portname = None, bps = 115200, parameter = "8N1", timeout = 1):
         '''
         parameter:
-            数据位： FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS = (5, 6, 7, 8)
-            校验位:  PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE = 'N', 'E', 'O', 'M', 'S'
-            停止位： STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO = (1, 1.5, 2)
+            数据位：FIVEBITS, SIXBITS, SEVENBITS, EIGHTBITS = (5, 6, 7, 8)
+            校验位: PARITY_NONE, PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE = 'N', 'E', 'O', 'M', 'S'
+            停止位：STOPBITS_ONE, STOPBITS_ONE_POINT_FIVE, STOPBITS_TWO = (1, 1.5, 2)
         '''
         if self.Is_open == False:
             try:

@@ -32,7 +32,7 @@ class MyGraphWindow():
         self.newWin = None
         self.antialias = antialias
         self.showXY = showXY
-        self.showGrid = antialias
+        self.showGrid = showGrid
         self.showPos = showPos
         self.showPoint = showPoint
         self.limit = 200
@@ -218,42 +218,68 @@ class MyGraphWindow():
         pass
 
     def formatData(self, data = '', time = 1):
-        self.Times += time
-        dataflag = True
-        flag = False
         data = data.replace(' ', '')
-        while(dataflag):
-            name = ''
-            dataflag = False
-            for color in self.Pencolor:
-                flag = False
-                num = ''
-                name = self.allPen[color].name
-                pos = search(name + '=', data) 
-                if pos != None:
-                    pos = pos.span()
-                    for i in data[pos[1]:]:
-                        if i == self.outFlag:
-                            flag = True
-                            break
-                        else:
-                            num += i
-                    if flag == True:
-                        try:
-                            if num.isdigit():
-                                self.appendNum(color = color, num = int(num), time = time)
-                            else:
-                                self.appendNum(color = color, num = float(num), time = time)
-                        except Exception as e:
-                            print('错误:', e)
-                            flag =  False    #数据转换错误
-                    else:
-                        flag =  None   #无截止符
-                    data = data[:pos[0]] + data[pos[1]:] + str(num) + ';'
-                    dataflag = True
+        while len(data) > 0:
+            pos = search("\w*=\d\.*\d*;", data)
+            if pos != None:
+                pos = pos.span()
+                part = data[pos[0]:pos[1]]
+                name = search("\w*=", part)
+                value = search("=\d\.*\d*", part)
+                if (name != None) & (value != None):
+                    name = part[name.span()[0]:name.span()[1]-1]
+                    value = part[value.span()[0] + 1:value.span()[1]]
+                    for color in self.Pencolor:
+                        if name == self.allPen[color].name:
+                            try:
+                                if value.isdigit():
+                                    self.appendNum(color = color, num = int(value), time = time)
+                                else:
+                                    self.appendNum(color = color, num = float(value), time = time)
+                            except Exception as e:
+                                print('错误:', e)
+            else:
+                return None
+            data = data[pos[1]:]
+        return True
+
+
+        # self.Times += time
+        # dataflag = True
+        # flag = False
+        # data = data.replace(' ', '')
+        # while(dataflag):
+        #     name = ''
+        #     dataflag = False
+        #     for color in self.Pencolor:
+        #         flag = False
+        #         num = ''
+        #         name = self.allPen[color].name
+        #         pos = search(name + '=', data) 
+        #         if pos != None:
+        #             pos = pos.span()
+        #             for i in data[pos[1]:]:
+        #                 if i == self.outFlag:
+        #                     flag = True
+        #                     break
+        #                 else:
+        #                     num += i
+        #             if flag == True:
+        #                 try:
+        #                     if num.isdigit():
+        #                         self.appendNum(color = color, num = int(num), time = time)
+        #                     else:
+        #                         self.appendNum(color = color, num = float(num), time = time)
+        #                 except Exception as e:
+        #                     print('错误:', e)
+        #                     flag =  False    #数据转换错误
+        #             else:
+        #                 flag =  None   #无截止符
+        #             data = data[:pos[0]] + data[pos[1]:] + str(num) + ';'
+        #             dataflag = True
             
-        if flag == False:
-            return None  #无所需数据
+        # if flag == False:
+        #     return None  #无所需数据
                     
     def mouseMoved(self, evt):
         vb = self.graph.vb

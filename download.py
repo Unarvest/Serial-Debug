@@ -5,7 +5,7 @@ from time import time
 
 class MyFtp():
     ftp = FTP()
-    def __init__(self, host = 'unarvest.top',port=21):
+    def __init__(self, host = '',port=21):
         super(MyFtp, self).__init__()
         self.state = None
         try:
