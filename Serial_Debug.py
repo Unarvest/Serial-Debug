@@ -12,6 +12,8 @@ from PyQt5.QtWidgets import QApplication, QSplashScreen, QMainWindow
 from PyQt5 import QtGui
 from PyQt5 import QtCore
 from Thread import *
+import json
+
 
 #add(your program's name)  use :pyuic5 button.ui -o button.py to create.
 
@@ -107,8 +109,8 @@ class openPortThread(QtCore.QThread):
         if ser.port_list != None:
             self.list_S.emit('clear!')
         try:
-            for i in range(len(ser.port_list)):
-                self.list_S.emit(str(ser.port_list[i]))
+            for i in ser.port_list:
+                self.list_S.emit("{} - {}".format(i.portName(), i.description()))
         except Exception:
             pass
         self.quit()
@@ -135,53 +137,79 @@ class downloadThread(QtCore.QThread):
         super(downloadThread, self).__init__()
 
     def run(self):
-        #print('串口调试器' + data.version + '.exe')
-        self.ftp = MyFtp()    #创建ftp连接
-        data.file.Save_data('newVersion', None)
-        try:
-            os.mkdir('download')
-        except FileExistsError:
-            pass
-        try:
-            if self.ftp.downloadFile(filename='串口调试器'+data.version+'.exe', signal=self.prograssBar_S, speed=self.speed_S, data=data) == True:
-                try:
-                    self.ftp.close()
-                except Exception:
-                    pass
+        versionInfo = data.version
+        data.version = False
+        if self.fastMode:
+            if checkFile(versionInfo, signal=self.prograssBar_S) == True:
+                self.prograssBar_S.emit(100)
                 self.downloadDone_S.emit()
             else:
+                window.fastUpdateButton.setText('下载失败')
                 self.downloadFalse_S.emit()
-                self.ftp.close()
-            
-        except Exception as e:
-            print(e)
-            self.downloadFalse_S.emit(str(e))
-        #self.quit()
+                # versionInfo = None
+        else:
+            if type(versionInfo) == dict:
+                self.ftp = MyFtp()    #创建ftp连接
+                data.file.Save_data('newVersion', None)
+                try:
+                    os.mkdir('download')
+                except FileExistsError:
+                    pass
+                try:
+                    self.ftp.login('', '')
+                    if self.ftp.downloadFile(filename='串口调试器'+versionInfo['version']+'.exe', signal=self.prograssBar_S, speed=self.speed_S) == True:
+                        try:
+                            self.ftp.close()
+                        except Exception:
+                            pass
+                        self.downloadDone_S.emit()
+                    else:
+                        self.downloadFalse_S.emit()
+                        self.ftp.close()
+                    
+                except Exception as e:
+                    print(e)
+                    self.downloadFalse_S.emit(str(e))
+                data.version = None
+                #self.quit()
     
     #进度条槽函数
     def downloadDoneMsg(self):
-        window.updateButton.setText('下载成功')
-        toMessageBox('新版本保存于download文件夹')
-        if QMessageBox.question(MainWindow, '提示', '下载完成, 是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-            try:
-                os.startfile(os.getcwd() + '/download')
-            except Exception:
-                QMessageBox.warning(MainWindow, '提示', '无法打开指定文件夹')
-        data.version = None
+        if self.fastMode:
+            window.fastUpdateButton.setText('下载成功')
+            if QMessageBox.question(MainWindow, '提示', '下载完成, 是否现在安装?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                try:
+                    os.startfile('update.exe')
+                    os._exit()
+                except Exception:
+                    QMessageBox.warning(MainWindow, '提示', '无法打开更新程序\n可以尝试下载完整文件')
+        else:
+            window.updateButton.setText('下载成功')
+            toMessageBox('新版本保存于download文件夹')
+            if QMessageBox.question(MainWindow, '提示', '下载完成, 是否打开文件夹?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+                try:
+                    os.startfile(os.getcwd() + '/download')
+                except Exception:
+                    QMessageBox.warning(MainWindow, '提示', '无法打开指定文件夹')
+        # data.version = None
     
     def downloadFalse(self, string):
         toMessageBox('文件下载失败, 原因:'+string)
         window.updateButton.setText('检测更新')
         QMessageBox.warning(MainWindow, '警告', '文件下载失败!\n'+string)
-        data.version = None
+        # data.version = None
 
-    def openStart(self):
+    def openStart(self, fast = False):
+        self.fastMode = fast
         self.prograssBar_S.connect(window.progressBar.setValue)
         self.speed_S.connect(window.updateButton.setText)
         self.downloadDone_S.connect(self.downloadDoneMsg)
         self.downloadFalse_S.connect(self.downloadFalse)
         window.progressBar.setValue(0)
-        window.updateButton.setText('下载中')
+        if fast:
+            window.fastUpdateButton.setText('下载中')
+        else:
+            window.updateButton.setText('下载中')
         toMessageBox('正在后台下载新版本')
         self.start()                        #开启下载线程
         self.exec_()
@@ -194,19 +222,26 @@ class findUpdate(QtCore.QThread):
         super(findUpdate, self).__init__()
 
     def run(self):
-        global data
+        global data, window
+        if os.path.exists('versionInfo.json'):
+            with open('versionInfo.json') as f:
+                lastVersion = json.load(f)['version']
+        else:
+            lastVersion = window.versionLabel.text()
+            lastVersion = lastVersion[lastVersion.index('-') + 1:]
+            with open('versionInfo.json', 'w') as f:
+                json.dump({'version':lastVersion}, f)
+        self.versionInfo = getVersionInfo(lastVersion)
         try:
             try:
                 os.mkdir('download')
             except FileExistsError:
                 pass
-            ftp = MyFtp()
-            version = ftp.downloadversion(window.versionLabel.text(), data)
-            if version == None:
-                self.download_S.emit('None')
+            if type(self.versionInfo) == dict:
+                data.version = self.versionInfo
+                self.download_S.emit(data.version['version'])
             else:
-                self.download_S.emit(version)
-            ftp.close()
+                self.download_S.emit('None')
         except Exception as e:
             print('检测更新错误', e)
             window.updateButton.setText('检测更新')
@@ -222,7 +257,7 @@ class findUpdate(QtCore.QThread):
         self.msg_S.connect(toMessageBox)
         toMessageBox('正在查找新版本')
         self.start()
-    
+
     def askdownload(self, version):
         global data
         if version == 'None':
@@ -230,13 +265,14 @@ class findUpdate(QtCore.QThread):
             window.updateButton.setText('未发现新版本')
             data.version = None
         else:
-            data.version = version
-            toMessageBox('发现新版本! 可在设置中下载新版本'+ version)
-            window.updateButton.setText('下载新版本')
+            # data.version = version
+            toMessageBox('发现新版本'+ version)
+            window.updateButton.setText('下载完整版本')
+            # QMessageBox.Yes
             data.file.Save_data('newVersion', version)
-            if QMessageBox.question(MainWindow, '发现新版本', '是否现在下载?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+            if QMessageBox.question(MainWindow, '发现新版本', self.versionInfo['info'] + '\n是否现在下载?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
                 download = downloadThread()
-                download.openStart()
+                download.openStart(True)
 
 class autoConnectThread(QtCore.QThread):
     state_S = QtCore.pyqtSignal(int)
@@ -248,7 +284,7 @@ class autoConnectThread(QtCore.QThread):
     def run(self):
         global ser, data, receiveT
         self.state_S.emit(2)
-        ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+        ser = Myserial(msg=data.print_msg, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
                         decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
                          RTS=data.file.Load_data('RTS'))
         ser.receive_data = data.file.Load_data('Cache')
@@ -258,7 +294,6 @@ class autoConnectThread(QtCore.QThread):
             self.msg_S.emit('正在自动连接' + data.autoTarget)
 
             self.quit()
-            #ser = Myserial(bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut, sleep_time=data.sleep_time)
             if ser.Find_target(target=data.autoTarget) == None:
                 self.msg_S.emit('未找到' + data.autoTarget)
                 self.state_S.emit(0)
@@ -279,20 +314,20 @@ class autoConnectThread(QtCore.QThread):
             except Exception:
                 pass
             
-        if data.fastConnect != None:
-            self.msg_S.emit('快速连接中')
-            ser.portname = data.fastConnect
-            if ser.Open_port(portname=data.fastConnect) == False:
-                self.msg_S.emit('快速连接失败')
-                data.fastConnect = None
-                data.file.Save_data('fastConnect', None)
-                window.fastConnectRadioButton.setChecked(0)
-                if data.autoConnect:
-                    auto()
-            else:
-                self.msg_S.emit('快速连接成功, 已连接到' + data.fastConnect)
-                self.state_S.emit(1)
-        elif data.autoConnect:
+        # if data.fastConnect != None:
+        #     self.msg_S.emit('快速连接中')
+        #     ser.portname = data.fastConnect
+        #     if ser.Open_port(portname=data.fastConnect) == False:
+        #         self.msg_S.emit('快速连接失败')
+        #         data.fastConnect = None
+        #         data.file.Save_data('fastConnect', None)
+        #         window.fastConnectRadioButton.setChecked(0)
+        #         if data.autoConnect:
+        #             auto()
+        #     else:
+        #         self.msg_S.emit('快速连接成功, 已连接到' + data.fastConnect)
+        #         self.state_S.emit(1)
+        if data.autoConnect:
             auto()
         else:
             self.state_S.emit(0)
@@ -317,10 +352,10 @@ class listPortThread(QtCore.QThread):
 
     def run(self):
         self.search_S.emit('True')
-        port_list = list(serial.tools.list_ports.comports())
+        port_list = list(QSerialPortInfo.availablePorts())
         window.serialListWidget.clear()
-        for i in range(len(port_list)):
-            window.serialListWidget.addItem(str(port_list[i]))
+        for i in port_list:
+            window.serialListWidget.addItem("{} - {}".format(i.portName(), i.description()))
         self.search_S.emit(str(len(port_list)))
         self.quit()
 
@@ -535,7 +570,7 @@ class callBack():
             QMessageBox.warning(MainWindow, '警告', '串口打开中...')
         else:
             #将数据载入ser
-            ser = Myserial(data.msg_S, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
+            ser = Myserial(msg=data.print_msg, bps=data.bps, parameter=data.parameter, timeout=data.timeout, Is_cut=data.Is_cut,
                         decode=data.file.Load_data('decode'),sleep_time=data.sleep_time, DTR=data.file.Load_data('DTR'),
                          RTS=data.file.Load_data('RTS'))
             connectState(2)
@@ -641,19 +676,19 @@ class callBack():
             data.autoConnect = 1
         data.file.Save_data('autoConnect', data.autoConnect)
     
-    def fastConnectRadioButton_(self, value):
-        if value == True:
-            if data.portname == None:
-                QMessageBox.warning(MainWindow, '警告', '当前未选中串口, 无法使用快速连接')
-                window.fastConnectRadioButton.setChecked(0)
-            else:
-                data.fastConnect = data.portname
-                data.file.Save_data('fastConnect', data.fastConnect)
-                toMessageBox('下次启动将优先连接' + data.fastConnect)
-        if value == False:
-            data.fastConnect = None
-            data.file.Save_data('fastConnect', data.fastConnect)
-            toMessageBox('关闭快速连接')
+    # def fastConnectRadioButton_(self, value):
+    #     if value == True:
+    #         if data.portname == None:
+    #             QMessageBox.warning(MainWindow, '警告', '当前未选中串口, 无法使用快速连接')
+    #             window.fastConnectRadioButton.setChecked(0)
+    #         else:
+    #             data.fastConnect = data.portname
+    #             data.file.Save_data('fastConnect', data.fastConnect)
+    #             toMessageBox('下次启动将优先连接' + data.fastConnect)
+    #     if value == False:
+    #         data.fastConnect = None
+    #         data.file.Save_data('fastConnect', data.fastConnect)
+    #         toMessageBox('关闭快速连接')
 
     def autoConnectLineEdit_(self, value):
         data.autoTarget = value
@@ -671,9 +706,9 @@ class callBack():
         if data.searching:
             QMessageBox.warning(MainWindow, '警告', '串口搜索中')
         else:
-            #global t
-            t = listPortThread()
-            t.openStart()
+            global listPortThread_
+            listPortThread_ = listPortThread()
+            listPortThread_.openStart()
             
     def serialListWidget_(self, value):
         global ser
@@ -727,9 +762,9 @@ class callBack():
             window.enterSendCheckBox.setCheckable(1)
             toMessageBox('关闭定时发送')
     
-    def customCheckBox_(self, value):
-        window.customCheckBox.setChecked(0)
-        QMessageBox.information(MainWindow, '提示', '暂时不可用')
+    # def customCheckBox_(self, value):
+    #     window.customCheckBox.setChecked(0)
+    #     QMessageBox.information(MainWindow, '提示', '暂时不可用')
 
 
     def addGraphColor_(self):
@@ -862,17 +897,27 @@ class callBack():
         data.receiveCount = 0
         data.sendCount = 0
     
-    def updateButton_(self):
-        if data.version == None:
+    def fastUpdateButton_(self):
+        if data.version == False:
+            QMessageBox.warning(MainWindow, '警告', '正在下载')
+        else:
             if QMessageBox.question(MainWindow, '警告', '这将会花费一定时间, 是否继续?', QMessageBox.Yes,QMessageBox.No) == QMessageBox.Yes:
-                update2 = findUpdate()
-                update2.openStart()
-                update2.exec_()
-        elif data.version == False:
-            QMessageBox.warning(MainWindow, '警告', '正在与服务器通讯')
+                update = findUpdate()
+                update.openStart()
+                update.exec_()
+    
+    def updateButton_(self):
+        if data.version == False:
+            QMessageBox.warning(MainWindow, '警告', '正在下载')
         else:
             download = downloadThread()
             download.openStart()
+    
+    def updateCheckBox_(self, value):
+        # print(value)
+        data.file.Save_data('update', value)
+
+
 
     def antialiasCheckBox_(self, value):
         data.file.Save_data('antialias', value)
@@ -994,10 +1039,11 @@ class dataInit(QtCore.QObject):
         window.sendHexCheckBox.setChecked(self.sendHex)
         window.autoConnectCheckBox.setChecked(self.autoConnect)
         window.limitCheckBox.setChecked(self.limit)
-        if self.fastConnect == None:
-            window.fastConnectRadioButton.setChecked(0)
-        else:
-            window.fastConnectRadioButton.setChecked(1)
+        window.updateCheckBox.setChecked(self.file.Load_data('update'))
+        # if self.fastConnect == None:
+        #     window.fastConnectRadioButton.setChecked(0)
+        # else:
+        #     window.fastConnectRadioButton.setChecked(1)
         if self.lineChange == '\r\n':
             window.lineChangeComboBox.setCurrentIndex(0)
         elif self.lineChange == '\r':
@@ -1040,8 +1086,8 @@ class dataInit(QtCore.QObject):
         #主页-高级设置区
         window.autoConnectCheckBox.clicked.connect(Back.autoConnectCheckBox_)
         window.autoConnectLineEdit.textChanged.connect(Back.autoConnectLineEdit_)
-        window.fastConnectRadioButton.clicked.connect(Back.fastConnectRadioButton_)
-        window.customCheckBox.clicked.connect(Back.customCheckBox_)
+        # window.fastConnectRadioButton.clicked.connect(Back.fastConnectRadioButton_)
+        # window.customCheckBox.clicked.connect(Back.customCheckBox_)
         #主页-搜索串口以及侧边信息显示
         window.searchSerialButton.clicked.connect(Back.searchSerialButton_)
         window.serialListWidget.itemClicked.connect(Back.serialListWidget_)
@@ -1103,9 +1149,15 @@ class dataInit(QtCore.QObject):
         window.showLegend.clicked.connect(Back.showLegend_)
         #设置-自动更新
         window.updateButton.clicked.connect(Back.updateButton_)
+        window.fastUpdateButton.clicked.connect(Back.fastUpdateButton_)
+        window.updateCheckBox.clicked.connect(Back.updateCheckBox_)
+    def print_msg(self, msg):
+        self.msg_S.emit(msg)
+
 
 def toMessageBox(msg):
-    window.messageBox.setText(msg)
+    # window.messageBox.setText(msg)
+    window.statusBar.showMessage(msg)
     window.graphMsgBox.setText(msg)
 
 #可连接 0 已连接1 正在连接2
@@ -1149,22 +1201,13 @@ def askshotcut():
 
 class QMainWindowClose(QMainWindow):
     def closeEvent(self, event):
-        if data.version == False:
-            '''
-            if QMessageBox.question(MainWindow, '警告', '文件正在下载, 是否关闭?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
-                event.accept()
-                data.file.Save_data('update', 1)
-                if ser.Is_open:                 
-                    data.file.Save_data('Cache', ser.receive_data)
-                os._exit(0)
-            else:
-                event.ignore()
-            '''
-            pass
-        else:
-            if ser.Is_open:
-                data.file.Save_data('Cache', ser.receive_data)
-            os._exit(0)
+        global data, ser, app
+        if ser.Is_open:
+            data.file.Save_data('Cache', ser.receive_data)
+            # app.closeAllWindows()
+            # app.exit()
+            # receiveT.timer.stop()
+        os._exit(0)
     
     def keyPressEvent(self, event):
         if QApplication.keyboardModifiers() == QtCore.Qt.AltModifier:
@@ -1221,12 +1264,14 @@ class QMainWindowClose(QMainWindow):
                     window.DTR_CheckBox.setChecked(0)
 
 if __name__ == '__main__':
+    global data, Back, MainWindow, window, ser, app
     app = QApplication(sys.argv)
     # 创建启动界面，支持png透明图片
     import icoPack_rc
     splash = QSplashScreen(QtGui.QPixmap(":/Mainico/Start2.png"))
     splash.show()
     from PyQt5.QtWidgets import QMessageBox, QWidget, QFileDialog
+    from PyQt5.QtSerialPort import QSerialPortInfo
     from PyQt5.QtGui import QIcon, QFont
     from Ui_Serial_MainWindow import Ui_MainWindow
     from datetime import datetime
@@ -1236,10 +1281,10 @@ if __name__ == '__main__':
     from HexFormat import *
     from graph import *
     from setData import *
-    from download import MyFtp
+    from download import *
+    
     import time
-    global data, Back, MainWindow, window, ser
-    global receiveT, graph
+    global receiveT, graph, update
 
     Back = callBack()
     MainWindow = QMainWindowClose()
@@ -1253,22 +1298,22 @@ if __name__ == '__main__':
     receiveT = receiveTimer()
     Cache = data.file.Load_data('Cache')
     toMessageBox("启动完成")
+    port_list = list(QSerialPortInfo.availablePorts())
+    window.serialListWidget.clear()
+    for i in port_list:
+        window.serialListWidget.addItem("{} - {}".format(i.portName(), i.description()))
     if Cache != '':
         toMessageBox('载入历史文件')
         window.receiveBox.setPlainText(Cache)
         toMessageBox('历史文件已载入')
-    if data.file.Load_data('newVersion') == None:
-        updateTime = data.file.Load_data('update')
-        if updateTime == 1:
-            data.file.Save_data('update', 4)
-            update = findUpdate()
-            update.openStart()
-        elif updateTime > 1:
-            data.file.Save_data('update', updateTime-1)
-    else:
-        data.version = data.file.Load_data('newVersion')
-        window.updateButton.setText('下载新版本')
-        toMessageBox('可下载新版本')
+    if data.file.Load_data('update'):
+        update = findUpdate()
+        update.openStart()
+    # if data.file.Load_data('newVersion') == None:
+    #     else:
+    #     data.version = data.file.Load_data('newVersion')
+    #     window.updateButton.setText('下载新版本')
+    #     toMessageBox('新版本可下载')
     
     graph = MyGraphWindow(window.graphLayout, BackColor=backColorSelect(), antialias=data.file.Load_data('antialias'), 
                         showXY=data.file.Load_data('showXY'), showGrid=data.file.Load_data('showGrid'), showLegend=data.file.Load_data('showLegend'),
@@ -1281,3 +1326,4 @@ if __name__ == '__main__':
     splash.close()
     autoConnect.exec_()
     sys.exit(app.exec_())
+

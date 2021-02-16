@@ -37,8 +37,8 @@ def fontSet(window, font = '等线', fontsize = 13):
     #主页-高级设置区
     window.autoConnectCheckBox.setFont(ft)
     window.autoConnectLineEdit.setFont(ft)
-    window.fastConnectRadioButton.setFont(ft)
-    window.customCheckBox.setFont(ft)
+    # window.fastConnectRadioButton.setFont(ft)
+    # window.customCheckBox.setFont(ft)
     #主页-搜索串口以及侧边信息显示
     window.searchSerialButton.setFont(ft)
     lwft = QFont()
@@ -55,7 +55,7 @@ def fontSet(window, font = '等线', fontsize = 13):
     window.toolBox.setFont(ft)
     window.sendButton.setFont(ft)
     window.sendBox.setFont(ft)
-    window.messageBox.setFont(ft)
+    # window.messageBox.setFont(ft)
     window.receiveBox.setFont(ft)
     window.sendButton1_1.setFont(ft)
     window.sendButton1_2.setFont(ft)

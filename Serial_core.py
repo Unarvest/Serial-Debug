@@ -8,7 +8,8 @@
 '''
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import serial   
-import serial.tools.list_ports
+# import serial.tools.list_ports
+from PyQt5.QtSerialPort import QSerialPortInfo
 from threading import Thread
 from time import time, sleep
 from re import search
@@ -28,7 +29,7 @@ from re import search
 @param sleep_time: 接收缓冲间隔 默认为0.1s
 '''
 class Myserial(Thread):
-    def __init__(self, msg, target='CH340', bps=115200, parameter="8N1", timeout=1, Is_cut=True, sleep_time=0.1,decode='UTF-8', DTR=0, RTS=0):
+    def __init__(self, msg = print, target='CH340', bps=115200, parameter="8N1", timeout=1, Is_cut=True, sleep_time=0.1,decode='UTF-8', DTR=0, RTS=0):
         Thread.__init__(self)
         self.msg = msg
         self.target = target
@@ -70,7 +71,7 @@ class Myserial(Thread):
                         print(self.data)
                         self.receive_data +=self.data       #将数据保存至接收缓存
                     except Exception as e:
-                        self.msg.emit("编码错误" + str(e))
+                        self.msg("编码错误" + str(e))
                     self.Is_receive = 1
                     
                 elif self.Is_cut & cut:
@@ -88,16 +89,16 @@ class Myserial(Thread):
             self.Is_receive = 1
             self.Is_open = False
             if search('OSError', e) != None:
-                self.msg.emit("串口断开")
+                self.msg("串口断开")
             else:
-                self.msg.emit("串口断开, 原因:" + str(e))
+                self.msg("串口断开, 原因:" + str(e))
             
     '''
     @description: 列出串口列表
     '''
     
     def List_ports(self):
-        self.port_list = list(serial.tools.list_ports.comports())
+        self.port_list = list(QSerialPortInfo.availablePorts())
         #print(self.port_list)
         return self.port_list
 
@@ -109,21 +110,18 @@ class Myserial(Thread):
     def Find_target(self, target = "CH340"):
         if target != "CH340":
             self.target = target
-        self.port_list = list(serial.tools.list_ports.comports())   
+        self.port_list = self.List_ports()
         #print(self.port_list)       #列出串口表
         if len(self.port_list) == 0:
             print('无可用串口')
             return None
         else:
-            for i in range(0,len(self.port_list)):
-                print(self.port_list[i])     #打印所有串口
-                if search(self.target, str(self.port_list[i])) is not None:
-                    Position = search(' ', str(self.port_list[i])).span()
-                    self.portname = str(self.port_list[i])[:Position[0]]
-                    #串口名
-            if len(self.portname) > 0:
-                print("成功找到目标", self.target, "位于", self.portname)
-                return self.portname
+            for i in self.port_list:
+                print("{} - {}".format(i.portName(), i.description()))     #打印所有串口
+                if self.target == i.portName():
+                    self.portname = i.portName()
+                    print("成功找到目标", self.target, "位于", self.portname)
+                    return self.portname
             else :
                 print("未找到目标：", self.target)
                 return None
@@ -148,9 +146,9 @@ class Myserial(Thread):
                 return None
         except Exception as e:
             if str(e) == "Write timeout":
-                self.msg.emit("发送异常：发送数据超时")
+                self.msg("发送异常：发送数据超时")
             else:
-                self.msg.emit("发送异常:" + str(e))
+                self.msg("发送异常:" + str(e))
             return False
 
     def Send_hex(self, msg = ""):
@@ -198,14 +196,14 @@ class Myserial(Thread):
                 e = str(e)
                 if search('PermissionError', e) != None:
                     print(portname+'拒绝访问, 可能是串口被占用:', e)
-                    self.msg.emit(portname+'拒绝访问, 可能是串口被占用')
+                    self.msg(portname+'拒绝访问, 可能是串口被占用')
                 else:
                     print('连接' + portname+'失败, 原因:', e)
                     err = search(':', e)
                     if err != None:
                         err = err.span()
                         e = e[err[1]:]
-                    self.msg.emit('连接' + portname+'失败, 原因:' + e)
+                    self.msg('连接' + portname+'失败, 原因:' + e)
                 return False
         else:
             print("串口处于开启状态")
@@ -220,7 +218,7 @@ class Myserial(Thread):
             return True
         except Exception as e:
             print("串口关闭失败, 原因: ", e)
-            self.msg.emit("串口关闭失败, 原因:" + str(e))
+            self.msg("串口关闭失败, 原因:" + str(e))
             return False
 
     '''
@@ -254,10 +252,6 @@ class Myserial(Thread):
         else:
             print('长度错误')
             return None
-
-
-
-
 
 
 
