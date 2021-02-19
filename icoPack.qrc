@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="Mainico">
+    <file>ico/命令.ico</file>
+    <file>ico/网络.ico</file>
     <file>ico/设置/20200519-214635.ico</file>
     <file>ico/20200512-164645.ico</file>
     <file>Start2.png</file>

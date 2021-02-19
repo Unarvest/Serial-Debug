@@ -29,7 +29,7 @@ from re import search
 @param sleep_time: 接收缓冲间隔 默认为0.1s
 '''
 class Myserial(Thread):
-    def __init__(self, msg = print, target='CH340', bps=115200, parameter="8N1", timeout=1, Is_cut=True, sleep_time=0.1,decode='UTF-8', DTR=0, RTS=0):
+    def __init__(self, msg = print, target='CH340', bps=115200, parameter="8N1", timeout=1, Is_cut=True, sleep_time=0.1,decode='UTF-8', DTR=0, RTS=0, printMsg = False):
         Thread.__init__(self)
         self.msg = msg
         self.target = target
@@ -49,6 +49,7 @@ class Myserial(Thread):
         self.decode = decode
         self.DTR = DTR
         self.RTS = RTS
+        self.printMsg = printMsg
         #self.receive_data = self.receive_data.encode('utf-8')
 
     '''
@@ -68,7 +69,8 @@ class Myserial(Thread):
                     self.receiveCount += size
                     try:
                         self.data = self.ser.read(size).decode(self.decode, 'replace')
-                        print(self.data)
+                        if self.printMsg:
+                            print(self.data)
                         self.receive_data +=self.data       #将数据保存至接收缓存
                     except Exception as e:
                         self.msg("编码错误" + str(e))
@@ -117,8 +119,9 @@ class Myserial(Thread):
             return None
         else:
             for i in self.port_list:
-                print("{} - {}".format(i.portName(), i.description()))     #打印所有串口
-                if self.target == i.portName():
+                name = "{} - {}".format(i.portName(), i.description())
+                print(name)     #打印所有串口
+                if self.target in name:
                     self.portname = i.portName()
                     print("成功找到目标", self.target, "位于", self.portname)
                     return self.portname
@@ -184,9 +187,16 @@ class Myserial(Thread):
                 if portname == None:
                     portname = self.portname
                 print(self.bps)
-                self.ser = serial.Serial(portname, self.bps, bytesize=int(self.parameter[0]),exclusive = True, 
-                                         parity=self.parameter[1], stopbits=float(self.parameter[2]), 
-                                         timeout=5, write_timeout = 3)
+                self.ser = serial.Serial(
+                    portname, 
+                    self.bps, 
+                    bytesize=int(self.parameter[0]),
+                    exclusive = True, 
+                    parity=self.parameter[1], 
+                    stopbits=float(self.parameter[2]), 
+                    timeout=5, 
+                    write_timeout = 3
+                    )
                 self.ser.setRTS(self.RTS)
                 self.ser.setDTR(self.DTR)
                 self.Is_open = True
