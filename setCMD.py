@@ -1,89 +1,254 @@
 
 
-from Ui_cmdSetWindow import Ui_Form
-from PyQt5.QtWidgets import QWidget, QLineEdit, QCompleter, QDialog, QMessageBox, QTableWidgetItem
-from PyQt5.QtCore import Qt, QEvent, pyqtSignal
-from PyQt5.QtGui import QKeyEvent
+import cmdSetWindow_rc
+import icoPack_rc
+from cmdSetWindow_rc import *
+from PyQt5.QtWidgets import QWidget, QLineEdit, QCompleter, QFrame
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtWidgets import QInputDialog, QMessageBox, QTableWidgetItem
+from PyQt5.QtCore import Qt, QEvent, pyqtSignal, QCoreApplication, QSize
+from PyQt5.Qt import QMenu, QAction
 import os, json
 
 
+
+
+
+
+
+
+
+
+
+
 defaultCMDList = {
-}
-
-Linux_CMD_List = {
-  "PATH": "",
-  "cal": "\u663e\u793a\u65e5\u5386",
-  "cat": "",
-  "cd": "change directory",
-  "chmod": "",
-  "chown": "",
-  "cp": "\u590d\u5236\u6587\u4ef6",
-  "data": "\u663e\u793a\u65e5\u671f\u65f6\u95f4",
-  "depth": "",
-  "df": "\u663e\u793a\u78c1\u76d8\u7a7a\u95f4\u4f7f\u7528\u60c5\u51b5",
-  "du": "\u67e5\u770b\u4f7f\u7528\u7a7a\u95f4",
-  "find": "\u67e5\u627e\u6587\u4ef6",
-  "free": "\u663e\u793a\u7cfb\u7edf\u5185\u5b58\u60c5\u51b5",
-  "grep": "\u6587\u672c\u641c\u7d22",
-  "head": "",
-  "kill": "\u7ed3\u675f\u8fdb\u7a0b",
-  "less": "",
-  "list": "list",
-  "ln": "\u94fe\u63a5",
-  "locate": "\u641c\u7d22",
-  "ls": "\u5217\u51fa\u6587\u4ef6\u5217\u8868",
-  "mkdir": "\u521b\u5efa\u6587\u4ef6\u5939",
-  "more": "",
-  "mv": "\u79fb\u52a8\u6587\u4ef6",
-  "ps": "\u67e5\u770b\u8fdb\u7a0b\u72b6\u6001",
-  "pwd": "\u67e5\u770b\u5f53\u524d\u8def\u5f84",
-  "rm": "\u5220\u9664",
-  "rndir": "\u5220\u9664\u6587\u4ef6\u5939",
-  "swap": "",
-  "tail": "",
-  "top": "\u67e5\u770b\u8fdb\u7a0b\u4f7f\u7528\u60c5\u51b5",
-  "wc": "\u7edf\u8ba1\u5b57\u6570",
-  "whereis": "\u641c\u7d22\u7a0b\u5e8f",
-  "which": "\u67e5\u627e\u6587\u4ef6"
-}
-
-HC05_CMD_List = {
-  "": "",
-  "AT": "\u6d4b\u8bd5\u6307\u4ee4",
-  "AT+ADCN?": "\u83b7\u53d6\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u8ba4\u8bc1\u8bbe\u5907\u6570",
-  "AT+ADDR?": "\u83b7\u53d6\u6a21\u5757\u5730\u5740",
-  "AT+BIND": "\u8bbe\u7f6e/\u67e5\u8be2-\u7ed1\u5b9a\u84dd\u7259\u5730\u5740",
-  "AT+CLASS": "\u8bbe\u7f6e/\u67e5\u8be2-\u8bbe\u5907\u7c7b",
-  "AT+CMODE": "\u8bbe\u7f6e/\u67e5\u8be2-\u8fde\u63a5\u6a21\u5f0f",
-  "AT+DISC": "\u65ad\u5f00\u8fde\u63a5",
-  "AT+ENSNIFF=": "\u8fdb\u5165\u8282\u80fd\u6a21\u5f0f",
-  "AT+EXSNIFF=": "\u9000\u51fa\u8282\u80fd\u6a21\u5f0f",
-  "AT+FSAD": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u67e5\u627e\u6307\u5b9a\u8ba4\u8bc1\u8bbe\u5907",
-  "AT+IAC": "\u8bbe\u7f6e/\u67e5\u8be2-\u67e5\u8be2\u8bbf\u95ee\u7801",
-  "AT+INIT": "\u521d\u59cb\u5316 SPP \u89c4\u8303\u5e93",
-  "AT+INQ": "\u67e5\u8be2\u84dd\u7259\u8bbe\u5907",
-  "AT+INQC": "\u53d6\u6d88\u67e5\u8be2\u84dd\u7259\u8bbe\u5907",
-  "AT+INQM": "\u8bbe\u7f6e/\u67e5\u8be2-\u67e5\u8be2\u8bbf\u95ee\u6a21\u5f0f",
-  "AT+IPSCAN": "\u8bbe\u7f6e/\u67e5\u8be2-\u5bfb\u547c\u626b\u63cf\u3001\u67e5\u8be2\u626b\u63cf\u53c2\u6570",
-  "AT+LINK=": "\u8fde\u63a5\u8bbe\u5907",
-  "AT+MPIO": "\u8bbe\u7f6e PIO \u591a\u7aef\u53e3\u8f93\u51fa",
-  "AT+MRAD?": "\u83b7\u53d6\u6700\u8fd1\u4f7f\u7528\u8fc7\u7684\u84dd\u7259\u8ba4\u8bc1\u8bbe\u5907\u5730\u5740",
-  "AT+NAME": "\u8bbe\u7f6e/\u67e5\u8be2\u8bbe\u5907\u540d\u79f0",
-  "AT+ORGL": "\u6062\u590d\u9ed8\u8ba4\u72b6\u6001",
-  "AT+PAIR=": "\u8bbe\u5907\u914d\u5bf9",
-  "AT+PIO": "\u8bbe\u7f6e PIO \u5355\u7aef\u53e3\u8f93\u51fa",
-  "AT+POLAR": "\u8bbe\u7f6e/\u67e5\u8be2- LED ",
-  "AT+PSWD": "\u8bbe\u7f6e/\u67e5\u8be2-\u914d\u5bf9\u7801",
-  "AT+RESET": "\u6a21\u5757\u590d\u4f4d",
-  "AT+RMAAD": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u5220\u9664\u6240\u6709\u8ba4\u8bc1\u8bbe\u5907",
-  "AT+RMSAD=": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u5220\u9664\u6307\u5b9a\u8ba4\u8bc1\u8bbe\u5907",
-  "AT+RNAME?": "\u83b7\u53d6\u8fdc\u7a0b\u84dd\u7259\u8bbe\u5907\u540d\u79f0",
-  "AT+ROLE": "\u8bbe\u7f6e/\u67e5\u8be2-\u6a21\u5757\u89d2\u8272",
-  "AT+SENM": "\u8bbe\u7f6e/\u67e5\u8be2-\u5b89\u5168\u3001\u52a0\u5bc6\u6a21\u5f0f",
-  "AT+SNIFF": "\u8bbe\u7f6e/\u67e5\u8be2-SNIFF \u8282\u80fd\u53c2\u6570",
-  "AT+STATE?": "\u83b7\u53d6\u84dd\u7259\u6a21\u5757\u5de5\u4f5c\u72b6\u6001",
-  "AT+UART": "\u8bbe\u7f6e/\u67e5\u8be2-\u4e32\u53e3\u53c2\u6570",
-  "AT+VERSION?": "\u83b7\u53d6\u8f6f\u4ef6\u7248\u672c\u53f7"
+  "FinSH": {
+    "CMD": {
+		"command": "\u547d\u4ee4",
+		"dummy": "finsh\u7684\u865a\u62df\u53d8\u91cf",
+		"error": "\u9519\u8bef",
+		"hello": "\u6253\u5370hello world",
+		"left": "",
+		"list": "list all symbol in system",
+		"list_device": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684\u8bbe\u5907",
+		"list_event": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684event",
+		"list_magqueue": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684\u6d88\u606f\u961f\u5217",
+		"list_mailbox": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684mailbox",
+		"list_mem": "\u5217\u51fa\u5185\u5b58\u4f7f\u7528\u4fe1\u606f",
+		"list_mempool": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684memory pool",
+		"list_mutex": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684mutex",
+		"list_sem": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684semaphone",
+		"list_thread": "\u5217\u51fa\u7ebf\u7a0b",
+		"list_timer": "\u5217\u51fa\u7cfb\u7edf\u4e2d\u7684\u5b9a\u65f6\u5668",
+		"max": "\u6700\u5927",
+		"min": "\u6700\u5c0f",
+		"pri": "\u4f18\u5148\u7ea7",
+		"sp": "\u7ebf\u7a0b\u5f53\u524d\u7684\u6808\u4f4d\u7f6e",
+		"status": "\u72b6\u6001",
+		"thread": "\u7ebf\u7a0b\u7684\u540d\u79f0",
+		"tick": "",
+		"used": "",
+		"version": "\u663e\u793aRT-Thread\u7248\u672c\u4fe1\u606f"
+	  },
+    "Enable": False
+  },
+  "HC_05": {
+    "CMD": {
+		"AT": "\u6d4b\u8bd5\u6307\u4ee4",
+		"AT+": "",
+		"AT+ADCN?": "\u83b7\u53d6\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u8ba4\u8bc1\u8bbe\u5907\u6570",
+		"AT+ADDR?": "\u83b7\u53d6\u6a21\u5757\u5730\u5740",
+		"AT+BIND": "\u8bbe\u7f6e/\u67e5\u8be2-\u7ed1\u5b9a\u84dd\u7259\u5730\u5740",
+		"AT+CLASS": "\u8bbe\u7f6e/\u67e5\u8be2-\u8bbe\u5907\u7c7b",
+		"AT+CMODE": "\u8bbe\u7f6e/\u67e5\u8be2-\u8fde\u63a5\u6a21\u5f0f",
+		"AT+DISC": "\u65ad\u5f00\u8fde\u63a5",
+		"AT+ENSNIFF=": "\u8fdb\u5165\u8282\u80fd\u6a21\u5f0f",
+		"AT+EXSNIFF=": "\u9000\u51fa\u8282\u80fd\u6a21\u5f0f",
+		"AT+FSAD": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u67e5\u627e\u6307\u5b9a\u8ba4\u8bc1\u8bbe\u5907",
+		"AT+IAC": "\u8bbe\u7f6e/\u67e5\u8be2-\u67e5\u8be2\u8bbf\u95ee\u7801",
+		"AT+INIT": "\u521d\u59cb\u5316 SPP \u89c4\u8303\u5e93",
+		"AT+INQ": "\u67e5\u8be2\u84dd\u7259\u8bbe\u5907",
+		"AT+INQC": "\u53d6\u6d88\u67e5\u8be2\u84dd\u7259\u8bbe\u5907",
+		"AT+INQM": "\u8bbe\u7f6e/\u67e5\u8be2-\u67e5\u8be2\u8bbf\u95ee\u6a21\u5f0f",
+		"AT+IPSCAN": "\u8bbe\u7f6e/\u67e5\u8be2-\u5bfb\u547c\u626b\u63cf\u3001\u67e5\u8be2\u626b\u63cf\u53c2\u6570",
+		"AT+LINK=": "\u8fde\u63a5\u8bbe\u5907",
+		"AT+MPIO": "\u8bbe\u7f6e PIO \u591a\u7aef\u53e3\u8f93\u51fa",
+		"AT+MRAD?": "\u83b7\u53d6\u6700\u8fd1\u4f7f\u7528\u8fc7\u7684\u84dd\u7259\u8ba4\u8bc1\u8bbe\u5907\u5730\u5740",
+		"AT+NAME": "\u8bbe\u7f6e/\u67e5\u8be2\u8bbe\u5907\u540d\u79f0",
+		"AT+ORGL": "\u6062\u590d\u9ed8\u8ba4\u72b6\u6001",
+		"AT+PAIR=": "\u8bbe\u5907\u914d\u5bf9",
+		"AT+PIO": "\u8bbe\u7f6e PIO \u5355\u7aef\u53e3\u8f93\u51fa",
+		"AT+POLAR": "\u8bbe\u7f6e/\u67e5\u8be2- LED ",
+		"AT+PSWD": "\u8bbe\u7f6e/\u67e5\u8be2-\u914d\u5bf9\u7801",
+		"AT+RESET": "\u6a21\u5757\u590d\u4f4d",
+		"AT+RMAAD": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u5220\u9664\u6240\u6709\u8ba4\u8bc1\u8bbe\u5907",
+		"AT+RMSAD=": "\u4ece\u84dd\u7259\u914d\u5bf9\u5217\u8868\u4e2d\u5220\u9664\u6307\u5b9a\u8ba4\u8bc1\u8bbe\u5907",
+		"AT+RNAME?": "\u83b7\u53d6\u8fdc\u7a0b\u84dd\u7259\u8bbe\u5907\u540d\u79f0",
+		"AT+ROLE": "\u8bbe\u7f6e/\u67e5\u8be2-\u6a21\u5757\u89d2\u8272",
+		"AT+SENM": "\u8bbe\u7f6e/\u67e5\u8be2-\u5b89\u5168\u3001\u52a0\u5bc6\u6a21\u5f0f",
+		"AT+SNIFF": "\u8bbe\u7f6e/\u67e5\u8be2-SNIFF \u8282\u80fd\u53c2\u6570",
+		"AT+STATE?": "\u83b7\u53d6\u84dd\u7259\u6a21\u5757\u5de5\u4f5c\u72b6\u6001",
+		"AT+UART": "\u8bbe\u7f6e/\u67e5\u8be2-\u4e32\u53e3\u53c2\u6570",
+		"AT+VERSION?": "\u83b7\u53d6\u8f6f\u4ef6\u7248\u672c\u53f7"
+	  },
+    "Enable": True
+  },
+  "Linux": {
+    "CMD": {
+		"PATH": "",
+		"cal": "\u663e\u793a\u65e5\u5386",
+		"cat": "",
+		"cd": "change directory",
+		"chmod": "",
+		"chown": "",
+		"cp": "\u590d\u5236\u6587\u4ef6",
+		"data": "\u663e\u793a\u65e5\u671f\u65f6\u95f4",
+		"depth": "",
+		"df": "\u663e\u793a\u78c1\u76d8\u7a7a\u95f4\u4f7f\u7528\u60c5\u51b5",
+		"du": "\u67e5\u770b\u4f7f\u7528\u7a7a\u95f4",
+		"find": "\u67e5\u627e\u6587\u4ef6",
+		"free": "\u663e\u793a\u7cfb\u7edf\u5185\u5b58\u60c5\u51b5",
+		"grep": "\u6587\u672c\u641c\u7d22",
+		"head": "",
+		"kill": "\u7ed3\u675f\u8fdb\u7a0b",
+		"less": "",
+		"list": "list",
+		"ln": "\u94fe\u63a5",
+		"locate": "\u641c\u7d22",
+		"ls": "\u5217\u51fa\u6587\u4ef6\u5217\u8868",
+		"mkdir": "\u521b\u5efa\u6587\u4ef6\u5939",
+		"more": "",
+		"mv": "\u79fb\u52a8\u6587\u4ef6",
+		"ps": "\u67e5\u770b\u8fdb\u7a0b\u72b6\u6001",
+		"pwd": "\u67e5\u770b\u5f53\u524d\u8def\u5f84",
+		"rm": "\u5220\u9664",
+		"rndir": "\u5220\u9664\u6587\u4ef6\u5939",
+		"swap": "",
+		"tail": "",
+		"top": "\u67e5\u770b\u8fdb\u7a0b\u4f7f\u7528\u60c5\u51b5",
+		"wc": "\u7edf\u8ba1\u5b57\u6570",
+		"whereis": "\u641c\u7d22\u7a0b\u5e8f",
+		"which": "\u67e5\u627e\u6587\u4ef6"
+	  },
+    "Enable": True
+  },
+  "\u9ed8\u8ba4": {
+    "CMD": {
+      "": "",
+      "\"\"": "",
+      "''": "",
+      "()": "",
+      "+1": "",
+      ", ": "",
+      "-1": "",
+      "3.3V": "",
+      "5V": "",
+      "<>": "",
+      "ADDR": "",
+      "AT": "",
+      "AT+": "",
+      "CMD": "",
+      "GND": "",
+      "Hello world": "",
+      "ID": "",
+      "IO": "",
+      "Max": "",
+      "Min": "",
+      "NAME": "",
+      "NULL": "",
+      "PACK": "",
+      "PI": "",
+      "VCC": "",
+      "[]": "",
+      "accept": "",
+      "alt": "",
+      "back": "",
+      "begin": "",
+      "break": "",
+      "bug": "",
+      "cancel": "",
+      "catch": "",
+      "client": "",
+      "close": "",
+      "connect": "",
+      "control": "",
+      "data": "",
+      "date": "",
+      "delete": "",
+      "do": "",
+      "down": "",
+      "download": "",
+      "else": "",
+      "en": "",
+      "end": "",
+      "enter": "",
+      "exit": "",
+      "false": "",
+      "find": "",
+      "for": "",
+      "go": "",
+      "hello": "",
+      "high": "",
+      "home": "",
+      "id": "",
+      "if": "",
+      "in": "",
+      "input": "",
+      "insert": "",
+      "io": "",
+      "it": "",
+      "kill": "",
+      "left": "",
+      "load": "",
+      "low": "",
+      "max": "",
+      "min": "",
+      "mode": "",
+      "name": "",
+      "no": "",
+      "null": "",
+      "num": "",
+      "open": "",
+      "out": "",
+      "output": "",
+      "pack": "",
+      "packet": "",
+      "page": "",
+      "port": "",
+      "quit": "",
+      "re": "",
+      "read": "",
+      "reset": "",
+      "right": "",
+      "run": "",
+      "server": "",
+      "servo": "",
+      "setup": "",
+      "shift": "",
+      "shut": "",
+      "shutdown": "",
+      "so": "",
+      "start": "",
+      "stop": "",
+      "sys": "",
+      "tab": "",
+      "test": "",
+      "to": "",
+      "true": "",
+      "try": "",
+      "un": "",
+      "up": "",
+      "use": "",
+      "value": "",
+      "var": "",
+      "vcc": "",
+      "view": "",
+      "write": "",
+      "yes": "",
+      "{}": ""
+    },
+    "Enable": True
+  }
 }
 
 cmdListFileName = 'CMDList.json'
@@ -133,7 +298,7 @@ class AutoCompleteEdit(QLineEdit):
 	@description: 设置补全
 	@param model: 补全列表
 	'''
-	def _setupCompleter(self, model):
+	def _setupCompleter(self, model = []):
 		self._completer = self.Mycompleter(self, model)
 		self._completer.setWidget(self)
 		self._completer.installEventFilter(self._completer)
@@ -218,14 +383,29 @@ class CMDSendLine():
 		self.cmdSendLine.keyUpSignal.connect(self.keyUpCallBack)
 		self.cmdSendLine.keyDownSignal.connect(self.keyDownCallBack)
 
+	def _setModel(self):
+		self.cmdSendLine._setupCompleter(model=self._loadList())
+
 	def _loadList(self):
-		if os.path.exists(cmdListFileName):
+		CMDList = []
+		dataDict = {}
+		try:
 			with open(cmdListFileName, 'r') as f:
-				return json.load(f).keys()
-		else:
+				dataDict = json.load(f)
+			for item in dataDict.keys():
+				if dataDict[item]['Enable']:
+					CMDList += dataDict[item]['CMD'].keys()
+		except Exception as e:
+			print(cmdListFileName + "文件不存在", e)
 			with open(cmdListFileName, 'w') as f:
 				json.dump(defaultCMDList, f, sort_keys=True,indent=2, separators=(',', ': '))
-		return defaultCMDList.keys()
+			dataDict = defaultCMDList
+			for item in dataDict.keys():
+				if dataDict[item]['Enable']:
+					CMDList += dataDict[item]['CMD'].keys()
+		finally:
+			return CMDList
+		
 		
 
 	def sendCMD(self):
@@ -266,119 +446,332 @@ class CMDSendLine():
 		else:
 			self.sendListFlag = self.sendListLen - 1
 
-	def setModel(self, model):
-		self.cmdSendLine._setupCompleter(model)
-
 
 class setCmdWindow(QWidget):
-	closeSignal = pyqtSignal(list)
+	closeSignal = pyqtSignal()
 	def __init__(self):
 		super().__init__()
-		self.windowItem = Ui_Form()
-		self.windowItem.setupUi(self)
-		self.addList = {}
-		self.deleteList = {}
-		self.itemList = {}
-		self.IsChange = False
-		self.ItemFlag = 0
-		self._loadList()
-		self.windowItem.addButton.clicked.connect(self._addItem)
-		self.windowItem.deleteButton.clicked.connect(self._deleteItem)
-		self.windowItem.savePushButton.clicked.connect(self._saveList)
-		self.windowItem.cmdListTabel.cellChanged.connect(self._edit)
-		self.windowItem.cmdListTabel.cellPressed.connect(self._press)
+		_translate = QCoreApplication.translate
+		self.tabList = {}
+		self.defaultList = ['默认', 'HC_05', 'FinSH', 'Linux']
 
+		self.setWindowTitle(_translate("Form", "编辑指令集"))
+		self.setObjectName("Form")
+		self.resize(514, 622)
+		self.verticalLayout = QtWidgets.QVBoxLayout(self)
+		self.verticalLayout.setObjectName("verticalLayout")
+		self.tabWidget = QtWidgets.QTabWidget(self)
+		font = QtGui.QFont()
+		font.setFamily("等线")
+		font.setPointSize(13)
+		self.tabWidget.setFont(font)
+		self.tabWidget.setObjectName("tabWidget")
+		self.verticalLayout.addWidget(self.tabWidget)
+		for name in self.defaultList:
+			self._addDefaultTab(name)
+		self.new = QtWidgets.QWidget()
+		self.new.setObjectName("new")
+		self.tabWidget.addTab(self.new, "+")
+		self.tabWidget.setCurrentIndex(0)
 
+		self.tabWidget.currentChanged.connect(self._insertNewTab)
+		self.tabWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+		self.tabWidget.customContextMenuRequested.connect(self._showTabMenu)
 
-	def _loadList(self):
-		if os.path.exists(cmdListFileName):
+		# self.tabWidget.customContxtMenuRequested.connect(self._showTabMenu)
+
+	class _newTab(QWidget):
+		def __init__(self, name=""):
+			super().__init__()
+			if name != "":
+				self.setObjectName(name)
+			else:
+				name = '默认'
+			self.name = name
+			self._setupItem()
+			self.addList = {}
+			self.deleteList = {}
+			self.itemList = {}
+			self.IsChange = False
+			self.ItemFlag = 0
+			self.enable = True
+			self._loadList()
+			self.addButton.clicked.connect(self._addItem)
+			self.deleteButton.clicked.connect(self._deleteItem)
+			self.savePushButton.clicked.connect(self._saveList)
+			self.cmdListTabel.cellChanged.connect(self._edit)
+			self.cmdListTabel.cellPressed.connect(self._press)
+			self.enableCheckBox.clicked.connect(self._setEnable)
+			self.enableCheckBox.setChecked(self.enable)
+
+		def _setupItem(self):
+			_translate = QCoreApplication.translate
+			self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
+			self.verticalLayout_2.setContentsMargins(11, 11, 11, 11)
+			self.verticalLayout_2.setObjectName("verticalLayout_2")
+			self.cmdListTabel = QtWidgets.QTableWidget(self)
+			font = QtGui.QFont()
+			font.setFamily("等线")
+			font.setPointSize(12)
+			self.cmdListTabel.setFont(font)
+			self.cmdListTabel.setTabKeyNavigation(True)
+			self.cmdListTabel.setObjectName("cmdListTabel")
+			self.cmdListTabel.setColumnCount(2)
+			self.cmdListTabel.setRowCount(0)
+			item = QTableWidgetItem()
+			self.cmdListTabel.setHorizontalHeaderItem(0, item)
+			item = QTableWidgetItem()
+			self.cmdListTabel.setHorizontalHeaderItem(1, item)
+			self.cmdListTabel.horizontalHeader().setStretchLastSection(True)
+			self.cmdListTabel.verticalHeader().setVisible(False)
+			self.verticalLayout_2.addWidget(self.cmdListTabel)
+			item = self.cmdListTabel.horizontalHeaderItem(0)
+			item.setText(_translate("Form", "指令块"))
+			item = self.cmdListTabel.horizontalHeaderItem(1)
+			item.setText(_translate("Form", "描述"))
+			self.frame = QtWidgets.QFrame(self)
+			self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+			self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+			self.frame.setObjectName("frame")
+			self.verticalLayout_2.addWidget(self.frame)
+			self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame)
+			self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+			self.horizontalLayout.setObjectName("horizontalLayout")
+			self.addButton = QtWidgets.QPushButton(self.frame)
+			sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+			sizePolicy.setHorizontalStretch(0)
+			sizePolicy.setVerticalStretch(0)
+			sizePolicy.setHeightForWidth(self.addButton.sizePolicy().hasHeightForWidth())
+			self.addButton.setSizePolicy(sizePolicy)
+			font = QtGui.QFont()
+			font.setFamily("等线")
+			font.setPointSize(14)
+			self.addButton.setFont(font)
+			self.addButton.setStyleSheet("image: url(:/Main/ico/添加.ico);")
+			self.addButton.setText("")
+			icon = QtGui.QIcon()
+			icon.addPixmap(QtGui.QPixmap(":/Main/ico/添加.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+			self.addButton.setIcon(icon)
+			self.addButton.setIconSize(QSize(22, 22))
+			self.addButton.setObjectName("addButton")
+			self.horizontalLayout.addWidget(self.addButton)
+			self.deleteButton = QtWidgets.QPushButton(self.frame)
+			sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+			sizePolicy.setHorizontalStretch(0)
+			sizePolicy.setVerticalStretch(0)
+			sizePolicy.setHeightForWidth(self.deleteButton.sizePolicy().hasHeightForWidth())
+			self.deleteButton.setSizePolicy(sizePolicy)
+			font = QtGui.QFont()
+			font.setFamily("等线")
+			font.setPointSize(14)
+			self.deleteButton.setFont(font)
+			self.deleteButton.setText("")
+			icon1 = QtGui.QIcon()
+			icon1.addPixmap(QtGui.QPixmap(":/Main/ico/减.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+			self.deleteButton.setIcon(icon1)
+			self.deleteButton.setIconSize(QSize(22, 22))
+			self.deleteButton.setObjectName("deleteButton")
+			self.horizontalLayout.addWidget(self.deleteButton)
+			spacerItem = QtWidgets.QSpacerItem(118, 13, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+			self.horizontalLayout.addItem(spacerItem)
+
+			self.enableCheckBox = QtWidgets.QCheckBox(self.frame)
+			self.enableCheckBox.setObjectName("enableCheckBox")
+			self.horizontalLayout.addWidget(self.enableCheckBox)
+			self.enableCheckBox.setText('启用')
+
+			self.savePushButton = QtWidgets.QPushButton(self.frame)
+			font = QtGui.QFont()
+			font.setFamily("等线")
+			font.setPointSize(12)
+			self.savePushButton.setFont(font)
+			icon2 = QtGui.QIcon()
+			icon2.addPixmap(QtGui.QPixmap(":/Mainico/ico/20200510-221417.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+			self.savePushButton.setIcon(icon2)
+			self.savePushButton.setObjectName("savePushButton")
+			self.horizontalLayout.addWidget(self.savePushButton)
+			self.savePushButton.setText('保存')
+
+		def _setEnable(self, value):
+			self.enable = value
+			self.IsChange = True
+
+		def _loadList(self):
+			CMDDict = {}
+			dataDict = {}
+			try:
+				with open(cmdListFileName, 'r') as f:
+					dataDict = json.load(f)
+					
+			except:
+				with open(cmdListFileName, 'w') as f:
+					json.dump(defaultCMDList, f, sort_keys=True,indent=2, separators=(',', ': '))
+				dataDict = defaultCMDList
+
+			finally:
+				if self.name in dataDict.keys():
+					CMDDict = dataDict[self.name]
+					self.itemList = CMDDict['CMD']
+					self.enable = CMDDict['Enable']
+
+				for item in self.itemList.keys():
+					itemText = QTableWidgetItem(str(item))
+					itemDescribe = QTableWidgetItem(str(self.itemList[item]))
+					self.cmdListTabel.insertRow(self.ItemFlag)
+					self.cmdListTabel.setItem(self.ItemFlag, 0, itemText)
+					self.cmdListTabel.setItem(self.ItemFlag, 1, itemDescribe)
+					self.ItemFlag += 1
+	# 			self.window.dataTable.setItem(row, column, item)
+
+		def _saveList(self):
+			self.itemList.clear()
+			for row in range(self.cmdListTabel.rowCount()):
+				itemText = self.cmdListTabel.item(row, 0)
+				itemDescribe = self.cmdListTabel.item(row, 1)
+				if itemText == None:
+					itemText = ""
+				else:
+					itemText = itemText.text()
+				if itemDescribe == None:
+					itemDescribe = ""
+				else:
+					itemDescribe = itemDescribe.text()
+				self.itemList[itemText] = itemDescribe
 			with open(cmdListFileName, 'r') as f:
-				self.itemList = json.load(f)
-		else:
+				dataDict = json.load(f)
+			if self.name in dataDict.keys():
+				CMDDict = dataDict[self.name]
+			else:
+				CMDDict = {}
+			CMDDict["CMD"] = self.itemList
+			CMDDict["Enable"] = self.enable
+			dataDict[self.name] = CMDDict
 			with open(cmdListFileName, 'w') as f:
-				json.dump(defaultCMDList, f, sort_keys=True,indent=2, separators=(',', ': '))
-			self.itemList = defaultCMDList
-		for item in self.itemList.keys():
-			itemText = QTableWidgetItem(str(item))
-			itemDescribe = QTableWidgetItem(str(self.itemList[item]))
-			print(self.ItemFlag, item)
-			self.windowItem.cmdListTabel.insertRow(self.ItemFlag)
-			self.windowItem.cmdListTabel.setItem(self.ItemFlag, 0, itemText)
-			self.windowItem.cmdListTabel.setItem(self.ItemFlag, 1, itemDescribe)
-			self.ItemFlag += 1
-# 			self.window.dataTable.setItem(row, column, item)
+				json.dump(dataDict, f, sort_keys=True,indent=2, separators=(',', ': '))
+			self.IsChange = False
+			self.savePushButton.setText('保存成功')
 
-	def _saveList(self):
-		self.itemList.clear()
-		for row in range(self.windowItem.cmdListTabel.rowCount()):
-			itemText = self.windowItem.cmdListTabel.item(row, 0)
-			itemDescribe = self.windowItem.cmdListTabel.item(row, 1)
-			if itemText == None:
-				itemText = ""
-			else:
-				itemText = itemText.text()
-			if itemDescribe == None:
-				itemDescribe = ""
-			else:
-				itemDescribe = itemDescribe.text()
-			self.itemList[itemText] = itemDescribe
-		with open(cmdListFileName, 'w') as f:
-			json.dump(self.itemList, f, sort_keys=True,indent=2, separators=(',', ': '))
-		self.IsChange = False
-
-	def _addItem(self):
-		self.windowItem.cmdListTabel.insertRow(self.ItemFlag)
-		# if self.ItemFlag in self.deleteList.keys():
-		# 	self.deleteList.pop(self.ItemFlag)
-		# else:
-		# 	self.addList[self.ItemFlag] = ""
-		# 	print('add', self.ItemFlag)
-		self.ItemFlag += 1
-	
-	def _deleteItem(self):
-		ItemFlag_ = self.ItemFlag - 1
-		self.IsChange = True
-		if ItemFlag_ >= 0:
-			self.windowItem.cmdListTabel.removeRow(ItemFlag_)
-			# if (ItemFlag_) in self.addList.keys():
-			# 	self.addList.pop(ItemFlag_)
+		def _addItem(self):
+			self.cmdListTabel.insertRow(self.ItemFlag)
+			# if self.ItemFlag in self.deleteList.keys():
+			# 	self.deleteList.pop(self.ItemFlag)
 			# else:
-			# 	self.deleteList[ItemFlag_] = ""
-			# print('delete', ItemFlag_)
-			self.ItemFlag -= 1
-		elif self.windowItem.cmdListTabel.rowCount() > 0:
-			self.windowItem.cmdListTabel.removeRow(0)
+			# 	self.addList[self.ItemFlag] = ""
+			# 	print('add', self.ItemFlag)
+			self.ItemFlag += 1
+		
+		def _deleteItem(self):
+			ItemFlag_ = self.ItemFlag - 1
+			self.IsChange = True
+			self.savePushButton.setText('保存')
+			if ItemFlag_ >= 0:
+				self.cmdListTabel.removeRow(ItemFlag_)
+				# if (ItemFlag_) in self.addList.keys():
+				# 	self.addList.pop(ItemFlag_)
+				# else:
+				# 	self.deleteList[ItemFlag_] = ""
+				# print('delete', ItemFlag_)
+				self.ItemFlag -= 1
+			elif self.cmdListTabel.rowCount() > 0:
+				self.cmdListTabel.removeRow(0)
+		
+		def _edit(self, row, column):
+			self.IsChange = True
+			self.savePushButton.setText('保存')
+		
+		def _press(self, row, column):
+			self.ItemFlag = row + 1
 	
-	def _edit(self, row, column):
-		self.IsChange = True
+
+	def _addDefaultTab(self, name):
+		newTab = self._newTab(name)
+		self.tabList[name] = newTab
+		self.tabWidget.addTab(newTab, name)
+
+	def _showTabMenu(self, pos):
+		currentTab = self.tabWidget.currentIndex()
+		mainMenu = QMenu(self.tabWidget)
+		newTab = QAction("新建页", mainMenu)
+		newTab.triggered.connect(lambda: self._addNewTab(currentTab + 1))
+		deleteTab = QAction("删除页", mainMenu)
+		deleteTab.triggered.connect(lambda: self._removeTab(currentTab))
+		renameTab = QAction("重命名页", mainMenu)
+		renameTab.triggered.connect(lambda: self._renameTab(currentTab))
+		mainMenu.addAction(newTab)
+		mainMenu.addAction(deleteTab)
+		mainMenu.addAction(renameTab)
+		Point=self.tabWidget.mapToGlobal(pos)
+		mainMenu.exec_(Point)
+
+	def _removeTab(self, tabNum):
+		currentTabText = self.tabWidget.tabText(tabNum)
+		if currentTabText in self.defaultList:
+			QMessageBox.warning(self, '警告', currentTabText + '页不可删除')
+		else:
+			if QMessageBox.question(self, '警告', '是否删除{}?'.format(currentTabText),
+			 QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+				self.tabWidget.setCurrentIndex(tabNum - 1)
+				self.tabWidget.removeTab(tabNum)
+
+	def _renameTab(self, tabNum):
+		currentTabText = self.tabWidget.tabText(tabNum)
+		if currentTabText in self.defaultList:
+			QMessageBox.warning(self, '警告', currentTabText + '页不可重命名')
+			return 
+		name, ok = QInputDialog.getText(self, "命名标签", "内容与页标签互相绑定", QLineEdit.Normal, "页{}".format(tabNum))
+		if ok:
+			if name in self.tabList.keys():
+				QMessageBox.warning(self, '警告', '存在同名页')
+			else:
+				self.tabList[name] = self.tabList.pop(currentTabText)
+				self.tabWidget.setTabText(tabNum, name)
+
+	def _addNewTab(self, indexOfNewTab):
+		name, ok = QInputDialog.getText(self, "命名标签", "内容与页标签互相绑定", QLineEdit.Normal, "页{}".format(indexOfNewTab))
+		if ok:
+			if name in self.tabList.keys():
+				QMessageBox.warning(self, '警告', '存在同名页')
+			else:
+				newTab = self._newTab(name)
+				self.tabList[name] = newTab
+				self.tabWidget.insertTab(indexOfNewTab, newTab, name)
+			indexOfNewTab += 1
+		self.tabWidget.setCurrentIndex(indexOfNewTab-1)
+
+	def _insertNewTab(self, num):
+		indexOfNewTab =  self.tabWidget.indexOf(self.new)
+		if num == indexOfNewTab:	
+			self._addNewTab(num)
 	
-	def _press(self, row, column):
-		self.ItemFlag = row + 1
-	
+	def _saveAll(self):
+		for tab in self.tabList:
+			if self.tabList[tab].IsChange:
+				self.tabList[tab]._saveList()
+
 	def closeEvent(self, event):
-		if self.IsChange:
-			if QMessageBox.question(self, "警告",
-				"你想要在关闭之前保存对这个表格所做的改变吗？",
-				QMessageBox.Yes,
-				QMessageBox.No
-			) == QMessageBox.Yes:
-				self._saveList()
-		self.closeSignal.emit(list(self.itemList.keys()))
+		for tab in self.tabList:
+			if self.tabList[tab].IsChange:
+				if QMessageBox.question(self, "警告",
+					"你想要在关闭之前保存对这个表格所做的改变吗？",
+					QMessageBox.Yes,
+					QMessageBox.No
+				) == QMessageBox.Yes:
+					self._saveAll()
+					break
+		self.closeSignal.emit()
 		
 			
 
 
 
-if __name__ == "__main__":
-	import sys
-	from PyQt5 import QtWidgets
-	app = QtWidgets.QApplication(sys.argv)
-	cmd = setCmdWindow()
-	cmd.show()
-	sys.exit(app.exec_())
+# if __name__ == "__main__":
+# 	import sys
+# 	from PyQt5 import QtWidgets
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	cmd = setCmdWindow()
+# 	cmd.show()
+# 	sys.exit(app.exec_())
 
-# def test():
-# 	
 
 
 

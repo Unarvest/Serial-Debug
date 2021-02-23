@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1274</width>
-    <height>829</height>
+    <width>1276</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -140,16 +140,16 @@
          <number>8</number>
         </property>
         <item>
-         <widget class="QFrame" name="mainLeftFrame">
+         <widget class="QScrollArea" name="scrollArea">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-            <horstretch>0</horstretch>
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>3</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>300</width>
             <height>0</height>
            </size>
           </property>
@@ -161,7 +161,7 @@
           </property>
           <property name="font">
            <font>
-            <family>微软雅黑</family>
+            <family>等线</family>
             <pointsize>13</pointsize>
             <weight>50</weight>
             <italic>false</italic>
@@ -170,70 +170,1530 @@
             <strikeout>false</strikeout>
            </font>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+          <property name="lineWidth">
+           <number>1</number>
           </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <property name="leftMargin">
-            <number>0</number>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>313</width>
+             <height>756</height>
+            </rect>
            </property>
-           <property name="topMargin">
-            <number>0</number>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="rightMargin">
-            <number>0</number>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
            </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QScrollArea" name="scrollArea">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>等线</family>
-               <pointsize>13</pointsize>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-               <underline>false</underline>
-               <strikeout>false</strikeout>
-              </font>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>341</width>
-                <height>739</height>
-               </rect>
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <property name="leftMargin">
+             <number>8</number>
+            </property>
+            <property name="topMargin">
+             <number>8</number>
+            </property>
+            <property name="rightMargin">
+             <number>8</number>
+            </property>
+            <property name="bottomMargin">
+             <number>8</number>
+            </property>
+            <item>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="3" column="0">
+                 <widget class="QLabel" name="byteSizeLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>数据位:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>byteSizeComboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="parityLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>校验位:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>parityComboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="bpsLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>波特率:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>bpscomboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QComboBox" name="byteSizeComboBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>数据位</string>
+                  </property>
+                  <property name="currentText">
+                   <string>5</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>5</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>6</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>7</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>8</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="5" column="2">
+                 <widget class="QComboBox" name="stopBitsComboBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>停止位</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1.5</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="stopBitsLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>停止位:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>stopBitsComboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QComboBox" name="parityComboBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>校验位</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>None</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
+                    </iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Even</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
+                    </iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Mark</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
+                    </iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Odd</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
+                    </iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QComboBox" name="bpscomboBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>5</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>115200以上需设备支持</string>
+                  </property>
+                  <property name="currentText">
+                   <string>1800</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>15</height>
+                   </size>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>1800</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2400</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>4800</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>9600</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>19200</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>38400</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>57600</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>115200</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>230400</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>460800</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>921600</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="icoPack.qrc">
+                     <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <spacer name="horizontalSpacer_4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>80</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="1">
+                 <spacer name="horizontalSpacer_3">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="1">
+                 <spacer name="horizontalSpacer_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="1">
+                 <spacer name="horizontalSpacer">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>微软雅黑</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QFrame" name="FrameOpen">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_16">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QRadioButton" name="connectStateRadioButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>25</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>13</pointsize>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>切换串口状态</string>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QRadioButton::indicator {width:25px;height:25px;border-radius:25px}
+QRadioButton::indicator:checked {image: url(:/ico/ico/打开.png);}
+QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
+</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="shortcut">
+                  <string notr="true"/>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="autoExclusive">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="openSerialButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>10</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>等线</family>
+                   <pointsize>13</pointsize>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                   <underline>false</underline>
+                   <strikeout>false</strikeout>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>默认连接CH340</string>
+                 </property>
+                 <property name="text">
+                  <string>  打开串口</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icoPack.qrc">
+                   <normaloff>:/Mainico/ico/20200511-171524.ico</normaloff>:/Mainico/ico/20200511-171524.ico</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>27</width>
+                   <height>27</height>
+                  </size>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>微软雅黑</family>
+                <pointsize>13</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+                <underline>false</underline>
+                <strikeout>false</strikeout>
+               </font>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="">
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="showHexCheckBox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>等线</family>
+                   <pointsize>13</pointsize>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                   <underline>false</underline>
+                   <strikeout>false</strikeout>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string>显示十六进制数据</string>
+                 </property>
+                 <property name="text">
+                  <string>显示HEX</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icoPack.qrc">
+                   <normaloff>:/Mainico/ico/20200510-234010.ico</normaloff>:/Mainico/ico/20200510-234010.ico</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="showSendCheckBox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>等线</family>
+                   <pointsize>13</pointsize>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                   <underline>false</underline>
+                   <strikeout>false</strikeout>
+                  </font>
+                 </property>
+                 <property name="toolTip">
+                  <string/>
+                 </property>
+                 <property name="text">
+                  <string>显示信息</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="icoPack.qrc">
+                   <normaloff>:/Mainico/ico/20200510-230158.ico</normaloff>:/Mainico/ico/20200510-230158.ico</iconset>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <item>
+               <widget class="QCheckBox" name="cutFrameCheckBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>自动断帧</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/MainWin/ico/20200510-223345.ico</normaloff>:/MainWin/ico/20200510-223345.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item>
+                 <widget class="QSpinBox" name="cutTimeSpinBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>最大2000ms</string>
+                  </property>
+                  <property name="maximum">
+                   <number>2000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="cutLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>ms</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QPushButton" name="saveMsgPushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Alt + S</string>
+                </property>
+                <property name="text">
+                 <string>保存数据</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/Mainico/ico/20200510-221417.ico</normaloff>:/Mainico/ico/20200510-221417.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="cleanMsgPushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>清空接收</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/MainWin/ico/20200510-223403.ico</normaloff>:/MainWin/ico/20200510-223403.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>微软雅黑</family>
+                <pointsize>13</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+                <underline>false</underline>
+                <strikeout>false</strikeout>
+               </font>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <item>
+               <widget class="QCheckBox" name="sendHexCheckBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>发送十六进制数据</string>
+                </property>
+                <property name="text">
+                 <string>发送HEX</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/Mainico/ico/20200510-234010.ico</normaloff>:/Mainico/ico/20200510-234010.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="enterSendCheckBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>仅对单条发送有效</string>
+                </property>
+                <property name="text">
+                 <string>回车发送</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/Mainico/ico/20200510-234445.ico</normaloff>:/Mainico/ico/20200510-234445.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QCheckBox" name="sendTimeCheckBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>定时发送</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/MainWin/ico/20200510-230202.ico</normaloff>:/MainWin/ico/20200510-230202.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QSpinBox" name="sendTimeSpinBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>100</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>最大20000ms</string>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>20000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="sendTimeLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>ms</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item>
+                 <widget class="QLabel" name="lineChangeLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>换行符</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>lineChangeComboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="lineChangeComboBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>13</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>\r\n</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>\r</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>\n</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>None</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QCheckBox" name="DTR_CheckBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>12</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>ArrowCursor</cursorShape>
+                  </property>
+                  <property name="toolTip">
+                   <string>硬件DSR/DTR流控开关</string>
+                  </property>
+                  <property name="text">
+                   <string>DTR</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="RTS_CheckBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>等线</family>
+                    <pointsize>12</pointsize>
+                    <weight>50</weight>
+                    <italic>false</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                    <strikeout>false</strikeout>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>ArrowCursor</cursorShape>
+                  </property>
+                  <property name="toolTip">
+                   <string>RTS/CTS流控开关</string>
+                  </property>
+                  <property name="text">
+                   <string>RTS</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="Line" name="line_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <family>微软雅黑</family>
+                <pointsize>13</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+                <underline>false</underline>
+                <strikeout>false</strikeout>
+               </font>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="autoConnectLineEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="sizeIncrement">
+                 <size>
+                  <width>150</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>设备关键字</string>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="text">
+                 <string>CH340</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="autoConnectCheckBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>启动时自动查找设备</string>
+                </property>
+                <property name="text">
+                 <string>自动连接</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/MainWin/ico/20200510-230228.ico</normaloff>:/MainWin/ico/20200510-230228.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="searchSerialButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="maximumSize">
                <size>
@@ -241,1470 +1701,113 @@
                 <height>16777215</height>
                </size>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_15">
+              <property name="font">
+               <font>
+                <family>等线</family>
+                <pointsize>13</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+                <underline>false</underline>
+                <strikeout>false</strikeout>
+               </font>
+              </property>
+              <property name="toolTip">
+               <string>列出可用串口</string>
+              </property>
+              <property name="text">
+               <string>搜索串口</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icoPack.qrc">
+                <normaloff>:/MainWin/ico/20200511-173453.ico</normaloff>:/MainWin/ico/20200511-173453.ico</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>25</width>
+                <height>25</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="serialListWidget">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>110</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>等线</family>
+                <pointsize>14</pointsize>
+                <weight>50</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+                <underline>false</underline>
+                <strikeout>false</strikeout>
+               </font>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Box</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Sunken</enum>
+              </property>
+              <property name="lineWidth">
+               <number>1</number>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_6">
                <property name="leftMargin">
-                <number>8</number>
+                <number>5</number>
                </property>
                <property name="topMargin">
-                <number>8</number>
+                <number>5</number>
                </property>
                <property name="rightMargin">
-                <number>8</number>
+                <number>5</number>
                </property>
                <property name="bottomMargin">
-                <number>8</number>
+                <number>5</number>
                </property>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <item row="0" column="0">
-                  <layout class="QGridLayout" name="gridLayout">
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="bpsLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>波特率:</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>bpscomboBox</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QLabel" name="parityLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>校验位:</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>parityComboBox</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="2">
-                    <widget class="QComboBox" name="byteSizeComboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>数据位</string>
-                     </property>
-                     <property name="currentText">
-                      <string>5</string>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>20</width>
-                       <height>15</height>
-                      </size>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>5</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>6</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>7</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>8</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223408.ico</normaloff>:/MainWin/ico/20200510-223408.ico</iconset>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <spacer name="horizontalSpacer_2">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>微软雅黑</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Expanding</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>0</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="5" column="2">
-                    <widget class="QComboBox" name="stopBitsComboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>停止位</string>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>20</width>
-                       <height>15</height>
-                      </size>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>1</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>1.5</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>2</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223417.ico</normaloff>:/MainWin/ico/20200510-223417.ico</iconset>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="5" column="0">
-                    <widget class="QLabel" name="stopBitsLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>停止位:</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>stopBitsComboBox</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="2">
-                    <widget class="QComboBox" name="bpscomboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>5</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>115200以上需设备支持</string>
-                     </property>
-                     <property name="currentText">
-                      <string>1800</string>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>20</width>
-                       <height>15</height>
-                      </size>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>1800</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>2400</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>4800</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>9600</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>19200</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>38400</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>57600</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>115200</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>230400</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>460800</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>921600</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200510-223358.ico</normaloff>:/MainWin/ico/20200510-223358.ico</iconset>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="2" column="1">
-                    <spacer name="horizontalSpacer">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>微软雅黑</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Expanding</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>0</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="4" column="1">
-                    <spacer name="horizontalSpacer_3">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>微软雅黑</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Expanding</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>0</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="4" column="2">
-                    <widget class="QComboBox" name="parityComboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>校验位</string>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>20</width>
-                       <height>15</height>
-                      </size>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>None</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
-                       </iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Even</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
-                       </iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Mark</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
-                       </iconset>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Odd</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normalon>:/MainWin/ico/20200510-223427.ico</normalon>
-                       </iconset>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item row="5" column="1">
-                    <spacer name="horizontalSpacer_4">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>微软雅黑</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Expanding</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>80</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item row="3" column="0">
-                    <widget class="QLabel" name="byteSizeLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>数据位:</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>byteSizeComboBox</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <widget class="QRadioButton" name="connectStateRadioButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>25</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>13</pointsize>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>切换串口状态</string>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QRadioButton::indicator {width:25px;height:25px;border-radius:25px}
-QRadioButton::indicator:checked {image: url(:/ico/ico/打开.png);}
-QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
-</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="shortcut">
-                    <string notr="true"/>
-                   </property>
-                   <property name="checkable">
-                    <bool>false</bool>
-                   </property>
-                   <property name="checked">
-                    <bool>false</bool>
-                   </property>
-                   <property name="autoExclusive">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="openSerialButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>10</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>默认连接CH340</string>
-                   </property>
-                   <property name="text">
-                    <string>  打开串口</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200511-171524.ico</normaloff>:/Mainico/ico/20200511-171524.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>30</width>
-                     <height>30</height>
-                    </size>
-                   </property>
-                   <property name="checkable">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>微软雅黑</family>
-                   <pointsize>13</pointsize>
-                   <weight>50</weight>
-                   <italic>false</italic>
-                   <bold>false</bold>
-                   <underline>false</underline>
-                   <strikeout>false</strikeout>
-                  </font>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_15">
-                 <item>
-                  <widget class="QCheckBox" name="showHexCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>显示十六进制数据</string>
-                   </property>
-                   <property name="text">
-                    <string>显示HEX</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200510-234010.ico</normaloff>:/Mainico/ico/20200510-234010.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="showSendCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string>显示信息</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200510-230158.ico</normaloff>:/Mainico/ico/20200510-230158.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>25</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QCheckBox" name="cutFrameCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string>自动断帧</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/MainWin/ico/20200510-223345.ico</normaloff>:/MainWin/ico/20200510-223345.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_9">
-                   <item>
-                    <widget class="QSpinBox" name="cutTimeSpinBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                       <horstretch>1</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>100</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>最大2000ms</string>
-                     </property>
-                     <property name="maximum">
-                      <number>2000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="cutLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>ms</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_13">
-                 <item>
-                  <widget class="QPushButton" name="saveMsgPushButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>Alt + S</string>
-                   </property>
-                   <property name="text">
-                    <string>保存数据</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200510-221417.ico</normaloff>:/Mainico/ico/20200510-221417.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>25</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="cleanMsgPushButton">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>清空接收</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/MainWin/ico/20200510-223403.ico</normaloff>:/MainWin/ico/20200510-223403.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>25</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line_2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>微软雅黑</family>
-                   <pointsize>13</pointsize>
-                   <weight>50</weight>
-                   <italic>false</italic>
-                   <bold>false</bold>
-                   <underline>false</underline>
-                   <strikeout>false</strikeout>
-                  </font>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_12">
-                 <item>
-                  <widget class="QCheckBox" name="sendHexCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>158</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>发送十六进制数据</string>
-                   </property>
-                   <property name="text">
-                    <string>发送HEX</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200510-234010.ico</normaloff>:/Mainico/ico/20200510-234010.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="enterSendCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>158</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>仅对单条发送有效</string>
-                   </property>
-                   <property name="text">
-                    <string>回车发送</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/Mainico/ico/20200510-234445.ico</normaloff>:/Mainico/ico/20200510-234445.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_11">
-                 <item>
-                  <widget class="QCheckBox" name="sendTimeCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>定时发送</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/MainWin/ico/20200510-230202.ico</normaloff>:/MainWin/ico/20200510-230202.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_7">
-                   <item>
-                    <widget class="QSpinBox" name="sendTimeSpinBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                       <horstretch>2</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>100</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="toolTip">
-                      <string>最大20000ms</string>
-                     </property>
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>20000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="sendTimeLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>ms</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_10">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_8">
-                   <item>
-                    <widget class="QLabel" name="lineChangeLabel">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>换行符</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>lineChangeComboBox</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="lineChangeComboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>13</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>\r\n</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>\r</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>\n</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>None</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <item>
-                    <widget class="QCheckBox" name="DTR_CheckBox">
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>12</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="toolTip">
-                      <string>硬件DSR/DTR流控开关</string>
-                     </property>
-                     <property name="text">
-                      <string>DTR</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="RTS_CheckBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <family>等线</family>
-                       <pointsize>12</pointsize>
-                       <weight>50</weight>
-                       <italic>false</italic>
-                       <bold>false</bold>
-                       <underline>false</underline>
-                       <strikeout>false</strikeout>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="toolTip">
-                      <string>RTS/CTS流控开关</string>
-                     </property>
-                     <property name="text">
-                      <string>RTS</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line_3">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>微软雅黑</family>
-                   <pointsize>13</pointsize>
-                   <weight>50</weight>
-                   <italic>false</italic>
-                   <bold>false</bold>
-                   <underline>false</underline>
-                   <strikeout>false</strikeout>
-                  </font>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_3">
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="autoConnectLineEdit">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="sizeIncrement">
-                    <size>
-                     <width>150</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>设备关键字</string>
-                   </property>
-                   <property name="layoutDirection">
-                    <enum>Qt::RightToLeft</enum>
-                   </property>
-                   <property name="text">
-                    <string>CH340</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QCheckBox" name="autoConnectCheckBox">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>等线</family>
-                     <pointsize>13</pointsize>
-                     <weight>50</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>启动时自动查找设备</string>
-                   </property>
-                   <property name="text">
-                    <string>自动连接</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="icoPack.qrc">
-                     <normaloff>:/MainWin/ico/20200510-230228.ico</normaloff>:/MainWin/ico/20200510-230228.ico</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>20</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line_7">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>微软雅黑</family>
-                   <pointsize>13</pointsize>
-                   <weight>50</weight>
-                   <italic>false</italic>
-                   <bold>false</bold>
-                   <underline>false</underline>
-                   <strikeout>false</strikeout>
-                  </font>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="searchSerialButton">
+               <item row="0" column="1">
+                <widget class="QPushButton" name="askShotCutButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1729,137 +1832,28 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                   </font>
                  </property>
                  <property name="toolTip">
-                  <string>列出可用串口</string>
+                  <string>创建桌面快捷方式</string>
                  </property>
                  <property name="text">
-                  <string>搜索串口</string>
+                  <string>创建快捷方式</string>
                  </property>
                  <property name="icon">
                   <iconset resource="icoPack.qrc">
-                   <normaloff>:/MainWin/ico/20200511-173453.ico</normaloff>:/MainWin/ico/20200511-173453.ico</iconset>
+                   <normaloff>:/Mainico/ico/设置/20200519-214635.ico</normaloff>:/Mainico/ico/设置/20200519-214635.ico</iconset>
                  </property>
                  <property name="iconSize">
                   <size>
-                   <width>25</width>
-                   <height>25</height>
+                   <width>20</width>
+                   <height>20</height>
                   </size>
                  </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QListWidget" name="serialListWidget">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Ignored" vsizetype="MinimumExpanding">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>110</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <family>等线</family>
-                   <pointsize>14</pointsize>
-                   <weight>50</weight>
-                   <italic>false</italic>
-                   <bold>false</bold>
-                   <underline>false</underline>
-                   <strikeout>false</strikeout>
-                  </font>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QFrame" name="frame">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::Box</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Sunken</enum>
-                 </property>
-                 <property name="lineWidth">
-                  <number>1</number>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_6">
-                  <property name="leftMargin">
-                   <number>5</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>5</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>5</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>5</number>
-                  </property>
-                  <item row="0" column="1">
-                   <widget class="QPushButton" name="askShotCutButton">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>等线</family>
-                      <pointsize>13</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                      <underline>false</underline>
-                      <strikeout>false</strikeout>
-                     </font>
-                    </property>
-                    <property name="toolTip">
-                     <string>创建桌面快捷方式</string>
-                    </property>
-                    <property name="text">
-                     <string>创建快捷方式</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="icoPack.qrc">
-                      <normaloff>:/Mainico/ico/设置/20200519-214635.ico</normaloff>:/Mainico/ico/设置/20200519-214635.ico</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
                 </widget>
                </item>
               </layout>
              </widget>
-            </widget>
-           </item>
-          </layout>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -2091,7 +2085,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                <widget class="QPlainTextEdit" name="receiveBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                  <horstretch>8</horstretch>
+                  <horstretch>0</horstretch>
                   <verstretch>8</verstretch>
                  </sizepolicy>
                 </property>
@@ -2191,7 +2185,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
               <number>0</number>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <property name="tabSpacing">
               <number>0</number>
@@ -2201,7 +2195,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>894</width>
+                <width>930</width>
                 <height>160</height>
                </rect>
               </property>
@@ -2341,7 +2335,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>894</width>
+                <width>930</width>
                 <height>202</height>
                </rect>
               </property>
@@ -2435,7 +2429,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>861</width>
+                       <width>897</width>
                        <height>365</height>
                       </rect>
                      </property>
@@ -2639,7 +2633,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>894</width>
+                <width>930</width>
                 <height>85</height>
                </rect>
               </property>
@@ -2654,7 +2648,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                 <normaloff>:/Mainico/ico/命令.ico</normaloff>:/Mainico/ico/命令.ico</iconset>
               </attribute>
               <attribute name="label">
-               <string>模拟指令</string>
+               <string>模拟终端</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_18">
                <property name="leftMargin">
@@ -2757,6 +2751,12 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                   </property>
                   <item>
                    <widget class="QToolButton" name="cmdToolButton">
+                    <property name="toolTip">
+                     <string>编辑指令集</string>
+                    </property>
+                    <property name="whatsThis">
+                     <string>编辑指令集</string>
+                    </property>
                     <property name="text">
                      <string>&gt;</string>
                     </property>
@@ -2962,6 +2962,43 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="cleanGraphMsgButton_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>等线</family>
+                  <pointsize>13</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
+                  <underline>false</underline>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
+                <property name="cursor">
+                 <cursorShape>ForbiddenCursor</cursorShape>
+                </property>
+                <property name="text">
+                 <string>设置坐标轴</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="icoPack.qrc">
+                  <normaloff>:/Mainico/ico/20200510-221413.ico</normaloff>:/Mainico/ico/20200510-221413.ico</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>23</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="cleanGraphMsgButton">
@@ -4583,7 +4620,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
               <enum>Qt::RightToLeft</enum>
              </property>
              <property name="text">
-              <string>@版本 Beta-1.1.3</string>
+              <string>@版本 Beta-1.1.4</string>
              </property>
             </widget>
            </item>
@@ -4882,7 +4919,7 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
            <number>0</number>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="tabSpacing">
            <number>0</number>
@@ -4892,8 +4929,8 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>109</width>
-             <height>109</height>
+             <width>1248</width>
+             <height>594</height>
             </rect>
            </property>
            <attribute name="icon">
@@ -5077,8 +5114,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1246</width>
-             <height>579</height>
+             <width>1248</width>
+             <height>594</height>
             </rect>
            </property>
            <attribute name="icon">
@@ -5112,6 +5149,9 @@ p, li { white-space: pre-wrap; }
               <property name="plainText">
                <string>--------------------------
 Beta-1.1.4
+-添加模拟终端功能
+-添加双击打开串口功能
+-添加多线程下载
 -更改串口参数即时生效
 -修复开启时串口搜索框信息错误
 -界面改版
@@ -5363,7 +5403,6 @@ Alpha 0.521.2
   <tabstop>sendButton1_7</tabstop>
   <tabstop>sendLine1_7</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>scrollArea</tabstop>
   <tabstop>bpscomboBox</tabstop>
   <tabstop>byteSizeComboBox</tabstop>
   <tabstop>parityComboBox</tabstop>

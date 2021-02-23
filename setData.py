@@ -138,13 +138,15 @@ def splitterSet(window):
 	splitterRight.setSizes([1000,100])
 	window.verticalLayout_16.addWidget(splitterRight)
 
+	# window.scrollArea.horizontalScrollBar().setMinimumWidth(window.scrollAreaWidgetContents.width() + 30)
 	mainSplitterH = QSplitter(QtCore.Qt.Horizontal)
-	mainSplitterH.addWidget(window.mainLeftFrame)
+	mainSplitterH.addWidget(window.scrollArea)
 	mainSplitterH.addWidget(window.mainRightFrame)
-	mainSplitterH.setSizes([100,200])
+	mainSplitterH.setSizes([300,900])
 	window.horizontalLayout_2.addWidget(mainSplitterH)
 
 	graphSplitterV = QSplitter(QtCore.Qt.Vertical)
 	graphSplitterV.addWidget(window.graphFrame)
 	graphSplitterV.addWidget(window.graphSetFrame)
 	window.verticalLayout_20.addWidget(graphSplitterV)
+	# print(window.scrollAreaWidgetContents.width(), window.scrollArea.width())

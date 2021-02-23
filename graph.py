@@ -14,6 +14,7 @@ from pyqtgraph import setConfigOption, GraphicsLayoutWidget, InfiniteLine, Signa
 from pyqtgraph import exporters
 from re import search
 from datetime import datetime
+import weakref
 
 
 class MyGraphWindow():
@@ -79,8 +80,9 @@ class MyGraphWindow():
 		setConfigOptions(antialias=self.antialias)  # pyqtgraph全局变量设置函数，antialias=True开启曲线抗锯齿
 		self.graphWin = GraphicsLayoutWidget()
 		self.window.addWidget(self.graphWin)
-		self.graph = self.graphWin.addPlot(title="数据可视化", enableMenu=False)   # 添加第一个绘图窗口
-
+		self.graph = self.graphWin.addPlot(title="数据可视化", enableMenu=True)   # 添加第一个绘图窗口
+		# self.view = weakref.ref(self.graph.vb)
+		# self.view().setYRange(1.0, 100.0)
 		#self.graph.addItem(self.smallShowLabel)
 		#self.graph.setLabel('left', text='value')               # y轴设置函数
 		if self.showXY:
@@ -99,6 +101,11 @@ class MyGraphWindow():
 		if self.showXY | self.showPos:
 			self.proxy = SignalProxy(self.graph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
 
+	def setY(self, Min, Max):
+		self.graph.vb.setYRange(Min, Max)
+
+	def setX(self, Min, Max):
+		self.graph.vb.setXRange(Min, Max)
 
 	def outputGraph(self, path = '.'):
 		try:

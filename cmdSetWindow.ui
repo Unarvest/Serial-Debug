@@ -19,15 +19,15 @@
      <property name="font">
       <font>
        <family>等线</family>
-       <pointsize>14</pointsize>
+       <pointsize>13</pointsize>
       </font>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="default">
       <attribute name="title">
-       <string>编辑</string>
+       <string>默认</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -47,7 +47,7 @@
          <property name="font">
           <font>
            <family>等线</family>
-           <pointsize>12</pointsize>
+           <pointsize>13</pointsize>
           </font>
          </property>
          <property name="tabKeyNavigation">
@@ -167,6 +167,13 @@
            </spacer>
           </item>
           <item>
+           <widget class="QCheckBox" name="enableCheckBox">
+            <property name="text">
+             <string>启用</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="savePushButton">
             <property name="font">
              <font>
@@ -188,184 +195,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="widget">
+     <widget class="QWidget" name="new">
       <attribute name="title">
-       <string>设置</string>
+       <string>+</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QFrame" name="frame_4">
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QFrame" name="frame_3">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>默认指令集</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>331</width>
-                 <height>38</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_5">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QCheckBox" name="HC_05CheckBox">
-               <property name="text">
-                <string>HC-05</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBox_2">
-               <property name="text">
-                <string>ESP</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_6">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QCheckBox" name="HC_05CheckBox_2">
-               <property name="text">
-                <string>RT-Thread</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBox_3">
-               <property name="text">
-                <string>Linux</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame_2">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="savePushButton_2">
-            <property name="font">
-             <font>
-              <family>等线</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>导出指令集</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icoPack.qrc">
-              <normaloff>:/Mainico/ico/20200510-221417.ico</normaloff>:/Mainico/ico/20200510-221417.ico</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="savePushButton_3">
-            <property name="font">
-             <font>
-              <family>等线</family>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>导入指令集</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icoPack.qrc">
-              <normaloff>:/Mainico/ico/20200510-221417.ico</normaloff>:/Mainico/ico/20200510-221417.ico</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+      <layout class="QVBoxLayout" name="verticalLayout_4"/>
      </widget>
     </widget>
    </item>

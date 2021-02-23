@@ -93,7 +93,7 @@ class openPortThread(QtCore.QThread):
 		if data.portname != None:
 			ser.portname = data.portname
 		else:
-			if ser.Find_target() == None:
+			if ser.Find_target(data.file.Load_data('autoTarget')) == None:
 				No_find = 1
 				self.msg_S.emit('未找到设备')
 		if No_find:
@@ -723,9 +723,12 @@ class callBack():
 	def serialListWidget_(self, value):
 		global ser
 		port = value.text()
-		Position = search(' ', port).span()
-		data.portname = port[:Position[0]]
+		data.portname = search("COM\d+", port).group()
 		toMessageBox('选中: ' + port)
+
+	def serialListWidget_2(self, value):
+		self.serialListWidget_(value)
+		self.openSerialButton_()
 
 	def showSendCheckBox_(self, value):
 		if value == 0:
@@ -971,7 +974,7 @@ class callBack():
 	def cmdToolButton_(self):
 		global CMDLine
 		self.cmd = setCmdWindow()
-		self.cmd.closeSignal.connect(CMDLine.cmdSendLine._setupCompleter)
+		self.cmd.closeSignal.connect(CMDLine._setModel)
 		self.cmd.show()
 		
 
@@ -1121,6 +1124,7 @@ class dataInit(QtCore.QObject):
 		# window.customCheckBox.clicked.connect(Back.customCheckBox_)
 		#主页-搜索串口以及侧边信息显示
 		window.searchSerialButton.clicked.connect(Back.searchSerialButton_)
+		window.serialListWidget.itemDoubleClicked.connect(Back.serialListWidget_2)
 		window.serialListWidget.itemClicked.connect(Back.serialListWidget_)
 		window.cleanMessageButton.clicked.connect(Back.cleanMessageButton_)
 		#主页-发送接收区
@@ -1262,6 +1266,7 @@ class QMainWindowClose(QMainWindow):
 				Back.sendButton1_8()
 			if event.key() == QtCore.Qt.Key_9:  #Alt + 9
 				Back.sendButton1_9()
+				mainSplitterH.saveState()
 
 			if event.key() == 16777220: #Alt + Enter
 				Back.sendButton_()
@@ -1326,6 +1331,7 @@ if __name__ == '__main__':
 	window = Ui_MainWindow()
 	window.setupUi(MainWindow)
 	splitterSet(window)
+	window.scrollArea
 	CMDLine = CMDSendLine(window, Back.cmdEnterSend_)
 	# CMDLine.cmdSendLine._setupCompleter(model=['qqq', 'qqq2', 'qq', 'fhdjkf'])
 
