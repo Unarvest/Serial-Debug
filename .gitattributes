@@ -1,0 +1,2 @@
+*.zip filter=lfs diff=lfs merge=lfs -text
+串口调试器0.511.3 filter=lfs diff=lfs merge=lfs -text
