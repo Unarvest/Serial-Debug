@@ -1,0 +1,128 @@
+<RCC>
+  <qresource prefix="Mainico">
+    <file>ico/端口 (1).ico</file>
+    <file>ico/上 传.ico</file>
+    <file>ico/下载.ico</file>
+    <file>ico/设备.ico</file>
+    <file>ico/线程程数.ico</file>
+    <file>ico/hex-30 切换系统.ico</file>
+    <file>ico/连接.ico</file>
+    <file>ico/串口.ico</file>
+    <file>ico/连接 (1).ico</file>
+    <file>ico/断开 (2).ico</file>
+    <file>ico/网络.ico</file>
+    <file>ico/下一.ico</file>
+    <file>ico/指令.ico</file>
+    <file>ico/指令集管理.ico</file>
+    <file>ico/上一层.ico</file>
+    <file>ico/命令.ico</file>
+    <file>ico/网络.ico</file>
+    <file>ico/设置/20200519-214635.ico</file>
+    <file>ico/20200512-164645.ico</file>
+    <file>ico/20200510-230158.ico</file>
+    <file>ico/20200511-105510.ico</file>
+    <file>ico/20200511-171524.ico</file>
+    <file>ico/20200511-105454.ico</file>
+    <file>ico/20200511-105447.ico</file>
+    <file>ico/20200511-105434.ico</file>
+    <file>ico/20200510-234445.ico</file>
+    <file>ico/20200510-234233.ico</file>
+    <file>ico/20200510-234010.ico</file>
+    <file>ico/20200510-233912.ico</file>
+    <file>ico/20200510-230812.ico</file>
+    <file>ico/20200510-221424.ico</file>
+    <file>ico/20200510-221417.ico</file>
+    <file>ico/20200510-221413.ico</file>
+    <file>ico/Main.ico</file>
+    <file>ico/start.ico</file>
+    <file>ico/20200511-103831.ico</file>
+    <file>ico/20200511-103826.ico</file>
+    <file>ico/20200511-103820.ico</file>
+  </qresource>
+  <qresource prefix="ico">
+    <file>ico/关闭.png</file>
+    <file>ico/打开.png</file>
+    <file>ico/nocheck.png</file>
+    <file>ico/check.png</file>
+  </qresource>
+  <qresource prefix="setting">
+    <file>ico/设置/快捷方式 (2).png</file>
+    <file>ico/设置/20200517-232143.ico</file>
+    <file>ico/设置/20200517-232147.ico</file>
+    <file>ico/设置/20200518-125030.ico</file>
+    <file>ico/设置/20200518-125033.ico</file>
+    <file>ico/设置/20200517-232150.ico</file>
+    <file>ico/设置/20200517-232154.ico</file>
+    <file>ico/设置/20200517-232159.ico</file>
+    <file>ico/设置/20200517-232202.ico</file>
+    <file>ico/设置/20200517-232207.ico</file>
+    <file>ico/设置/20200517-232210.ico</file>
+    <file>ico/设置/20200517-232213.ico</file>
+  </qresource>
+  <qresource prefix="MainWin">
+    <file>ico/20200510-230228.ico</file>
+    <file>ico/20200510-230224.ico</file>
+    <file>ico/20200510-230220.ico</file>
+    <file>ico/20200510-230217.ico</file>
+    <file>ico/20200510-230212.ico</file>
+    <file>ico/20200510-230208.ico</file>
+    <file>ico/20200510-230202.ico</file>
+    <file>ico/20200510-230158.ico</file>
+    <file>ico/20200510-230151.ico</file>
+    <file>ico/20200510-223440.ico</file>
+    <file>ico/20200510-223432.ico</file>
+    <file>ico/20200510-223427.ico</file>
+    <file>ico/20200510-223417.ico</file>
+    <file>ico/20200510-223408.ico</file>
+    <file>ico/20200511-173453.ico</file>
+    <file>ico/20200510-223403.ico</file>
+    <file>ico/20200510-223358.ico</file>
+    <file>ico/20200510-223354.ico</file>
+    <file>ico/20200510-223349.ico</file>
+    <file>ico/20200510-223345.ico</file>
+    <file>ico/20200510-223336.ico</file>
+    <file>ico/20200510-223331.ico</file>
+    <file>ico/20200510-223326.ico</file>
+    <file>ico/20200511-103837.ico</file>
+    <file>ico/20200510-223248.ico</file>
+    <file>ico/20200510-235146.ico</file>
+  </qresource>
+  <qresource prefix="color">
+    <file>ico/20200511-165237.ico</file>
+    <file>ico/20200511-164231.ico</file>
+    <file>ico/20200512-000342.ico</file>
+    <file>ico/20200512-000300.ico</file>
+    <file>ico/20200512-000250.ico</file>
+    <file>ico/20200512-000243.ico</file>
+    <file>ico/20200512-000237.ico</file>
+    <file>ico/20200510-221348.ico</file>
+    <file>ico/20200510-221344.ico</file>
+    <file>ico/20200510-221340.ico</file>
+    <file>ico/20200510-221335.ico</file>
+    <file>ico/20200510-221333.ico</file>
+    <file>ico/20200510-221329.ico</file>
+    <file>ico/20200510-221325.ico</file>
+    <file>ico/20200510-221322.ico</file>
+    <file>ico/20200510-221319.ico</file>
+  </qresource>
+  <qresource prefix="flat">
+    <file>flatwhite/add_bottom.png</file>
+    <file>flatwhite/add_left.png</file>
+    <file>flatwhite/add_right.png</file>
+    <file>flatwhite/add_top.png</file>
+    <file>flatwhite/branch_close.png</file>
+    <file>flatwhite/branch_open.png</file>
+    <file>flatwhite/calendar_nextmonth.png</file>
+    <file>flatwhite/calendar_prevmonth.png</file>
+    <file>flatwhite/checkbox_checked.png</file>
+    <file>flatwhite/checkbox_checked_disable.png</file>
+    <file>flatwhite/checkbox_parcial.png</file>
+    <file>flatwhite/checkbox_parcial_disable.png</file>
+    <file>flatwhite/checkbox_unchecked.png</file>
+    <file>flatwhite/checkbox_unchecked_disable.png</file>
+    <file>flatwhite/radiobutton_checked.png</file>
+    <file>flatwhite/radiobutton_checked_disable.png</file>
+    <file>flatwhite/radiobutton_unchecked.png</file>
+    <file>flatwhite/radiobutton_unchecked_disable.png</file>
+  </qresource>
+</RCC>
