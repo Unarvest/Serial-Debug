@@ -101,6 +101,9 @@
       </property>
       <item>
        <widget class="QProgressBar" name="progressBar_2">
+        <property name="maximum">
+         <number>60</number>
+        </property>
         <property name="value">
          <number>24</number>
         </property>
@@ -894,11 +897,128 @@ QRadioButton::indicator:unchecked {image: url(:/ico/ico/关闭.png);}
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>addGraphColor_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>sendMsg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>862</x>
+     <y>556</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>845</x>
+     <y>498</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopShowButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>stopUpdate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1081</x>
+     <y>518</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1320</x>
+     <y>494</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addGraphColor</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>addCurve()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>905</x>
+     <y>596</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>836</x>
+     <y>684</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clearDataButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>clearCurve()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1145</x>
+     <y>598</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1341</x>
+     <y>582</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stopShowButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>editCurve()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>977</x>
+     <y>626</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>988</x>
+     <y>702</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveDataButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>setAxis()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1136</x>
+     <y>630</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1233</x>
+     <y>634</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_3</sender>
+   <signal>returnPressed()</signal>
+   <receiver>Draw_Widget</receiver>
+   <slot>sendMsg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1027</x>
+     <y>558</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1246</x>
+     <y>560</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>moveGraph(int)</slot>
   <slot>stopUpdate()</slot>
   <slot>continueUpdate()</slot>
   <slot>resetGraph()</slot>
+  <slot>sendMsg()</slot>
+  <slot>addCurve()</slot>
+  <slot>clearCurve()</slot>
+  <slot>editCurve()</slot>
+  <slot>setAxis()</slot>
  </slots>
 </ui>

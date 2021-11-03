@@ -63,6 +63,7 @@ class Ui_Draw_Widget(object):
         self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
         self.progressBar_2 = QProgressBar(self.graphSetFrame)
         self.progressBar_2.setObjectName(u"progressBar_2")
+        self.progressBar_2.setMaximum(60)
         self.progressBar_2.setValue(24)
         self.progressBar_2.setOrientation(Qt.Vertical)
         self.progressBar_2.setTextDirection(QProgressBar.TopToBottom)
@@ -366,6 +367,13 @@ class Ui_Draw_Widget(object):
         self.graphScrollBar.sliderPressed.connect(Draw_Widget.stopUpdate)
         self.graphScrollBar.sliderReleased.connect(Draw_Widget.continueUpdate)
         self.resetButton.clicked.connect(Draw_Widget.resetGraph)
+        self.addGraphColor_2.clicked.connect(Draw_Widget.sendMsg)
+        self.stopShowButton_2.clicked.connect(Draw_Widget.stopUpdate)
+        self.addGraphColor.clicked.connect(Draw_Widget.addCurve)
+        self.clearDataButton.clicked.connect(Draw_Widget.clearCurve)
+        self.stopShowButton.clicked.connect(Draw_Widget.editCurve)
+        self.saveDataButton.clicked.connect(Draw_Widget.setAxis)
+        self.lineEdit_3.returnPressed.connect(Draw_Widget.sendMsg)
 
         QMetaObject.connectSlotsByName(Draw_Widget)
     # setupUi

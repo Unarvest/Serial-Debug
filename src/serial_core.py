@@ -3,6 +3,10 @@ from PySide6.QtCore import *  # type: ignore
 import serial
 from serial.serialwin32 import Serial
 import serial.tools.list_ports as list_ports
+from PySide6.QtSerialPort import QSerialPortInfo
+from src.parse_data import HexShow, DecodeData
+import time
+
 '''port=None,
 baudrate=9600,
 bytesize=EIGHTBITS,
@@ -28,6 +32,13 @@ class SerialPort(serial.Serial):
 		self.set_byte_size('8')
 		self.set_parity('None')
 		self.set_stop_bits('1')
+
+	def portName(self):
+		return self.port
+
+	def setPortName(self, portName):
+		self.port = portName
+
 	def set_bps(self, bps:int):
 		try:
 			self.baudrate = bps
@@ -80,13 +91,13 @@ class SerialPort(serial.Serial):
 			return str(e)
 	
 	def Search_ports(self):
-		port_info = list(list_ports.comports())
+		port_info = QSerialPortInfo.availablePorts()
 		port_list = []
 		if len(port_info) == 0:
 			return []
 		else:
 			for i in port_info:
-				port_list.append((i.name, i.description))
+				port_list.append((i.portName(), i.description()))
 		return port_list
 	
 	'''
@@ -138,66 +149,13 @@ class SerialPort(serial.Serial):
 		self.recv_cnt = 0
 	
 
-def HexShow(string = b'', split_symbel = ' ', line_break = b'\n'):
-	hex_string = ""
-	if line_break == b'':
-		parts = [string]
-	else:
-		parts = string.split(line_break)
-	for part in parts[:-1]:
-		hex_string += part.hex(split_symbel) + ' 0a\n'
-	return hex_string + parts[-1].hex(split_symbel)
 
-import time
 
-class TransHexThread(QThread):
-	trans_done = Signal(str)
-	old_data = b""
-	old_string = ""
-	new_string = ""
-	split_symbel = ' '
-	line_break = b'\n'
-	hex_flag = False
-	def __init__(self, mainwindow):
-		super(TransHexThread, self).__init__()
-		self.mainwindow = mainwindow
-		self.trans_done.connect(self.trans_done_slot)
-	def run(self):
-		try:
-			self.mainwindow.show_msg.emit('正在后台进行转换')
-			res = HexShow(self.old_data, self.split_symbel, self.line_break)
-			self.trans_done.emit(res)
-		except Exception as e:
-			print(e)
-			return False
-
-	def openStart(self, data):
-		if self.isRunning():
-			return False
-		self.old_data = data
-		self.old_string = self.new_string = ""
-		self.start()
-
-	def trans_done_slot(self, data):
-		if self.mainwindow.is_show_hex:
-			self.old_string = self.mainwindow.ui.receiveBox.toPlainText()
-			self.mainwindow.ui.receiveBox.setPlainText(data)
-			self.mainwindow.ui.recvBox_reset_cursor()
-			self.hex_flag = True
-			self.mainwindow.show_msg.emit('十六进制转换完毕')
-	
-	def return_back(self):
-		if self.hex_flag:
-			self.mainwindow.ui.receiveBox.setPlainText(self.old_string + self.new_string)
-			self.mainwindow.ui.recvBox_reset_cursor()
-			self.mainwindow.show_msg.emit('已还原')
-	
-	
 
 class SerialThread(QThread):
-	read_sig = Signal(str)	# 接收到的数据, 断帧标识
+	read_sig = Signal(tuple)	# 接收到的数据, 断帧标识
 	connect_sig = Signal(bool)	#
-	msg_sig = Signal(tuple)
+	msg_sig = Signal(str)
 	frame = 0
 	split_symbol = b'\n'
 	target = "CH340"
@@ -207,11 +165,14 @@ class SerialThread(QThread):
 	run_flag = False
 	add_line_break = True
 	auto_cut = False
+	msg = ""
 	def __init__(self, mainwindow) -> None:
 		super(SerialThread, self).__init__()
 		self.mainwindow = mainwindow
 		self.ser = SerialPort()
 		self.ser.writeTimeout = 3
+		self.send_thread = Send_Thread(self)
+		self.decode_thread = DecodeData(self)
 	
 	def run(self):
 		t = None
@@ -240,12 +201,12 @@ class SerialThread(QThread):
 					if recv_len > 0:
 						self.recv_data += res
 						self.frame += 1
-						self.decodeData(res, self.add_line_break)
+						self.read_sig.emit((res, self.add_line_break, True))
 						# self.read_sig.emit((res, False))
 						continue
 					else:
 						self.recv_data += res
-						self.decodeData(res, False)
+						self.read_sig.emit((res, False, True))
 						if (res[-1] != 10) & (res[-1] != 13):
 							t = time.time()
 
@@ -256,7 +217,7 @@ class SerialThread(QThread):
 				if t != None:
 					if ((time.time() - t) > 0.01):
 						self.frame += 1
-						self.decodeData(b'', self.auto_cut)
+						self.read_sig.emit((b'', self.auto_cut, True))
 						# print(time.time() - t)
 						t = None
 				self.msleep(1)
@@ -296,23 +257,44 @@ class SerialThread(QThread):
 			# QThread.msleep(10)
 			# self.quit()
 
-	def decodeData(self, data, line_break):
-		t = time.time()
+	# def decodeData(self, data, line_break):
+	# 	t = time.time()
+	# 	try:
+	# 		if (data == b'') & line_break:
+	# 			decode_string = '\n'
+	# 		else:
+	# 			decode_string = data.decode(self.mainwindow.config.load('decode'), errors='replace')
+	# 			if line_break:
+	# 				if (decode_string[-1] != '\n') & (decode_string[-1] != '\r'):
+	# 					decode_string += '\n'
+	# 	except ValueError:
+	# 		decode_string = '□'*len(data)
+	# 	if self.mainwindow.is_show_hex:
+	# 		self.read_sig.emit(HexShow(data))
+	# 		self.mainwindow.trans_hex_thread.new_string += decode_string
+	# 	else:
+	# 		self.read_sig.emit(decode_string)
+	
+	def start_send(self, msg):
 		try:
-			if (data == b'') & line_break:
-				decode_string = '\n'
-			else:
-				decode_string = data.decode(self.mainwindow.config.load('decode'), errors='replace')
-				if line_break:
-					if (decode_string[-1] != '\n') & (decode_string[-1] != '\r'):
-						decode_string += '\n'
-		except ValueError:
-			decode_string = '□'*len(data)
-		if self.mainwindow.is_show_hex:
-			self.read_sig.emit(HexShow(data))
-			self.mainwindow.trans_hex_thread.new_string += decode_string
-		else:
-			self.read_sig.emit(decode_string)
+			self.ser.Send_msg(msg)
+			try:
+				self.msg_sig.emit("'{}' <- {}".format(self.ser.portName(), msg.decode("utf-8")))
+			except:
+				self.msg_sig.emit("发送成功")
+		except Exception as e:
+			# QMessageBox.critical(self, '发送超时', str(e))
+			print(e)
+			self.msg_sig.emit(str(e))
+			self.Close_Port()
+
+	def send_msg(self, msg):
+		if self.send_thread.isRunning():
+			self.msg_sig.emit('发送失败, 有其它消息正在被发送...')
+			return False
+		self.msg_sig.emit('发送中...')
+		self.send_thread.msg = msg
+		self.send_thread.start()
 
 	def set_split(self, split_str, encode):
 		try:
@@ -321,12 +303,16 @@ class SerialThread(QThread):
 		except:
 			return False
 
-# s = SerialThread()
+class Send_Thread(QThread):
+	def __init__(self, parent:SerialThread):
+		super(Send_Thread, self).__init__()
+		self.parent = parent
+		self.msg = ""
 
-# s.Open_Start(target = "USB")
+	def run(self):
+		self.parent.start_send(self.msg)
 
-# while s.isRunning():
-# 	pass
+
 '''
 ser = SerialPort()
 ser.Find_target('USB')
@@ -351,32 +337,6 @@ while ser.is_open:
 	time.sleep(0.001)
 '''
 
-# class WorkerThread(QThread):
-#     signal_str = Signal(str)
-#     signal_int = Signal(int)
-#     def __init__(self):
-#         super(WorkerThread, self).__init__()
-#         # Instantiate signals and connect signals to the slots
-#         # self.signals = MySignals()
-#     def run(self):
-#         # Do something on the worker thread
-#         a = 1 + 1
-#         # Emit signals whenever you want
-#         self.signal_int.emit(a)
-#         self.signal_str.emit("This text comes to Main thread from our Worker thread.")
-#         print(1)
- 
- 
-# # if __name__ == "__main__":
-# #     app = QApplication(sys.argv)
-# #     window = MainForm()
-# #     window.show()
-#     # sys.exit(app.exec_())
 
-# instanced_thread = WorkerThread()
-# instanced_thread.signal_str.connect(res)
-# instanced_thread.signal_int.connect(res)
-# instanced_thread.start()
-# while instanced_thread.isRunning():
-#     pass
+ 
  

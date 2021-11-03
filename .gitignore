@@ -1,0 +1,11 @@
+/.qt_for_python
+/__pycache__
+/dist
+/data
+/build
+/test
+*.png
+*.spec
+*.exe
+*.xlsx
+*.xls

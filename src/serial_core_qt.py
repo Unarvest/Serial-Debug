@@ -22,7 +22,7 @@ class SerialPort(QSerialPort):
 	encode = "UTF-8"
 	decode = "UTF-8"
 	port_list = []
-	port = None
+	_port = None
 	def __init__(self):
 		super(SerialPort, self).__init__()
 		self.set_bps(115200)
@@ -100,8 +100,9 @@ class SerialPort(QSerialPort):
 			for i in self.port_list:
 				portName = i.portName()
 				if target in i.description():
-					self.port = portName
-					self.setPort(i)
+					self._port = portName
+					# self.setPort(i)
+					self.setPortName(portName)
 					print("成功找到目标", target, "位于", portName)
 					return True
 			else :
@@ -109,11 +110,11 @@ class SerialPort(QSerialPort):
 				return None
 	
 	def Open_port(self, portName = ""):
-		if self.isOpen():
-			self.close()
-			self.setPortName(portName)
-		self.open(QIODevice.ReadWrite)
-	
+		# if self.isOpen():
+		# 	self.close()
+		# 	self.setPortName(portName)
+		self.open(QSerialPort.ReadWrite)
+
 	def Send_msg(self, msg):
 		if self.isOpen():
 			res = self.write(msg)
@@ -219,7 +220,7 @@ class SerialThread(QThread):
 	run_flag = False
 	add_line_break = True
 	auto_cut = False
-	def __init__(self, mainwindow) -> None:
+	def __init__(self, mainwindow=None) -> None:
 		super(SerialThread, self).__init__()
 		self.mainwindow = mainwindow
 		self.ser = SerialPort()
@@ -236,7 +237,8 @@ class SerialThread(QThread):
 		self.run_flag = True
 		end_flag = False
 		print(1)
-
+		self.ser.setDataTerminalReady(True)
+		self.ser.setRequestToSend(True)
 		while self.ser.isOpen():
 			'''
 			try:
@@ -257,8 +259,9 @@ class SerialThread(QThread):
 			# 	self.ser.close()
 			# 	self.connect_sig.emit(False)
 			# 	self.msg_sig.emit('串口\'{}\'断开'.format(self.ser.port))
-			data = self.ser.readAll().data()
 			print(1)
+			data = self.ser.readAll().data()
+			print(data)
 			if len(data) == 0:
 				self.msleep(1)
 				continue
@@ -266,19 +269,23 @@ class SerialThread(QThread):
 			# if self.show_print == True:
 			print(data.decode('utf-8'), end='')
 			self.recv_data += data
-			self.decodeData(data, False)
+			# self.decodeData(data, False)
 			if (data[-1] != 10) & (data[-1] != 13):
 				end_flag = self.ser.waitForReadyRead(10)
 
 		
 		self.connect_sig.emit(False)
-		self.msg_sig.emit('关闭串口\'{}\''.format(self.ser.port))
+		self.msg_sig.emit('关闭串口\'{}\''.format(self.ser._port))
+
+	def Read_once(self):
+		data = self.ser.readAll()
+		print(data.data().decode('utf-8'))
 
 	def connect_target(self):
-		if self.ser.isOpen():
-			self.ser.close()
+		# if self.ser.isOpen():
+		# 	self.ser.close()
 		try:
-			self.ser.open(QIODevice.ReadWrite)
+			self.ser.open(QSerialPort.ReadWrite)
 		except Exception as e:
 			err = str(e)
 			if 'PermissionError' in err:
@@ -290,8 +297,8 @@ class SerialThread(QThread):
 
 	def Open_Start(self, portName = "", target = "CH340", port_list = None):
 		if portName != "":
-			self.ser.port = portName
-		elif self.ser.port == None:
+			self.ser._port = portName
+		elif self.ser._port == None:
 			if self.ser.Find_target(target, port_list) != True:
 				return False
 		self.start()
@@ -330,6 +337,7 @@ class SerialThread(QThread):
 
 # s = SerialThread()
 
+# # # s.Open_Start(target = "USB")
 # s.Open_Start(target = "USB")
 
 # while s.isRunning():

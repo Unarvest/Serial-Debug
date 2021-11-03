@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="Main">
-    <file>ico/添加.ico</file>
-    <file>ico/减.ico</file>
-  </qresource>
-</RCC>

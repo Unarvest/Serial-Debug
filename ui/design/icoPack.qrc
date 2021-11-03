@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="Mainico">
+    <file>ico/正在监听.ico</file>
+    <file>ico/未监听.ico</file>
     <file>ico/端口 (1).ico</file>
     <file>ico/上 传.ico</file>
     <file>ico/下载.ico</file>

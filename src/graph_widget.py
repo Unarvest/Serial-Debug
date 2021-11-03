@@ -7,10 +7,74 @@ from PySide6.QtWidgets import *
 
 from PySide6.QtCharts import *
 from ui.draw_widget_ui import Ui_Draw_Widget
+from ui.set_axis_ui import Ui_setAxisWidget
 import math, time
 
 import multiprocessing
 MAX_POINT = 1000
+
+
+class SetAxisWidget(QWidget):
+	returnok_sig = Signal(list)
+	def __init__(self, para:list):
+		super(SetAxisWidget, self).__init__()
+		self.ui = Ui_setAxisWidget()
+		self.ui.setupUi(self)
+		if para[0] != float('inf'):
+			self.ui.isMax.setChecked(True)
+			self.ui.YLimitMax.setValue(100)
+		else:
+			self.ui.YLimitMin.setValue(para[0])
+		if para[1] != float('-inf'):
+			self.ui.isMax.setChecked(True)
+			self.ui.YLimitMax.setValue(-100)
+		else:
+			self.ui.YLimitMin.setValue(para[1])
+		self.ui.YValueMax.setValue(para[2])
+		self.ui.YValueMin.setValue(para[3])
+		self.ui.XValueMax.setValue(para[4])
+		self.ui.XValueMin.setValue(para[5])
+		self.ui.autoSetBox.setChecked(para[6])
+
+	def editMax(self, v):
+		if v:
+			self.ui.YLimitMax.setReadOnly(False)
+		else:
+			self.ui.YLimitMax.setReadOnly(True)
+
+	def editMin(self, v):
+		if v:
+			self.ui.YLimitMin.setReadOnly(False)
+		else:
+			self.ui.YLimitMin.setReadOnly(True)
+
+	def setAuto(self, v):
+		self.ui.YValueMax.setReadOnly(v)
+		self.ui.YValueMin.setReadOnly(v)
+		self.ui.XValueMax.setReadOnly(v)
+		self.ui.XValueMin.setReadOnly(v)
+
+	def returnOk(self):
+		self.returnok_sig.emit([
+			self.ui.isMax.isChecked(),
+			self.ui.isMin.isChecked(),
+			self.ui.YLimitMax.value(),
+			self.ui.YLimitMin.value(),
+			self.ui.YValueMax.value(),
+			self.ui.YValueMin.value(),
+			self.ui.XValueMax.value(),
+			self.ui.XValueMin.value(),
+			self.ui.autoSetBox.isChecked()
+		])
+		self.Close()
+
+		
+
+	def Close(self):
+		self.close()
+		self.deleteLater()
+		
+
 
 '''
 
@@ -39,6 +103,7 @@ def Cal_Process(buffer_map, points_map, args_pipe):
 		args_pipe[0].send(True)
 '''
 class My_Chart_View(QChartView):
+	show_data_sig = Signal(str)
 	f = 0
 	def __init__(self, mainwindow):
 		super(My_Chart_View, self).__init__(mainwindow)
@@ -47,19 +112,20 @@ class My_Chart_View(QChartView):
 		self.mainwindow = mainwindow
 		self.auto_Stretch = True
 		self.line_map = {}
-		'''
-		self.buffer_map = multiprocessing.Manager().dict()
-		self.points_map = multiprocessing.Manager().dict()
-		self.arg_pipe = multiprocessing.Pipe()
-		self.cal_process = multiprocessing.Process(target=Cal_Process, args=(self.buffer_map, self.points_map, self.arg_pipe))
-		self.cal_process.start()
-		'''
 		self.max_len = 0
 		self.max_value = float('inf')
 		self.min_value = float('-inf')
 		self.y_limit = [-1, 1, False]
 		self.x_limit = [0, 1, False]
 		self.slider_flag = True
+		self.setup_chart()
+		self.setChart(self._chart)
+		self.append_thread = Append_Data_Thread(self)
+		self.append_thread.start()
+		# self.show_thread = Show_Data_Thread(self)
+		
+
+	def setup_chart(self):
 		self._chart = QChart()  # 创建折线视图
 		self._chart.setAnimationOptions(QChart.NoAnimation)
 		self._chart.setContentsMargins(0,0,0,0)
@@ -79,8 +145,6 @@ class My_Chart_View(QChartView):
 		self._chart.setAxisX(self._axis_x)
 		self._chart.setAxisY(self._axis_y)
 
-		self.setChart(self._chart)
-		self.show_thread = Show_Data_Thread(self)
 
 	def create_series(self):
 		t = time.time()
@@ -88,10 +152,16 @@ class My_Chart_View(QChartView):
 		dataTable = pow(math.sin(v), 2) * math.cos(v)
 		# dataTable = self.i
 		# if self.max_len < 2000:
-		self.append_data('test1', dataTable)
-		self.append_data('test2', dataTable + 1)
-		self.append_data('test3', dataTable + 0.5)
-		self.append_data('test4', dataTable -0.5)
+		# self.append_data('test1', dataTable)
+		# self.append_data('test2', dataTable + 1)
+		# self.append_data('test3', dataTable + 0.5)
+		# self.append_data('test4', dataTable -0.5)
+		self.append_thread.send_cache.append({
+			'test1':[dataTable], 
+			'test2':[dataTable + 1],
+			'test3':[dataTable + 0.5],
+			'test4':[dataTable - 0.5]
+		})
 		
 		# self.f = time.time() - t
 		# self.series.append(self.i, dataTable)
@@ -107,6 +177,13 @@ class My_Chart_View(QChartView):
 		#     self.series2.removePoints(0, self.series2.count() - 100)
 		pass
 	
+	def remove_serials(self, series_name):
+		if series_name in self.line_map:
+			line = self.line_map[series_name]
+		else:
+			return None
+		self._chart.removeSeries(line)
+
 	def append_series(self, series_name):
 		line = Line(self)
 		line.setName(series_name)
@@ -119,41 +196,68 @@ class My_Chart_View(QChartView):
 		self._chart.addSeries(line)
 		self._chart.setAxisX(self._axis_x, line)
 		self._chart.setAxisY(self._axis_y, line)
-
-	def append_data(self, name, value):
-		try:
-			current_line = self.line_map[name]
-		except KeyError:
-			return False
-		current_line._buffer.append(value)
-		# self.buffer_map[name].append(value)
-		# print(self.buffer_map[name])
-		buffer_len = len(current_line._buffer)
 		
-		if self.auto_Stretch:
-			if (value < self._axis_y.min()) & (value > self.min_value):
-				self.y_limit[0] = value
-				self.y_limit[2] = True
-			if (value > self._axis_y.max()) & (value < self.max_value):
-				self.y_limit[1] = value
-				self.y_limit[2] = True
+		labels = {}
+		for line_name in self.line_map:
+			labels[line_name] = {
+				'offset':0
+			}
+		# self.append_thread.update_labels(labels)
+
+	def append_data(self, data_list):
+		value_max = float('-inf')
+		value_min = float('inf')
+		zero_flag = self.max_len
+		for name in data_list:
+			try:
+				current_line = self.line_map[name]
+			except KeyError:
+				return False
+			current_line._buffer += data_list[name]
+			# self.buffer_map[name].append(value)
+			# print(self.buffer_map[name])
+			buffer_len = len(current_line._buffer)
+			for value in data_list[name]:
+				value_min = min(value_min, value)
+				value_max = max(value_max, value)
+				self.show_data_sig.emit(name + '=' + str(value))
+
+			if self.auto_Stretch:
+				if self.max_len > MAX_POINT:
+					if buffer_len > self.max_len:
+						self.x_limit[0] += 1
+				self.x_limit[1] = self.max_len
+				self.x_limit[2] = True
+				# else:
+				# 	self._axis_x.setRange(x_min, self.max_len)
+				# self.show_data()
+			if buffer_len > self.max_len:
+				self.max_len = buffer_len
+
+			if self.slider_flag:
+				self.mainwindow.ui.graphScrollBar.setValue(self.x_limit[0])
+				self.mainwindow.ui.graphScrollBar.setMaximum(self.max_len-self.x_limit[1]+self.x_limit[0])
 			
-			if self.max_len > MAX_POINT:
-				if buffer_len > self.max_len:
-					self.x_limit[0] += 1
-			self.x_limit[1] = self.max_len
-			self.x_limit[2] = True
-			# else:
-			# 	self._axis_x.setRange(x_min, self.max_len)
-			# self.show_data()
-		if buffer_len > self.max_len:
-			self.max_len = buffer_len
-		if self.slider_flag:
-			self.mainwindow.ui.graphScrollBar.setValue(self.x_limit[0])
-			self.mainwindow.ui.graphScrollBar.setMaximum(self.max_len-self.x_limit[1]+self.x_limit[0])
-		# except Exception as e:
-		# 	print(e, x_max, x_min, len(current_line._buffer))
+		if self.auto_Stretch:
+			if zero_flag == 0:
+				self.y_limit[0] = value_min - 1
+				self.y_limit[1] = value_max + 1
+				self.y_limit[2] = True
+				return
+			if (value_min < self._axis_y.min()) & (value_min > self.min_value):
+				self.y_limit[0] = value_min
+				self.y_limit[2] = True
+			if (value_max > self._axis_y.max()) & (value_max < self.max_value):
+				self.y_limit[1] = value_max
+				self.y_limit[2] = True
+
+			# except Exception as e:
+			# 	print(e, x_max, x_min, len(current_line._buffer))
 	
+	def update_slider(self, value, max):
+		self.mainwindow.ui.graphScrollBar.setValue(value)
+		self.mainwindow.ui.graphScrollBar.setMaximum(max)
+
 	def show_data2(self):
 		if self.x_limit[2]:
 			x_min = self.x_limit[0]
@@ -167,9 +271,9 @@ class My_Chart_View(QChartView):
 		step = int((x_max - x_min) / MAX_POINT)
 		if step == 0:
 			step = 1
-		t = time.time()
-		self.arg_pipe[0].send((step, x_max, max_diff, self.max_len))
-		print('send time: {}'.format(time.time() - t))
+		# t = time.time()
+		self.args_pipe[0].send((None, None, (max_diff, self.max_len, x_max, step)))
+		# print('send time: {}'.format(time.time() - t))
 		if self.y_limit[2]:
 			self.y_limit[2] = False
 			self._axis_y.setRange(self.y_limit[0], self.y_limit[1])
@@ -177,24 +281,25 @@ class My_Chart_View(QChartView):
 		if self.x_limit[2]:
 			self.x_limit[2] = False
 			self._axis_x.setRange(x_min, x_max)
-		print('setrange :{}'.format(time.time() - t))
-		t = time.time()
-		self.arg_pipe[1].recv()
-		for line_name in self.line_map:
-			line = self.line_map[line_name]
-			line.replace(self.points_map[line_name])
+		# print('setrange :{}'.format(time.time() - t))
+		# t = time.time()
+		points_map = self.points_pipe[1].recv()
+		for line_name in points_map:
+			if line_name in self.line_map:
+				line = self.line_map[line_name]
+			else:
+				continue
+			line.replace(points_map[line_name])
 			if line.scatter != None:
-				line.scatter.replace(self.points_map[line_name])
+				line.scatter.replace(points_map[line_name])
 				cnt = 0
-				for p in self.points_map[line_name]:
+				for p in points_map[line_name]:
 					cnt += p.y()
-				if len(self.points_map[line_name]) > 0:
-					line.scatter.setName('avg:' + str(round(cnt/len(self.points_map[line_name]), 2)))
+				if len(points_map[line_name]) > 0:
+					line.scatter.setName('avg:' + str(round(cnt/len(points_map[line_name]), 2)))
 		self.f += 1
-		print('replace all: {}'.format(time.time() - t))
+		# print('replace all: {}'.format(time.time() - t))
 
-
-	
 	def show_data(self):
 		if self.x_limit[2]:
 			x_min = self.x_limit[0]
@@ -250,6 +355,155 @@ class My_Chart_View(QChartView):
 					line.scatter.setName('avg:' + str(round(cnt/len(line._points), 2)))
 		self.f += 1
 		# print('replace all: {}'.format(time.time() - t))
+
+'''
+buffer {
+	'label': {
+		'list': [],
+		'offset': 0
+	}
+}
+labels {
+	'label': {
+		'offset': <some>
+	}
+}
+datas {
+	'label': []
+}
+'''
+
+def update_data_process(args_pipe, points_pipe):
+	buffer = {}
+	while True:
+		res = args_pipe[1].recv()
+		# print(res)
+		try:
+			(datas, labels, Args) = res
+		except Exception as e:
+			print(e, res)
+			continue
+
+		if labels != None:
+			for label in buffer:
+				if label not in labels:
+					del buffer[label]
+				else:
+					for key in labels[label]:
+						buffer[label][key] = labels[label][key]
+					del labels[label]
+
+			for label in labels:
+				buffer[label] = {
+					'list': []
+				}
+				for key in labels[label]:
+					buffer[label][key] = labels[label][key]
+		
+		if datas != None:
+			for label in datas:
+				try:
+					buffer[label]['list'] += datas[label]
+				except KeyError:
+					buffer[label] = {'list': []}
+					buffer[label]['list'] += datas[label]
+		
+		if Args != None:
+			(max_diff, max_len, x_max, step) = Args
+			points = {}
+			for line_name in buffer:
+				data_list = buffer[line_name]['list']
+				points[line_name] = []
+				buffer_len = len(data_list)
+				index = int(buffer_len - max_diff)
+				diff = max_len - buffer_len
+				while index < x_max:
+					if index < 0:
+						pass
+					elif index >= buffer_len:
+						break
+					else:
+						points[line_name].append(QPointF(index+diff, data_list[int(index)]))
+					index += step
+				if index < buffer_len:
+					points[line_name].append(QPointF(index+diff, data_list[index]))
+			points_pipe[0].send(points)
+
+
+
+class Append_Data_Thread(QThread):
+	append_data_signal = Signal(dict)
+	def __init__(self, parent:My_Chart_View):
+		super(Append_Data_Thread, self).__init__()
+		self._parent = parent
+		self.data_pipe = None
+		self.send_cache = []
+		self.run_flag = True
+		self.append_data_signal.connect(self._parent.append_data)
+		'''
+		self.data_pipe = None
+		
+		self.buffer_len_map = {}
+		# self.labels_cache = None
+		self.send_cache = []
+		'''
+	
+	def run(self):
+		while self.run_flag:
+			if self.data_pipe == None:
+				self.msleep(1)
+				continue
+			data_list = self.data_pipe[1].recv()
+			# if len(self.send_cache) == 0:
+			# 	self.msleep(1)
+			# 	continue
+			# data_list = self.send_cache.pop(0)
+			self.append_data_signal.emit(data_list)
+			'''
+			self._parent.append_data()
+			data_list = self.send_cache.pop(0)
+			self._parent.args_pipe[0].send((data_list, None, None))
+			for label in data_list:
+				try:
+					self.buffer_len_map[label] += len(data_list[label])
+				except KeyError:
+					self.buffer_len_map[label] = len(data_list[label])
+				buffer_len = self.buffer_len_map[label]
+				if self._parent.auto_Stretch:
+
+					for value in data_list[label]:
+						axis_y_min = self._parent._axis_y.min()
+						axis_y_max = self._parent._axis_y.max()
+						if (value < axis_y_min) & (value > self._parent.min_value):
+							self._parent.y_limit[0] = value
+							self._parent.y_limit[2] = True
+						if (value > axis_y_max) & (value < self._parent.max_value):
+							self._parent.y_limit[1] = value
+							self._parent.y_limit[2] = True
+					
+					if self._parent.max_len > MAX_POINT:
+						if buffer_len > self._parent.max_len:
+							self._parent.x_limit[0] += len(data_list[label])
+					self._parent.x_limit[1] = self._parent.max_len
+					self._parent.x_limit[2] = True
+					# else:
+					# 	self._axis_x.setRange(x_min, self.max_len)
+					# self.show_data()
+				if buffer_len > self._parent.max_len:
+					self._parent.max_len = buffer_len
+
+				if self._parent.slider_flag:
+					self.update_slider_signal.emit(
+						int(self._parent.x_limit[0]), 
+						int(self._parent.max_len-self._parent.x_limit[1]+self._parent.x_limit[0]))
+			'''
+	'''
+	def update_labels(self, labels):
+		for label in labels:
+			if label not in self.buffer_len_map:
+				self.buffer_len_map[label] = 0
+		self._parent.args_pipe[0].send((None, labels, None))
+	'''
 
 
 class Show_Data_Thread(QThread):
@@ -331,6 +585,7 @@ class Line(QLineSeries):
 		self.show_buffer = []
 		self.line_diff = 0
 		self.scatter = None
+		self.offset = 0
 		self.scatter_replace_sig.connect(self.update_scatter)
 		self.line_replace_sig.connect(self.replace)
 		self.line_clear_sig.connect(self.clear)
@@ -356,10 +611,11 @@ class Line(QLineSeries):
 			chart._chart.addSeries(self.scatter)
 			chart._chart.setAxisX(chart._axis_x, self.scatter)
 			chart._chart.setAxisY(chart._axis_y, self.scatter)
-			
 
 class Graph_View(QWidget):
 	# view 总窗口
+	sendMsg_sig = Signal(str)
+	add_label_sig = Signal(str)
 	def __init__(self):
 		super(Graph_View, self).__init__()
 		self.ui = Ui_Draw_Widget()
@@ -374,10 +630,8 @@ class Graph_View(QWidget):
 		# self.fi = 0
 		# self.f_list = []
 		# 执行折线视图函数
-
 		self.setup()
-		self.create_chart()
-		
+		# self.create_chart()
 
 	def setup(self):
 		self.ui.setupUi(self)
@@ -388,7 +642,7 @@ class Graph_View(QWidget):
 		self.ui.verticalLayout.addWidget(graphSplitterV)
 
 		self.chart = My_Chart_View(self)
-		
+		self.chart.show_data_sig.connect(self.ui.graphReceiveBox.appendPlainText)
 		self.chart.setRubberBand(QChartView.VerticalRubberBand)
 		# self.chart.setGeometry(QtCore.QRect(0, 0, 980, 480))
 		self.chart.setRenderHint(QPainter.Antialiasing)  # 抗锯齿
@@ -407,6 +661,12 @@ class Graph_View(QWidget):
 		self.timer2.start(250)
 		self.timer2.timeout.connect(self.printFps)
 
+	def start_timer(self):
+		self.show_timer.start(16)
+	
+	def stop_timer(self):
+		self.show_timer.stop()
+
 	def moveGraph(self, value):
 		self.chart.x_limit[1] = value + self.chart.x_limit[1] - self.chart.x_limit[0]
 		self.chart.x_limit[0] = value
@@ -421,12 +681,71 @@ class Graph_View(QWidget):
 		self.chart.slider_flag = True
 
 	def resetGraph(self):
-		i = 0.1
-		for line_name in self.chart.line_map:
-			line = self.chart.line_map[line_name]
-			line._buffer += [0.1+i, 0.2+i, 0.3+i, 0.4+i, 0.5+i, 0.6+i, 0.7+i, 0.8+i, 0.9+i, 0.1+i]*1000000
-			i -= 0.1
-		self.chart.show_data()
+		pass
+		# self.chart._chart.deleteLater()
+		# self.chart.setup_chart()
+		# self.chart.setChart(self.chart._chart)
+		# self.chart.show_data()
+
+	def addCurve(self):
+		curve_name = QInputDialog.getText(self, '添加曲线', '请输入曲线名称')
+		if curve_name[1]:
+			curve_name = curve_name[0]
+			if type(curve_name) != str:
+				return
+			if curve_name in self.chart.line_map.keys():
+				QMessageBox.warning(self, '警告', '曲线已经存在')
+			else:
+				self.chart.append_series(curve_name)
+				self.add_label_sig.emit(curve_name)
+				self.ui.listWidget_2.addItem(curve_name)
+	
+	def clearCurve(self):
+		for name in self.chart.line_map:
+			self.chart.remove_serials(name)
+		self.chart.line_map.clear()
+		self.chart.max_len = 0
+		self.ui.listWidget_2.clear()
+		
+	
+	def editCurve(self):
+		# TODO:
+		QMessageBox.warning(self, '警告', '暂不可用')
+	
+	def setAxis(self):
+		QMessageBox.warning(self, '警告', '暂不可用')
+		para = [
+			self.chart.max_value,
+			self.chart.min_value,
+			self.chart._axis_y.max(),
+			self.chart._axis_y.min(),
+			self.chart._axis_x.max(),
+			self.chart._axis_x.min(),
+			self.chart.auto_Stretch
+		]
+		self.set_axis = SetAxisWidget(
+			para
+		)
+		self.set_axis.returnok_sig.connect(self.set_axis_data)
+		self.set_axis.show()
+
+	def set_axis_data(self, return_data:list):
+		print(return_data)
+		if return_data[0]:
+			self.chart.max_value = return_data[2]
+		if return_data[1]:
+			self.chart.min_value = return_data[3]
+		self.chart.auto_Stretch = return_data[-1]
+		if return_data[-1] != True:
+			self.chart.y_limit = [return_data[4], return_data[5], True]
+			self.chart.x_limit = [return_data[6], return_data[7], True]
+			self.chart.show_data()
+		
+
+	def sendMsg(self):
+		msg = self.ui.lineEdit_3.text()
+		self.sendMsg_sig.emit(msg)
+		
 
 	def wheelEvent(self, event:QWheelEvent):
 		x_min = int(self.chart._axis_x.min())
@@ -439,10 +758,15 @@ class Graph_View(QWidget):
 		if self.chart.auto_Stretch:
 			x_min = int(x_max - (x_max-x_min)*fact)
 		else:
-			pos_p = event.position().toTuple()[0] / self.width()
-			pos = (x_max-x_min)*pos_p + x_min
-			x_min = int(pos - (pos - x_min)*fact)
-			x_max = int(pos + (x_max-pos)*fact)
+			pos_p = (event.position().toTuple()[0] / self.width()) - 0.02
+			if pos_p > 0.8:
+				x_min = int(x_max - (x_max-x_min)*fact) + 1
+			elif pos_p < 0.2:
+				x_max = int(x_min + (x_max-x_min)*fact)
+			else:
+				pos = (x_max-x_min)*pos_p + x_min
+				x_min = int(pos - (pos - x_min)*fact)
+				x_max = int(pos + (x_max-pos)*fact)
 			if fact > 1:
 				x_max += 1
 			if (x_max - x_min) < self.scatter_num:
@@ -500,7 +824,10 @@ class Graph_View(QWidget):
 			elif (self.chart.f > 15) & (MAX_POINT < self.limit_points[1]):
 				MAX_POINT = int(MAX_POINT * 1.05)
 		if self.showfps:
-			self.ui.progressBar_2.setValue(int(self.chart.f*4))
+			fps = int(self.chart.f * 4)
+			if fps > 60:
+				fps = 60
+			self.ui.progressBar_2.setValue(fps)
 		# self.chart._axis_x.setTitleText("fps\t{} | point\t{}".format(self.chart.f*0.4, MAX_POINT))
 		self.chart.f = 0
 

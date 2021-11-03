@@ -742,7 +742,7 @@ color:#B6B6B6;
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -1896,11 +1896,6 @@ color:#B6B6B6;
                       <string>\n (LF)</string>
                      </property>
                     </item>
-                    <item>
-                     <property name="text">
-                      <string>&lt;自定义&gt;</string>
-                     </property>
-                    </item>
                    </widget>
                   </item>
                  </layout>
@@ -2399,7 +2394,7 @@ color:#B6B6B6;
            <attribute name="title">
             <string>网络</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <layout class="QVBoxLayout" name="network_layout">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -2412,1026 +2407,6 @@ color:#B6B6B6;
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QScrollArea" name="scrollArea_3">
-              <property name="widgetResizable">
-               <bool>true</bool>
-              </property>
-              <widget class="QWidget" name="scrollAreaWidgetContents_3">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>275</width>
-                 <height>96</height>
-                </rect>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_22">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QScrollArea" name="scrollArea_4">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                    <horstretch>3</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                    <underline>false</underline>
-                    <strikeout>false</strikeout>
-                   </font>
-                  </property>
-                  <property name="lineWidth">
-                   <number>1</number>
-                  </property>
-                  <property name="verticalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="horizontalScrollBarPolicy">
-                   <enum>Qt::ScrollBarAlwaysOff</enum>
-                  </property>
-                  <property name="sizeAdjustPolicy">
-                   <enum>QAbstractScrollArea::AdjustToContents</enum>
-                  </property>
-                  <property name="widgetResizable">
-                   <bool>true</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                  <widget class="QWidget" name="scrollAreaWidgetContents_4">
-                   <property name="geometry">
-                    <rect>
-                     <x>0</x>
-                     <y>0</y>
-                     <width>275</width>
-                     <height>515</height>
-                    </rect>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>14</pointsize>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                     <underline>false</underline>
-                     <strikeout>false</strikeout>
-                    </font>
-                   </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_21">
-                    <property name="spacing">
-                     <number>8</number>
-                    </property>
-                    <property name="leftMargin">
-                     <number>8</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>8</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>9</number>
-                    </property>
-                    <item>
-                     <widget class="QFrame" name="FrameOpen_2">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>13</pointsize>
-                       </font>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_28">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QFrame" name="frame_10">
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QGridLayout" name="gridLayout_4">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="horizontalSpacing">
-                        <number>5</number>
-                       </property>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="lineEdit_2">
-                         <property name="font">
-                          <font>
-                           <pointsize>11</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>192.168.1.103</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="4" rowspan="3">
-                        <widget class="QPushButton" name="openSerialButton_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                           <horstretch>10</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>27</height>
-                          </size>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>14</pointsize>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>默认连接CH340</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/连接.ico</normaloff>:/Mainico/ico/连接.ico</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>30</width>
-                           <height>30</height>
-                          </size>
-                         </property>
-                         <property name="checkable">
-                          <bool>false</bool>
-                         </property>
-                         <property name="flat">
-                          <bool>false</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="0">
-                        <widget class="QLabel" name="bpsLabel_3">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>模式</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>bpscomboBox</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="2">
-                        <widget class="QSpinBox" name="spinBox">
-                         <property name="font">
-                          <font>
-                           <pointsize>11</pointsize>
-                          </font>
-                         </property>
-                         <property name="maximum">
-                          <number>65536</number>
-                         </property>
-                         <property name="value">
-                          <number>6000</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QComboBox" name="comboBox">
-                         <property name="font">
-                          <font>
-                           <pointsize>11</pointsize>
-                          </font>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>TCP Server</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>TCP Client</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>UDP</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QLabel" name="bpsLabel_4">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>IP</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>bpscomboBox</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QLabel" name="byteSizeLabel_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>端口</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>byteSizeComboBox</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <spacer name="horizontalSpacer_16">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>8</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item row="0" column="3">
-                        <spacer name="horizontalSpacer_4">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>5</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="Line" name="line_11">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>13</pointsize>
-                        <italic>false</italic>
-                        <bold>false</bold>
-                        <underline>false</underline>
-                        <strikeout>false</strikeout>
-                       </font>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QFrame" name="frame_9">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>0</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_29">
-                       <property name="leftMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>3</number>
-                       </property>
-                       <item>
-                        <widget class="QCheckBox" name="sendHexCheckBox_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>13</pointsize>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>发送十六进制数据</string>
-                         </property>
-                         <property name="text">
-                          <string>发送HEX</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/20200510-234010.ico</normaloff>:/Mainico/ico/20200510-234010.ico</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>18</width>
-                           <height>18</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QCheckBox" name="enterSendCheckBox_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>0</height>
-                          </size>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>13</pointsize>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>仅对单条发送有效</string>
-                         </property>
-                         <property name="text">
-                          <string>回车发送</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/20200510-234445.ico</normaloff>:/Mainico/ico/20200510-234445.ico</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>18</width>
-                           <height>18</height>
-                          </size>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_13">
-                      <property name="leftMargin">
-                       <number>2</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>2</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>2</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>3</number>
-                      </property>
-                      <item>
-                       <widget class="QCheckBox" name="showHexCheckBox_2">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>13</pointsize>
-                          <italic>false</italic>
-                          <bold>false</bold>
-                          <underline>false</underline>
-                          <strikeout>false</strikeout>
-                         </font>
-                        </property>
-                        <property name="toolTip">
-                         <string>显示十六进制数据</string>
-                        </property>
-                        <property name="text">
-                         <string>显示HEX</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="icoPack.qrc">
-                          <normaloff>:/Mainico/ico/hex-30 切换系统.ico</normaloff>:/Mainico/ico/hex-30 切换系统.ico</iconset>
-                        </property>
-                        <property name="iconSize">
-                         <size>
-                          <width>18</width>
-                          <height>18</height>
-                         </size>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QCheckBox" name="showSendMsgBox_2">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>13</pointsize>
-                          <italic>false</italic>
-                          <bold>false</bold>
-                          <underline>false</underline>
-                          <strikeout>false</strikeout>
-                         </font>
-                        </property>
-                        <property name="toolTip">
-                         <string>仅对单条发送有效</string>
-                        </property>
-                        <property name="text">
-                         <string>显示发送</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="icoPack.qrc">
-                          <normaloff>:/Mainico/ico/上一层.ico</normaloff>:/Mainico/ico/上一层.ico</iconset>
-                        </property>
-                        <property name="iconSize">
-                         <size>
-                          <width>18</width>
-                          <height>18</height>
-                         </size>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <widget class="QFrame" name="frame_15">
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_40">
-                       <property name="leftMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>2</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>3</number>
-                       </property>
-                       <item>
-                        <widget class="QCheckBox" name="checkBox_2">
-                         <property name="font">
-                          <font>
-                           <pointsize>13</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>显示IP</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/设备.ico</normaloff>:/Mainico/ico/设备.ico</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>18</width>
-                           <height>18</height>
-                          </size>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QCheckBox" name="checkBox_4">
-                         <property name="font">
-                          <font>
-                           <pointsize>13</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>显示端口</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/端口 (1).ico</normaloff>:/Mainico/ico/端口 (1).ico</iconset>
-                         </property>
-                         <property name="iconSize">
-                          <size>
-                           <width>18</width>
-                           <height>18</height>
-                          </size>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="Line" name="line_5">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>13</pointsize>
-                        <italic>false</italic>
-                        <bold>false</bold>
-                        <underline>false</underline>
-                        <strikeout>false</strikeout>
-                       </font>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_32">
-                      <item>
-                       <widget class="QRadioButton" name="sendTimeRadioButton_2">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>13</pointsize>
-                          <italic>false</italic>
-                          <bold>false</bold>
-                          <underline>false</underline>
-                          <strikeout>false</strikeout>
-                         </font>
-                        </property>
-                        <property name="text">
-                         <string>定时发送</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="icoPack.qrc">
-                          <normaloff>:/MainWin/ico/20200510-230202.ico</normaloff>:/MainWin/ico/20200510-230202.ico</iconset>
-                        </property>
-                        <property name="iconSize">
-                         <size>
-                          <width>18</width>
-                          <height>18</height>
-                         </size>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_33">
-                        <item>
-                         <widget class="QSpinBox" name="sendTimeSpinBox_2">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                            <horstretch>2</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <property name="minimumSize">
-                           <size>
-                            <width>0</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="font">
-                           <font>
-                            <pointsize>13</pointsize>
-                            <italic>false</italic>
-                            <bold>false</bold>
-                            <underline>false</underline>
-                            <strikeout>false</strikeout>
-                           </font>
-                          </property>
-                          <property name="toolTip">
-                           <string>最大20000ms</string>
-                          </property>
-                          <property name="minimum">
-                           <number>1</number>
-                          </property>
-                          <property name="maximum">
-                           <number>20000</number>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="sendTimeLabel_2">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <property name="font">
-                           <font>
-                            <pointsize>13</pointsize>
-                            <italic>false</italic>
-                            <bold>false</bold>
-                            <underline>false</underline>
-                            <strikeout>false</strikeout>
-                           </font>
-                          </property>
-                          <property name="text">
-                           <string>ms</string>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_34"/>
-                    </item>
-                    <item>
-                     <widget class="Line" name="line_7">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>13</pointsize>
-                        <italic>false</italic>
-                        <bold>false</bold>
-                        <underline>false</underline>
-                        <strikeout>false</strikeout>
-                       </font>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pushButton">
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string> 扫描端口</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="icoPack.qrc">
-                        <normaloff>:/MainWin/ico/20200511-173453.ico</normaloff>:/MainWin/ico/20200511-173453.ico</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QFrame" name="frame_11">
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_10">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="bpsLabel_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>12</pointsize>
-                           <italic>false</italic>
-                           <bold>true</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>扫描IP</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>bpscomboBox</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="lineEdit">
-                         <property name="font">
-                          <font>
-                           <pointsize>11</pointsize>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>192.168.1.103</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="setThreadButton">
-                         <property name="toolTip">
-                          <string>设置线程数</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="icoPack.qrc">
-                           <normaloff>:/Mainico/ico/线程程数.ico</normaloff>:/Mainico/ico/线程程数.ico</iconset>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QListWidget" name="listWidget"/>
-                    </item>
-                    <item>
-                     <widget class="QFrame" name="frame_13">
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_31">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="showLabel1_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <pointsize>13</pointsize>
-                           <italic>false</italic>
-                           <bold>false</bold>
-                           <underline>false</underline>
-                           <strikeout>false</strikeout>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>帧速</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLCDNumber" name="sendCountLCD_2">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="frameShape">
-                          <enum>QFrame::NoFrame</enum>
-                         </property>
-                         <property name="smallDecimalPoint">
-                          <bool>false</bool>
-                         </property>
-                         <property name="digitCount">
-                          <number>4</number>
-                         </property>
-                         <property name="mode">
-                          <enum>QLCDNumber::Dec</enum>
-                         </property>
-                         <property name="segmentStyle">
-                          <enum>QLCDNumber::Flat</enum>
-                         </property>
-                         <property name="value" stdset="0">
-                          <double>0.000000000000000</double>
-                         </property>
-                         <property name="intValue" stdset="0">
-                          <number>0</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_13">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </widget>
-            </item>
            </layout>
           </widget>
          </widget>
@@ -3958,6 +2933,7 @@ padding:1px;</string>
                 </property>
                 <property name="font">
                  <font>
+                  <family>Consolas</family>
                   <pointsize>11</pointsize>
                   <italic>false</italic>
                   <bold>false</bold>
@@ -3981,12 +2957,7 @@ padding:1px;</string>
                  <bool>true</bool>
                 </property>
                 <property name="plainText">
-                 <string> __  __              _____  __   __  _____   __     __
-|  \/  |     /\     |_   _| \ \ / / |  __ \  \ \   / /
-| \  / |    /  \      | |    \ V /  | |__) |  \ \_/ /
-| |\/| |   / /\ \     | |     &gt; &lt;   |  ___/    \   /
-| |  | |  / ____ \   _| |_   / . \  | |         | |
-|_|  |_| /_/    \_\ |_____| /_/ \_\ |_|         |_|</string>
+                 <string/>
                 </property>
                 <property name="backgroundVisible">
                  <bool>false</bool>
@@ -4056,7 +3027,7 @@ padding:1px;</string>
               <number>0</number>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <property name="tabSpacing">
               <number>0</number>
@@ -4154,6 +3125,7 @@ padding:1px;</string>
                     </property>
                     <property name="font">
                      <font>
+                      <family>Consolas</family>
                       <pointsize>12</pointsize>
                       <italic>false</italic>
                       <bold>false</bold>
@@ -4174,7 +3146,7 @@ padding:1px;</string>
                      <enum>QFrame::Raised</enum>
                     </property>
                     <property name="plainText">
-                     <string>发给个非递归ffdfds</string>
+                     <string/>
                     </property>
                     <property name="backgroundVisible">
                      <bool>false</bool>
@@ -4220,6 +3192,9 @@ padding:1px;</string>
                       <height>45</height>
                      </size>
                     </property>
+                    <property name="autoRepeat">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -4232,7 +3207,7 @@ padding:1px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>106</width>
+                <width>733</width>
                 <height>202</height>
                </rect>
               </property>
@@ -4335,8 +3310,8 @@ padding:1px;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>116</width>
-                       <height>180</height>
+                       <width>723</width>
+                       <height>192</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -4460,7 +3435,7 @@ padding:1px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>88</width>
+                <width>733</width>
                 <height>77</height>
                </rect>
               </property>
@@ -4684,6 +3659,7 @@ padding:1px;</string>
                     </property>
                     <property name="font">
                      <font>
+                      <family>Consolas</family>
                       <pointsize>13</pointsize>
                       <italic>false</italic>
                       <bold>false</bold>
@@ -4728,11 +3704,6 @@ padding:1px;</string>
          <number>8</number>
         </property>
        </layout>
-      </widget>
-      <widget class="QWidget" name="widget">
-       <attribute name="title">
-        <string>JSON</string>
-       </attribute>
       </widget>
       <widget class="QWidget" name="Setting">
        <attribute name="icon">
@@ -4795,7 +3766,7 @@ padding:1px;</string>
                 </font>
                </property>
                <property name="text">
-                <string>字体</string>
+                <string>发送字体</string>
                </property>
               </widget>
              </item>
@@ -4886,56 +3857,6 @@ padding:1px;</string>
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="msgLencheckBox">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                 <underline>false</underline>
-                 <strikeout>false</strikeout>
-                </font>
-               </property>
-               <property name="toolTip">
-                <string>限制接收缓存长度</string>
-               </property>
-               <property name="text">
-                <string>限制缓存</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="msgLenSpinBox">
-               <property name="minimumSize">
-                <size>
-                 <width>80</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>13</pointsize>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                 <underline>false</underline>
-                 <strikeout>false</strikeout>
-                </font>
-               </property>
-               <property name="toolTip">
-                <string>数据长度</string>
-               </property>
-               <property name="minimum">
-                <number>1000</number>
-               </property>
-               <property name="maximum">
-                <number>1000000</number>
-               </property>
-               <property name="singleStep">
-                <number>100</number>
-               </property>
-              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_11">
@@ -5271,7 +4192,7 @@ padding:1px;</string>
               </font>
              </property>
              <property name="text">
-              <string>绘图设置(重启后生效)</string>
+              <string>绘图设置（暂不可用）</string>
              </property>
             </widget>
            </item>
@@ -5429,7 +4350,7 @@ padding:1px;</string>
               <enum>Qt::RightToLeft</enum>
              </property>
              <property name="text">
-              <string>@Version Beta-1.1.5</string>
+              <string>@Version Beta-1.2.0</string>
              </property>
             </widget>
            </item>
@@ -5445,7 +4366,7 @@ padding:1px;</string>
               </font>
              </property>
              <property name="text">
-              <string>版本更新</string>
+              <string>版本更新（暂不可用）</string>
              </property>
             </widget>
            </item>
@@ -5735,8 +4656,8 @@ padding:1px;</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1031</width>
-             <height>450</height>
+             <width>120</width>
+             <height>120</height>
             </rect>
            </property>
            <attribute name="icon">
@@ -6611,92 +5532,12 @@ Alpha 0.521.2
    <slot>sendBoxTextChange()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>823</x>
-     <y>615</y>
+     <x>934</x>
+     <y>578</y>
     </hint>
     <hint type="destinationlabel">
      <x>591</x>
      <y>-111</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sendHexCheckBox_2</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setSendHex(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>79</x>
-     <y>185</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-40</x>
-     <y>184</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>showHexCheckBox_2</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setShowHex(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>89</x>
-     <y>210</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-145</x>
-     <y>210</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>enterSendCheckBox_2</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setEnterSend(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>261</x>
-     <y>191</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-33</x>
-     <y>168</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>showSendMsgBox_2</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setShowSendMsg(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>261</x>
-     <y>226</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-55</x>
-     <y>229</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mainLeftWidget</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>tabChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>52</x>
-     <y>631</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-15</x>
-     <y>638</y>
     </hint>
    </hints>
   </connection>
@@ -6708,7 +5549,7 @@ Alpha 0.521.2
    <hints>
     <hint type="sourcelabel">
      <x>1039</x>
-     <y>615</y>
+     <y>578</y>
     </hint>
     <hint type="destinationlabel">
      <x>1147</x>
@@ -6723,8 +5564,8 @@ Alpha 0.521.2
    <slot>add_multi_send()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>981</x>
-     <y>708</y>
+     <x>420</x>
+     <y>469</y>
     </hint>
     <hint type="destinationlabel">
      <x>944</x>
@@ -6739,8 +5580,8 @@ Alpha 0.521.2
    <slot>delete_multi_send()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1033</x>
-     <y>708</y>
+     <x>420</x>
+     <y>469</y>
     </hint>
     <hint type="destinationlabel">
      <x>1022</x>
@@ -6755,12 +5596,92 @@ Alpha 0.521.2
    <slot>openSetCmdWin()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>333</x>
-     <y>609</y>
+     <x>415</x>
+     <y>488</y>
     </hint>
     <hint type="destinationlabel">
      <x>341</x>
      <y>757</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>tabChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-79</x>
+     <y>44</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mainLeftWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>changeMode(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>208</x>
+     <y>634</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>704</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>decodeComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setDecode(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>866</x>
+     <y>104</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1183</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setDataDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1022</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1178</x>
+     <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openPathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openDataDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>962</x>
+     <y>220</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1226</x>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -6799,5 +5720,11 @@ Alpha 0.521.2
   <slot>openSetCmdWin()</slot>
   <slot>add_multi_send()</slot>
   <slot>delete_multi_send()</slot>
+  <slot>scanPort()</slot>
+  <slot>startServer()</slot>
+  <slot>changeMode(int)</slot>
+  <slot>setDecode(QString)</slot>
+  <slot>openDataDir()</slot>
+  <slot>setDataDir()</slot>
  </slots>
 </ui>

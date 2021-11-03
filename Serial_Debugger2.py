@@ -1,14 +1,18 @@
 import sys, os
+from datetime import datetime
 from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 from ui.Serial_MainWindow_ui import Ui_MainWindow                                       
 #add(your program's name)  use :pyuic5 button.ui -o button.py to create.
 from src.File_loader import Config
-from src.serial_core_qt import SerialThread, HexShow, TransHexThread
+from src.serial_core import SerialThread
+from src.parse_data import HexShow, TransHexThread, DecodeData
 from src.update_data import UpdateTimer
 from src.send_contrl import *
 from src.graph_widget import Graph_View, My_Chart_View
+from src.net_core import Network_Widget, NetworkThread
+from src.download import findUpdate
 from src.setCMD import *
 import icoPack_rc
 
@@ -23,19 +27,33 @@ class DebuggerMainWindow(QMainWindow):
 		self.ui = DebuggerWindowUi(self)
 		self.config = config
 		self.serial_thread = SerialThread(self)
-		self.trans_hex_thread = TransHexThread(self)
-		self.trans_hex_thread.start()
-		self.graph_widget = Graph_View()
+		self.decode_thread = DecodeData(self)
 		
+		self.trans_hex_thread = TransHexThread(self)
+		self.network = Network_Widget(self)
+		self.graph_widget = Graph_View()
+		self.net_widget = Network_Widget(self)
+		self.autoSendTimer = QTimer(self)
+		self.autoSendTimer.timeout.connect(self.autoSend)
+		self.graph_widget.sendMsg_sig.connect(self.sendMsg)
 		self.multi_send_list = []
 		# self.serial_thread.show_print = True
 		
 	def setup(self):
 		self.setupThread()
 		self.ui.setupUi(self)
+		self.ui.receiveBox.setAcceptDrops(False)
 		self.ui.Init_data(config)
 		self.ui.splitterSet()
 		self.ui.draw_layout.addWidget(self.graph_widget)
+		self.ui.network_layout.addWidget(self.net_widget)
+		self.net_widget.ui.enterSendCheckBox.clicked.connect(self.setEnterSend)
+		self.net_widget.ui.showSendMsgBox.clicked.connect(self.setShowSendMsg)
+		self.net_widget.ui.sendHexCheckBox.clicked.connect(self.setSendHex)
+		self.net_widget.ui.sendTimeRadioButton.clicked.connect(self.setAutoSend)
+		self.net_widget.ui.sendTimeSpinBox.valueChanged.connect(self.autoSendTimeChanged)
+		self.net_widget.append_msg_sig.connect(self.updateRecv)
+		self.net_widget.msg_sig.connect(self.show_msg)
 		text_list = self.config.load('multi_send')
 		if type(text_list) != list:
 			text_list = ['']
@@ -47,13 +65,35 @@ class DebuggerMainWindow(QMainWindow):
 			self.connectSerial()
 
 	def setupThread(self):
-		self.serial_thread.read_sig.connect(self.updateRecv)
+		self.serial_thread.read_sig.connect(self.decode_thread.appendData)
 		self.serial_thread.msg_sig.connect(self.ui.toMessageBox)
 		self.serial_thread.connect_sig.connect(self.ui.connectState)
+		self.decode_thread.decoded_sig.connect(self.updateRecv)
+		self.decode_thread.start()
+		self.trans_hex_thread.start()
+		self.graph_widget.chart.append_thread.data_pipe = self.decode_thread.decoded_pipe
+		self.graph_widget.add_label_sig.connect(self.decode_thread.add_label)
 		# self.serial_thread.show_print = True
 	
 	def cmdEnterSend(self, msg):
 		self.sendMsg(msg)
+
+	def autoSend(self):
+		if self.ui.mainLeftWidget.currentIndex() == 0:
+			if self.serial_thread.ser.is_open != True:
+				QMessageBox.warning(self, '警告', '串口未开启')
+				self.ui.sendTimeRadioButton.setChecked(False)
+				self.net_widget.ui.sendTimeRadioButton.setChecked(False)
+				self.autoSendTimer.stop()
+				return 
+		elif self.ui.mainLeftWidget.currentIndex() == 1:
+			if self.net_widget.current_socket == None:
+				QMessageBox.warning(self, '警告', '未选择发送端口')
+				self.autoSendTimer.stop()
+				self.net_widget.ui.sendTimeRadioButton.setChecked(False)
+				self.ui.sendTimeRadioButton.setChecked(False)
+				return 
+		self.sendMsg()
 
 	def updateRecv(self, decode_data):
 		self.ui.insertTextToRecvBox(decode_data)
@@ -101,7 +141,7 @@ class DebuggerMainWindow(QMainWindow):
 
 	def setSendHex(self, value):
 		self.ui.sendHexCheckBox.setChecked(value)
-		self.ui.sendHexCheckBox_2.setChecked(value)
+		self.net_widget.ui.sendHexCheckBox.setChecked(value)
 		self.is_send_hex = value
 		text = self.ui.sendBox.toPlainText()
 		cursor = self.ui.sendBox.textCursor()
@@ -121,12 +161,12 @@ class DebuggerMainWindow(QMainWindow):
 	
 	def setEnterSend(self, value):
 		self.ui.enterSendCheckBox.setChecked(value)
-		self.ui.enterSendCheckBox_2.setChecked(value)
+		self.net_widget.ui.enterSendCheckBox.setChecked(value)
 		self.config.save('enter_send', value)
 	
 	def setShowHex(self, value):
 		self.ui.showHexCheckBox.setChecked(value)
-		self.ui.showHexCheckBox_2.setChecked(value)
+		self.net_widget.ui.showHexCheckBox.setChecked(value)
 		self.is_show_hex = value
 		if value == True:
 			self.trans_hex_thread.openStart(self.serial_thread.recv_data)
@@ -135,14 +175,16 @@ class DebuggerMainWindow(QMainWindow):
 	
 	def setShowSendMsg(self, value):
 		self.ui.showSendMsgBox.setChecked(value)
-		self.ui.showSendMsgBox_2.setChecked(value)
+		self.net_widget.ui.showSendMsgBox.setChecked(value)
 		self.config.save('show_send_msg', value)
 	
 	def setDTR(self, value):
-		self.serial_thread.ser.setDataTerminalReady(value)
+		if self.serial_thread.isRunning():
+			self.serial_thread.ser.setDataTerminalReady(value)
 
 	def setRTS(self, value):
-		self.serial_thread.ser.setRequestToSend(value)
+		if self.serial_thread.isRunning():
+			self.serial_thread.ser.setRequestToSend(value)
 
 	def setAutoCut(self, value):
 		self.config.save('auto_cut', value)
@@ -152,9 +194,18 @@ class DebuggerMainWindow(QMainWindow):
 		self.config.save('cut_time', value)
 	
 	def setAutoSend(self, value):
-		pass
+		self.ui.sendTimeRadioButton.setChecked(value)
+		self.net_widget.ui.sendTimeRadioButton.setChecked(value)
+		if value == True:
+			self.autoSendTimer.start(self.ui.sendTimeSpinBox.value())
+		else:
+			self.autoSendTimer.stop()
 
 	def autoSendTimeChanged(self, value):
+		self.ui.sendTimeSpinBox.setValue(value)
+		self.net_widget.ui.sendTimeSpinBox.setValue(value)
+		if self.ui.sendTimeRadioButton.isChecked():
+			self.autoSendTimer.start(value)
 		self.config.save('auto_send_time', value)
 	
 	def setLineBreak(self, value):
@@ -177,19 +228,28 @@ class DebuggerMainWindow(QMainWindow):
 		port_list = self.serial_thread.ser.Search_ports()
 		self.ui.serialListWidget.clear()
 		for i in port_list:
-			self.ui.serialListWidget.addItem("{} - {}".format(i.portName(), i.description()))
+			self.ui.serialListWidget.addItem("{} - {}".format(i[0], i[1]))
+		self.show_msg.emit("发现{}个设备".format(len(port_list)))
 		return port_list
 		
 	def portListClicked(self, item:QListWidgetItem):
 		tail = item.text().index(' - ')
 		port_name = item.text()[:tail]
-		self.serial_thread.ser.setPortName(port_name)
+		try:
+			self.serial_thread.ser.setPortName(port_name)
+		except Exception as e:
+			self.serial_thread.Close_Port()
+			self.show_msg.emit(str(e))
 	
 	def portListDoubleClicked(self, item:QListWidgetItem):
 		tail = item.text().index(' - ')
 		port_name = item.text()[:tail]
-		self.serial_thread.ser.setPortName(port_name)
-		self.connectSerial()
+		try:
+			self.serial_thread.ser.setPortName(port_name)
+			self.connectSerial()
+		except Exception as e:
+			self.serial_thread.Close_Port()
+			self.show_msg.emit(str(e))
 	
 	def setAutoConnect(self, value:bool):
 		self.config.save('auto_connect', value)
@@ -205,7 +265,30 @@ class DebuggerMainWindow(QMainWindow):
 		self.serial_thread.frame = 0
 		
 	def saveRecvBox(self):
-		pass
+		try:
+			name = datetime.now().strftime("%Y%m%d-%H%M%S.txt")
+			Msg = self.ui.receiveBox.toPlainText()
+			if len(Msg) == 0:
+				if QMessageBox.warning(self, '警告', '接收信息为空, 是否继续保存?',QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+					getAccess()
+					megfile = open(self.config.load('path') + '/' + name, 'w', encoding = 'UTF-8')
+					megfile.write(Msg)
+				else:
+					return
+			else:
+				getAccess()
+				megfile = open(self.config.load('path') + '/' + name, 'w', encoding = 'UTF-8')
+				megfile.write(Msg)
+			megfile.close()
+			if QMessageBox.question(self, '提示', name + '\n保存成功!' + '\n是否打开文件?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.Yes:
+				os.startfile(self.config.load('path') + '/' + name)
+			self.show_msg.emit('保存成功')
+
+		except Exception as e:
+			QMessageBox.warning(self, '警告', '保存文件错误, 可能需要管理员权限\n原因:' + str(e))
+
+	def openPath(self):
+		os.startfile(self.config.load('path'))
 
 	def showRecvHex(self):
 		pass
@@ -245,9 +328,34 @@ class DebuggerMainWindow(QMainWindow):
 				QTextCursor.setPosition(cursor, cursor_pos)
 			self.ui.sendBox.setTextCursor(cursor)
 
-	def tabChanged(self, value):
-		print(value)
+	def tabChanged(self, value): 
+		if value == 1:
+			self.graph_widget.start_timer()
+		else:
+			self.graph_widget.stop_timer()
 	
+	def scanPort(self):
+		QMessageBox.warning(self, '警告', '暂不可用')
+	
+	def startServer(self):
+		pass
+
+	def setDecode(self, value):
+		self.config.save('decode', value)
+	
+	def setDataDir(self):
+		path = QFileDialog.getExistingDirectory()
+		if path != '':
+			self.config.save('path', path)
+			self.ui.pathLabel.setText(path)
+
+	def openDataDir(self):
+		self.config.load('path')
+
+	def changeMode(self, mode):
+		# print(mode)
+		pass
+
 	def sendMsg(self, msg_string=None):
 		tab_index = self.ui.mainLeftWidget.currentIndex()
 		if type(msg_string) != str:
@@ -258,32 +366,43 @@ class DebuggerMainWindow(QMainWindow):
 			msg = msg_string.encode(self.config.load('encode'))
 		except Exception as e:
 			QMessageBox.critical(self, '解码错误', str(e))
+		if self.config.load('set_line_break'):
+			line_break_index = self.ui.lineBreakComboBox.currentIndex()
+			if line_break_index == 0:
+				msg += b'\r\n'
+				msg_string += '\\r\\n'
+			elif line_break_index == 1:
+				msg += b'\r'
+				msg_string += '\\r'
+			elif line_break_index == 2:
+				msg += b'\n'
+				msg_string += '\\n'
+			else:
+				msg += self.ui.lineBreakComboBox.itemText(line_break_index).encode(self.config.load('encode'))
 		if tab_index == 0:
 			if self.serial_thread.ser.isOpen() != True:
 				QMessageBox.warning(self, '警告', '串口未开启')
 				return 
-			if self.config.load('set_line_break'):
-				line_break_index = self.ui.lineBreakComboBox.currentIndex()
-				if line_break_index == 0:
-					msg += b'\r\n'
-					msg_string += '\\r\\n'
-				elif line_break_index == 1:
-					msg += b'\r'
-					msg_string += '\\r'
-				elif line_break_index == 2:
-					msg += b'\n'
-					msg_string += '\\n'
-				else:
-					msg += self.ui.lineBreakComboBox.itemText(line_break_index).encode(self.config.load('encode'))
 			try:
-				self.serial_thread.ser.Send_msg(msg)
+				if self.serial_thread.send_msg(msg) == False:
+					QMessageBox.warning(self, '发送失败', '串口正在发送其它消息')
+					return
 			except Exception as e:
-				QMessageBox.critical(self, '发送超时', str(e))
+				QMessageBox.critical(self, '发送失败', str(e))
 				self.serial_thread.Close_Port()
-			self.show_msg.emit("'{}' <- ".format(self.serial_thread.ser.portName()) + msg_string)
+				return
+
 			if self.config.load('show_send_msg'):
 				self.ui.receiveBox.appendPlainText(">>> " + msg_string + "\n")
-		
+		elif tab_index == 1:
+			if type(self.net_widget.current_socket) == NetworkThread:
+				self.net_widget.current_socket.Send_Msg(msg)
+				if self.config.load('show_send_msg'):
+					self.ui.receiveBox.appendPlainText("{}>>> ".format(
+						self.net_widget.current_socket.net_socket.localPort()) + msg_string + "\n")
+			else:
+				QMessageBox.warning(self, '警告', '未选择发送端口')
+	
 	def openSetCmdWin(self):
 		self.cmd = setCmdWindow()
 		self.cmd.closeSignal.connect(self.CMDLine._setModel)
@@ -407,7 +526,9 @@ class DebuggerWindowUi(Ui_MainWindow):
 
 	
 import time
+import multiprocessing
 if __name__ == '__main__':
+	multiprocessing.freeze_support()
 	QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 	app = QApplication(sys.argv)
 	config = Config()
@@ -415,5 +536,8 @@ if __name__ == '__main__':
 	window.setup()
 	u = UpdateTimer(window)
 	u.open_start()
+	if window.config.load('update'):
+		update = findUpdate(window)
+		update.openStart()
 	window.show()
 	sys.exit(app.exec())
