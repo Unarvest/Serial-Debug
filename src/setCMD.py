@@ -1,11 +1,11 @@
 
-
-import cmdSetWindow_rc
-import icoPack_rc
+from ui.resources import cmdSetWindow_rc
+from ui.resources import icoPack_rc
 from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 from src.File_loader import getAccess
+from src.app_paths import CMD_LIST_FILE
 import os, json
 
 
@@ -239,7 +239,7 @@ defaultCMDList = {
   }
 }
 
-cmdListFileName = 'CMDList.json'
+cmdListFileName = str(CMD_LIST_FILE)
 
 '''
 @description: 自动补全QLineEdit
@@ -810,7 +810,6 @@ class setCmdWindow(QWidget):
 # 	cmd = setCmdWindow()
 # 	cmd.show()
 # 	sys.exit(app.exec_())
-
 
 
 

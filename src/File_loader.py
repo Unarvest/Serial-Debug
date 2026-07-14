@@ -1,6 +1,7 @@
 import os
 import json
 import ctypes, sys
+from src.app_paths import CONFIG_DIR, CONFIG_FILE, DATA_DIR
 
 '''
 @param target{str}: 目标关键字
@@ -32,7 +33,7 @@ default_data = {
 	'limit_len': 200,
 	'set_line_break': True,
 	'line_break': 0,
-	'path': os.getcwd() + '\data',
+	'path': str(DATA_DIR),
 	'auto_target': 'CH340',
 	'fastConnect': None,
 	'curveColor': '红色',
@@ -93,13 +94,13 @@ class Config():
 		self.data = self.Load_config()
 
 	def save(self, name, value):
-		if os.path.exists("config.json"):
+		if CONFIG_FILE.exists():
 			try:
-				with open("./config.json", 'r+') as config:
+				with CONFIG_FILE.open('r+', encoding='utf-8') as config:
 					data = dict(json.load(config))
 					data[name] = value
 					config.close()
-					config = open("./config.json", 'w')
+					config = CONFIG_FILE.open('w', encoding='utf-8')
 					json.dump(data, config, sort_keys=True,indent=2, separators=(',', ': '))
 					config.close()
 					self.data[name] = value
@@ -112,18 +113,16 @@ class Config():
 
 	def data_init(self):
 		getAccess()
-		if os.path.exists('data'):
-			pass
-		else:
-			os.mkdir('data')
-		with open("./config.json", 'w') as config:
+		CONFIG_DIR.mkdir(exist_ok=True)
+		DATA_DIR.mkdir(exist_ok=True)
+		with CONFIG_FILE.open('w', encoding='utf-8') as config:
 			json.dump(default_data, config, sort_keys=True,indent=2, separators=(',', ': '))
 			config.close()
 
 	def Load_config(self):
-		if os.path.exists('config.json'):
+		if CONFIG_FILE.exists():
 			try:
-				with open("./config.json", 'r') as config:
+				with CONFIG_FILE.open('r', encoding='utf-8') as config:
 					data = json.load(config)
 					config.close()
 				return data

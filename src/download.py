@@ -8,12 +8,13 @@ from time import time
 import hashlib
 from requests import get
 import json
+from src.app_paths import DOWNLOAD_DIR, VERSION_INFO_FILE
 
 url = "http://unarvest.top:8080/versionInfo.json"
 hosturl = "http://unarvest.top:8080/"
 ftpPath = "/pub/串口调试器/"
 httpPath = "/串口调试器/"
-downloadPath = ".\\download\\"
+downloadPath = str(DOWNLOAD_DIR) + os.sep
 HOST = 'unarvest.top'
 ignoreList = ['update.exe', 'version', 'config.json', 'download.py', 'update.py', 'updateList.json', 'versionInfo.json']
 
@@ -52,9 +53,9 @@ def diff_files(versionInfo):
 	fileNum = versionInfo['fileNum']
 	md5 = versionInfo['fileMD5']
 	fileExist = True
-	if os.path.exists('versionInfo.json'):
+	if VERSION_INFO_FILE.exists():
 		try:
-			with open('versionInfo.json') as f:
+			with VERSION_INFO_FILE.open(encoding='utf-8') as f:
 				file_md5 = json.load(f)['fileMD5']
 		except:
 			file_md5 = {}
@@ -213,7 +214,7 @@ class chipDownload(QThread):
 
 def checkFile(versionInfo = None, signal = None):
 	try:
-		with open('versionInfo.json') as f:
+		with VERSION_INFO_FILE.open(encoding='utf-8') as f:
 			currentVersion = json.load(f)['version']
 	except Exception as e:
 		print('检查当前版本错误')
@@ -375,7 +376,7 @@ class downloadThread(QThread):
 		Version = False
 		if type(versionInfo) != dict:
 			try:
-				with open('versionInfo.json') as f:
+				with VERSION_INFO_FILE.open(encoding='utf-8') as f:
 					currentVersion = json.load(f)['version']
 			except Exception as e:
 				print('检查当前版本错误')
@@ -413,14 +414,15 @@ class findUpdate(QThread):
 		self.mainwindow = mainwindow
 	def run(self):
 		global Version
-		if os.path.exists('versionInfo.json'):
-			with open('versionInfo.json') as f:
+		if VERSION_INFO_FILE.exists():
+			with VERSION_INFO_FILE.open(encoding='utf-8') as f:
 				lastVersion = json.load(f)['version']
 		else:
 			lastVersion = self.mainwindow.ui.versionLabel.text()
 			lastVersion = lastVersion[lastVersion.index('-') + 1:]
 			getAccess()
-			with open('versionInfo.json', 'w') as f:
+			VERSION_INFO_FILE.parent.mkdir(exist_ok=True)
+			with VERSION_INFO_FILE.open('w', encoding='utf-8') as f:
 				json.dump({'version':lastVersion}, f)
 		self.versionInfo = getVersionInfo(lastVersion)
 		try:

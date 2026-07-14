@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 ################################################################################
 ## Form generated from reading UI file 'net_widget.ui'
@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
     QListWidget, QListWidgetItem, QPushButton, QRadioButton,
     QSizePolicy, QSpacerItem, QSpinBox, QVBoxLayout,
     QWidget)
-import icoPack_rc
+from ui.resources import icoPack_rc
 
 class Ui_Form(object):
     def setupUi(self, Form):

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 ################################################################################
 ## Form generated from reading UI file 'draw_widget.ui'
@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
     QLineEdit, QListWidget, QListWidgetItem, QPlainTextEdit,
     QProgressBar, QPushButton, QRadioButton, QScrollBar,
     QSizePolicy, QVBoxLayout, QWidget)
-import icoPack_rc
+from ui.resources import icoPack_rc
 
 class Ui_Draw_Widget(object):
     def setupUi(self, Draw_Widget):

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 ################################################################################
 ## Form generated from reading UI file 'cmdSetWindow.ui'
@@ -12,8 +12,8 @@ from PySide6.QtCore import *  # type: ignore
 from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
-import cmdSetWindow_rc
-import icoPack_rc
+from ui.resources import cmdSetWindow_rc
+from ui.resources import icoPack_rc
 
 class Ui_Form(object):
     def setupUi(self, Form):

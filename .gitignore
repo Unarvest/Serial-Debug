@@ -1,8 +1,11 @@
 /.qt_for_python
-/__pycache__
-/dist
-/data
-/build
+__pycache__/
+*.py[cod]
+.Python
+dist/
+build/
+data/
+download/
 /test
 *.png
 *.spec

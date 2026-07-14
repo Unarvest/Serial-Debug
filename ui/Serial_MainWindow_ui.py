@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 ################################################################################
 ## Form generated from reading UI file 'Serial_MainWindow.ui'
@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QAbstractScrollArea, QApplication, QCheckBox, QCo
     QSpacerItem, QSpinBox, QStatusBar, QTabWidget,
     QTextBrowser, QToolBox, QToolButton, QVBoxLayout,
     QWidget)
-import icoPack_rc
+from ui.resources import icoPack_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

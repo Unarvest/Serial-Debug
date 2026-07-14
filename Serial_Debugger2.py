@@ -14,7 +14,7 @@ from src.graph_widget import Graph_View, My_Chart_View
 from src.net_core import Network_Widget, NetworkThread
 from src.download import findUpdate
 from src.setCMD import *
-import icoPack_rc
+from ui.resources import icoPack_rc
 
 
 class DebuggerMainWindow(QMainWindow):
